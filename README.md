@@ -18,6 +18,18 @@ PLC Engineering Suite 是一套面向工业自动化工程场景的 AI 辅助工
 
 ---
 
+## 项目结构与系统架构
+
+### 系统架构
+
+![PLC Engineering Suite 系统架构图](docs/images/system-architecture.svg)
+
+### 仓库结构
+
+![PLC Engineering Suite 仓库结构图](docs/images/repository-structure.svg)
+
+---
+
 ## 项目概览
 
 | 项目 | 说明 |
