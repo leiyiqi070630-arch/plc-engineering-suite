@@ -4,3 +4,7 @@ dist/
 data/
 *.log
 run-test*.log
+# 二进制组件不随源码仓库分发（与 electron-builder.yml 末尾说明一致）
+resources/engine/*.exe
+resources/bridge/
+resources/gxworks2/

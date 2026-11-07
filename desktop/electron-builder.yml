@@ -18,8 +18,10 @@ asarUnpack:
 extraResources:
   - from: resources/routes
     to: routes
-  - from: resources/engine/docs
-    to: engine/docs
+  # 整个 engine 目录一起进包（docs + plccode-engine.exe）；
+  # 二进制由打包前手工放置，见文件末尾说明。
+  - from: resources/engine
+    to: engine
   - from: resources/weinview
     to: weinview
   - from: resources/inoproshop
