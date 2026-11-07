@@ -1,0 +1,409 @@
+{
+ "contract": {
+  "name": "tia_sd_generate_block",
+  "description": "Generates SIMATIC SD block from a structured plan. Inputs: output_directory, plan, plan_json. Required: plan. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "$defs": {
+    "binding": {
+     "additionalProperties": false,
+     "properties": {
+      "name": {
+       "type": "string"
+      },
+      "op": {
+       "$ref": "#/$defs/operand"
+      }
+     },
+     "required": [
+      "name",
+      "op"
+     ],
+     "type": "object"
+    },
+    "box_arg": {
+     "additionalProperties": false,
+     "properties": {
+      "dir": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "op": {
+       "$ref": "#/$defs/operand"
+      }
+     },
+     "required": [
+      "name",
+      "op"
+     ],
+     "type": "object"
+    },
+    "box_pragma": {
+     "additionalProperties": false,
+     "properties": {
+      "entries": {
+       "items": {
+        "$ref": "#/$defs/pragma_entry"
+       },
+       "type": "array"
+      },
+      "style": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "cc_branch": {
+     "additionalProperties": false,
+     "properties": {
+      "contacts": {
+       "items": {
+        "$ref": "#/$defs/cc_contact"
+       },
+       "type": "array"
+      }
+     },
+     "type": "object"
+    },
+    "cc_coil": {
+     "additionalProperties": false,
+     "properties": {
+      "kind": {
+       "type": "string"
+      },
+      "operand": {
+       "$ref": "#/$defs/operand"
+      }
+     },
+     "required": [
+      "operand"
+     ],
+     "type": "object"
+    },
+    "cc_contact": {
+     "additionalProperties": false,
+     "properties": {
+      "kind": {
+       "type": "string"
+      },
+      "operand": {
+       "$ref": "#/$defs/operand"
+      }
+     },
+     "required": [
+      "operand"
+     ],
+     "type": "object"
+    },
+    "element": {
+     "additionalProperties": false,
+     "properties": {
+      "args": {
+       "items": {
+        "$ref": "#/$defs/box_arg"
+       },
+       "type": "array"
+      },
+      "bindings": {
+       "items": {
+        "$ref": "#/$defs/binding"
+       },
+       "type": "array"
+      },
+      "bit": {
+       "$ref": "#/$defs/operand"
+      },
+      "cd": {
+       "$ref": "#/$defs/operand"
+      },
+      "clk": {
+       "$ref": "#/$defs/operand"
+      },
+      "cv": {
+       "$ref": "#/$defs/operand"
+      },
+      "dest_type": {
+       "type": "string"
+      },
+      "et": {
+       "$ref": "#/$defs/operand"
+      },
+      "generate_eno": {
+       "type": "boolean"
+      },
+      "in": {
+       "$ref": "#/$defs/operand"
+      },
+      "in1": {
+       "$ref": "#/$defs/operand"
+      },
+      "in2": {
+       "$ref": "#/$defs/operand"
+      },
+      "instance": {
+       "$ref": "#/$defs/operand"
+      },
+      "instance_scope": {
+       "type": "string"
+      },
+      "kind": {
+       "type": "string"
+      },
+      "ld": {
+       "$ref": "#/$defs/operand"
+      },
+      "max": {
+       "$ref": "#/$defs/operand"
+      },
+      "min": {
+       "$ref": "#/$defs/operand"
+      },
+      "mnemonic": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "op": {
+       "type": "string"
+      },
+      "operand": {
+       "$ref": "#/$defs/operand"
+      },
+      "out": {
+       "$ref": "#/$defs/operand"
+      },
+      "outputs": {
+       "items": {
+        "$ref": "#/$defs/operand"
+       },
+       "type": "array"
+      },
+      "pragma": {
+       "$ref": "#/$defs/box_pragma"
+      },
+      "pt": {
+       "$ref": "#/$defs/operand"
+      },
+      "pv": {
+       "$ref": "#/$defs/operand"
+      },
+      "q": {
+       "$ref": "#/$defs/operand"
+      },
+      "qd": {
+       "$ref": "#/$defs/operand"
+      },
+      "r": {
+       "$ref": "#/$defs/operand"
+      },
+      "src_type": {
+       "type": "string"
+      },
+      "value_type": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "op"
+     ],
+     "type": "object"
+    },
+    "member": {
+     "additionalProperties": false,
+     "properties": {
+      "datatype": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "datatype"
+     ],
+     "type": "object"
+    },
+    "network": {
+     "additionalProperties": false,
+     "properties": {
+      "branches": {
+       "items": {
+        "$ref": "#/$defs/cc_branch"
+       },
+       "type": "array"
+      },
+      "coil": {
+       "$ref": "#/$defs/cc_coil"
+      },
+      "contacts": {
+       "items": {
+        "$ref": "#/$defs/cc_contact"
+       },
+       "type": "array"
+      },
+      "rungs": {
+       "items": {
+        "$ref": "#/$defs/rung"
+       },
+       "type": "array"
+      },
+      "title": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "operand": {
+     "additionalProperties": false,
+     "properties": {
+      "constant_value": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "pragma_entry": {
+     "additionalProperties": false,
+     "properties": {
+      "key": {
+       "type": "string"
+      },
+      "value": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "key"
+     ],
+     "type": "object"
+    },
+    "rung": {
+     "additionalProperties": false,
+     "properties": {
+      "elements": {
+       "items": {
+        "$ref": "#/$defs/element"
+       },
+       "type": "array"
+      },
+      "wire_in": {
+       "type": "string"
+      },
+      "wire_out": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    }
+   },
+   "additionalProperties": false,
+   "properties": {
+    "output_directory": {
+     "type": "string"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "properties": {
+      "block_name": {
+       "type": "string"
+      },
+      "block_number": {
+       "type": "integer"
+      },
+      "block_type": {
+       "type": "string"
+      },
+      "interface": {
+       "additionalProperties": false,
+       "properties": {
+        "constant": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "inout": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "input": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "output": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "temp": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "var": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "var_retain": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        }
+       },
+       "type": "object"
+      },
+      "networks": {
+       "items": {
+        "$ref": "#/$defs/network"
+       },
+       "type": "array"
+      },
+      "optimized": {
+       "type": "boolean"
+      },
+      "preferred_language": {
+       "type": "string"
+      },
+      "schema_version": {
+       "type": "string"
+      },
+      "version": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "block_name",
+      "networks"
+     ],
+     "type": "object"
+    },
+    "plan_json": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "plan"
+   ],
+   "type": "object"
+  }
+ }
+}

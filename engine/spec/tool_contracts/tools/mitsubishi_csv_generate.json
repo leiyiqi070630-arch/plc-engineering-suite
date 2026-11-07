@@ -1,0 +1,50 @@
+{
+ "contract": {
+  "name": "mitsubishi_csv_generate",
+  "description": "Generates CSV from a structured plan. Inputs: family, project_name, rungs. Required: family, rungs. Returns a structured result with status and diagnostics.",
+  "permission": "ReadOnly",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "family": {
+     "type": "string"
+    },
+    "project_name": {
+     "type": "string"
+    },
+    "rungs": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "instruction": {
+        "type": "string"
+       },
+       "line_statement": {
+        "type": "string"
+       },
+       "note": {
+        "type": "string"
+       },
+       "operand": {
+        "type": "string"
+       },
+       "operands": {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       }
+      },
+      "type": "object"
+     },
+     "type": "array"
+    }
+   },
+   "required": [
+    "family",
+    "rungs"
+   ],
+   "type": "object"
+  }
+ }
+}

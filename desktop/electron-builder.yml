@@ -1,0 +1,50 @@
+appId: com.plccode.desktop
+productName: PLC Code
+copyright: Copyright © 2026 leiyiqi070630-arch
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - out/**/*
+  - package.json
+  - "!**/*.map"
+
+asar: true
+asarUnpack:
+  - "**/*.node"
+
+extraResources:
+  - from: resources/routes
+    to: routes
+  - from: resources/engine/docs
+    to: engine/docs
+  - from: resources/weinview
+    to: weinview
+  - from: resources/inoproshop
+    to: inoproshop
+  - from: resources/autoshop
+    to: autoshop
+  - from: resources/computer-use
+    to: computer-use
+  - from: resources/app-update.yml
+    to: app-update.yml
+
+win:
+  target:
+    - target: portable
+      arch:
+        - x64
+  artifactName: ${productName}-${version}-Portable.${ext}
+
+portable:
+  artifactName: ${productName}-${version}-Portable.${ext}
+
+publish:
+  provider: generic
+  url: ""   # 离线构建：不配置远端更新源
+  channel: latest
+
+# 二进制组件（引擎、桥、Python 运行时）不随源码仓库分发；
+# 打包前把它们放到 resources/engine、resources/bridge、resources/gxworks2 下。

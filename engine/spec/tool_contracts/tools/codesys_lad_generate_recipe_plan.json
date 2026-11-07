@@ -1,0 +1,28 @@
+{
+ "contract": {
+  "name": "codesys_lad_generate_recipe_plan",
+  "description": "Generates LAD recipe plan from a structured plan. Inputs: instruction, name, networks, recipe. Required: recipe. Returns a structured result with status and diagnostics.",
+  "permission": "ReadOnly",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "instruction": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "networks": {
+     "type": "array"
+    },
+    "recipe": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "recipe"
+   ],
+   "type": "object"
+  }
+ }
+}

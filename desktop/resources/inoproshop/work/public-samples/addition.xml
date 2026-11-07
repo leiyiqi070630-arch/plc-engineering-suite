@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IEC61131-3 LD (Ladder Diagram) 加法示例程序
+  功能：演示使用梯形图实现两个INT类型整数相加
+  标准：IEC 61131-3 第3版，PLCopen XML v2.01
+  创建日期：2026-01-18
+  语言：简体中文
+-->
+<project xmlns="http://www.plcopen.org/xml/tc6_0201"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.plcopen.org/xml/tc6_0201
+                             http://www.plcopen.org/xml/tc6_0201/TC6_XML_V201_IS.xsd">
+
+  <fileHeader companyName="IEC61131-3 LD Demo Project"
+              productName="LD Addition Example"
+              productVersion="1.0"
+              creationDateTime="2026-01-18T00:00:00"
+              contentDescription="LD梯形图加法示例程序 - 教学演示用">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1"/>
+      </fbd>
+      <ld>
+        <scaling x="1" y="1"/>
+      </ld>
+      <sfc>
+        <scaling x="1" y="1"/>
+      </sfc>
+    </coordinateInfo>
+  </fileHeader>
+
+  <contentHeader name="Addition_LD"
+                 modificationDateTime="2026-01-18T00:00:00">
+    <coordinateInfo>
+      <pageSize x="800" y="600"/>
+      <fbd>
+        <scaling x="1" y="1"/>
+      </fbd>
+      <ld>
+        <scaling x="1" y="1"/>
+      </ld>
+      <sfc>
+        <scaling x="1" y="1"/>
+      </sfc>
+    </coordinateInfo>
+  </contentHeader>
+
+  <types>
+    <dataTypes/>
+    <pous>
+      <!-- POU: Program Organization Unit - 程序组织单元 -->
+      <pou name="Addition_LD" pouType="program">
+        <interface>
+          <!-- 输入变量声明 -->
+          <localVars>
+            <variable name="A">
+              <type>
+                <INT/>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">
+                  加数1：INT类型（16位有符号整数），范围 -32768 到 32767
+                </xhtml>
+              </documentation>
+            </variable>
+            <variable name="B">
+              <type>
+                <INT/>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">
+                  加数2：INT类型（16位有符号整数），范围 -32768 到 32767
+                </xhtml>
+              </documentation>
+            </variable>
+            <!-- 输出变量声明 -->
+            <variable name="Result">
+              <type>
+                <INT/>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">
+                  和：存储A + B的计算结果（INT类型，可能发生溢出回绕）
+                </xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+        </interface>
+
+        <body>
+          <!-- LD 梯形图逻辑 -->
+          <LD>
+            <comment localId="1" height="60" width="400">
+              <position x="50" y="20"/>
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">
+                  <![CDATA[
+                  LD梯形图加法示例
+                  功能：计算 Result = A + B
+                  使用标准ADD功能块实现加法运算
+                  注意：当结果超出INT范围时会发生溢出回绕
+                  ]]>
+                </xhtml>
+              </content>
+            </comment>
+
+            <!-- 左母线 (Left Power Rail) -->
+            <leftPowerRail localId="2">
+              <position x="100" y="100"/>
+              <connectionPointOut formalParameter="">
+                <relPosition x="20" y="0"/>
+              </connectionPointOut>
+            </leftPowerRail>
+
+            <!-- 触点 (Contact) - 始终导通，用于启动逻辑 -->
+            <contact localId="3" negated="false" edge="none">
+              <position x="150" y="100"/>
+              <connectionPointIn>
+                <relPosition x="0" y="0"/>
+                <connection refLocalId="2">
+                  <position x="150" y="100"/>
+                  <position x="120" y="100"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut>
+                <relPosition x="30" y="0"/>
+              </connectionPointOut>
+              <variable>TRUE</variable>
+            </contact>
+
+            <!-- ADD 功能块 -->
+            <block localId="4" typeName="ADD" instanceName="">
+              <position x="250" y="80"/>
+              <inputVariables>
+                <variable formalParameter="IN1">
+                  <connectionPointIn>
+                    <relPosition x="0" y="20"/>
+                    <connection refLocalId="5">
+                      <position x="250" y="100"/>
+                      <position x="230" y="100"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="IN2">
+                  <connectionPointIn>
+                    <relPosition x="0" y="40"/>
+                    <connection refLocalId="6">
+                      <position x="250" y="120"/>
+                      <position x="230" y="120"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables/>
+              <outputVariables>
+                <variable formalParameter="OUT">
+                  <connectionPointOut>
+                    <relPosition x="80" y="30"/>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">
+                  ADD功能块：执行加法运算 OUT = IN1 + IN2
+                </xhtml>
+              </documentation>
+            </block>
+
+            <!-- 输入变量A的引用 -->
+            <inVariable localId="5">
+              <position x="200" y="100"/>
+              <connectionPointOut>
+                <relPosition x="30" y="0"/>
+              </connectionPointOut>
+              <expression>A</expression>
+            </inVariable>
+
+            <!-- 输入变量B的引用 -->
+            <inVariable localId="6">
+              <position x="200" y="120"/>
+              <connectionPointOut>
+                <relPosition x="30" y="0"/>
+              </connectionPointOut>
+              <expression>B</expression>
+            </inVariable>
+
+            <!-- 输出变量Result的赋值 -->
+            <outVariable localId="7">
+              <position x="380" y="110"/>
+              <connectionPointIn>
+                <relPosition x="0" y="0"/>
+                <connection refLocalId="4" formalParameter="OUT">
+                  <position x="380" y="110"/>
+                  <position x="330" y="110"/>
+                </connection>
+              </connectionPointIn>
+              <expression>Result</expression>
+            </outVariable>
+
+            <!-- 右母线 (Right Power Rail) -->
+            <rightPowerRail localId="8">
+              <position x="450" y="100"/>
+              <connectionPointIn>
+                <relPosition x="0" y="0"/>
+                <connection refLocalId="3">
+                  <position x="450" y="100"/>
+                  <position x="180" y="100"/>
+                </connection>
+              </connectionPointIn>
+            </rightPowerRail>
+
+            <comment localId="9" height="100" width="400">
+              <position x="50" y="180"/>
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">
+                  <![CDATA[
+                  逻辑说明：
+                  1. 左母线始终为TRUE（电源导通）
+                  2. 触点始终导通，启动ADD功能块
+                  3. ADD功能块读取变量A和B的值
+                  4. 执行加法运算：OUT = A + B
+                  5. 结果赋值给输出变量Result
+
+                  溢出行为：
+                  - 当 A + B > 32767 时，结果回绕到负数（例如：32767+1=-32768）
+                  - 当 A + B < -32768 时，结果回绕到正数（例如：-32768-1=32767）
+                  详见：examples/shared/docs/overflow-behavior.md
+                  ]]>
+                </xhtml>
+              </content>
+            </comment>
+          </LD>
+        </body>
+
+        <documentation>
+          <xhtml xmlns="http://www.w3.org/1999/xhtml">
+            <![CDATA[
+            <h2>LD梯形图加法示例程序</h2>
+            <p><strong>功能</strong>：实现两个INT类型整数的加法运算</p>
+            <p><strong>变量</strong>：</p>
+            <ul>
+              <li>A (INT)：加数1，范围 -32768 到 32767</li>
+              <li>B (INT)：加数2，范围 -32768 到 32767</li>
+              <li>Result (INT)：和，存储计算结果</li>
+            </ul>
+            <p><strong>逻辑</strong>：使用标准ADD功能块实现 Result = A + B</p>
+            <p><strong>测试用例</strong>：参见 examples/ld/test-cases.json</p>
+            <p><strong>使用指南</strong>：参见 examples/ld/addition.md</p>
+            ]]>
+          </xhtml>
+        </documentation>
+      </pou>
+    </pous>
+  </types>
+
+  <instances>
+    <configurations>
+      <configuration name="Config">
+        <resource name="Resource1">
+          <task name="MainTask" priority="0" interval="T#100ms">
+            <pouInstance name="Addition_LD_Instance" typeName="Addition_LD"/>
+          </task>
+        </resource>
+      </configuration>
+    </configurations>
+  </instances>
+
+</project>

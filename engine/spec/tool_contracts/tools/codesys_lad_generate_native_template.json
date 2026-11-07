@@ -1,0 +1,33 @@
+{
+ "contract": {
+  "name": "codesys_lad_generate_native_template",
+  "description": "Generates LAD template from a structured plan. Inputs: confirm, disposable, instruction, name. Required: instruction, name, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_native_lad_instruction",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "instruction": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "instruction",
+    "name",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  }
+ }
+}

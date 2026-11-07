@@ -1,0 +1,498 @@
+{
+ "contract": {
+  "name": "tia_lad_generate_block_xml",
+  "description": "Generates LAD block XML from a structured plan. Inputs: block_number, output_directory, output_path, plan, plan_json, schema_version, target_family, tia_version. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "$defs": {
+    "boxPort": {
+     "additionalProperties": false,
+     "properties": {
+      "constant_value": {
+       "type": "string"
+      },
+      "datatype": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "operand": {
+       "$ref": "#/$defs/operand"
+      },
+      "port": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "branch": {
+     "additionalProperties": false,
+     "properties": {
+      "branches": {
+       "items": {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       "type": "array"
+      },
+      "contacts": {
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      }
+     },
+     "type": "object"
+    },
+    "coil": {
+     "additionalProperties": false,
+     "properties": {
+      "kind": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "operand": {
+       "$ref": "#/$defs/operand"
+      },
+      "scope": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "contact": {
+     "additionalProperties": false,
+     "properties": {
+      "kind": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "negated": {
+       "type": "boolean"
+      },
+      "operand": {
+       "$ref": "#/$defs/operand"
+      },
+      "scope": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "element": {
+     "additionalProperties": false,
+     "properties": {
+      "name": {
+       "type": "string"
+      },
+      "operand": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      },
+      "type": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "instance": {
+     "additionalProperties": false,
+     "properties": {
+      "name": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name"
+     ],
+     "type": "object"
+    },
+    "member": {
+     "additionalProperties": false,
+     "properties": {
+      "comment": {
+       "type": "string"
+      },
+      "datatype": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "type": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name"
+     ],
+     "type": "object"
+    },
+    "operand": {
+     "additionalProperties": false,
+     "properties": {
+      "constant_value": {
+       "type": "string"
+      },
+      "datatype": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "parameter": {
+     "additionalProperties": false,
+     "properties": {
+      "datatype": {
+       "type": "string"
+      },
+      "direction": {
+       "default": "in",
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      },
+      "operand": {
+       "$ref": "#/$defs/operand"
+      },
+      "section": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "operand"
+     ],
+     "type": "object"
+    },
+    "templateValue": {
+     "additionalProperties": false,
+     "properties": {
+      "name": {
+       "type": "string"
+      },
+      "value": {
+       "type": "string"
+      },
+      "value_type": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "value"
+     ],
+     "type": "object"
+    }
+   },
+   "additionalProperties": false,
+   "properties": {
+    "block_number": {
+     "type": "integer"
+    },
+    "output_directory": {
+     "type": "string"
+    },
+    "output_path": {
+     "type": "string"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "properties": {
+      "block": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "block_name": {
+       "type": "string"
+      },
+      "block_number": {
+       "type": "integer"
+      },
+      "block_type": {
+       "type": "string"
+      },
+      "callee_interfaces": {
+       "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+         "inout": {
+          "items": {
+           "$ref": "#/$defs/member"
+          },
+          "type": "array"
+         },
+         "input": {
+          "items": {
+           "$ref": "#/$defs/member"
+          },
+          "type": "array"
+         },
+         "output": {
+          "items": {
+           "$ref": "#/$defs/member"
+          },
+          "type": "array"
+         }
+        },
+        "type": "object"
+       },
+       "type": "object"
+      },
+      "comment": {
+       "type": "string"
+      },
+      "culture": {
+       "type": "string"
+      },
+      "interface": {
+       "additionalProperties": false,
+       "properties": {
+        "constant": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "inout": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "input": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "output": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "static_members": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        },
+        "temp": {
+         "items": {
+          "$ref": "#/$defs/member"
+         },
+         "type": "array"
+        }
+       },
+       "type": "object"
+      },
+      "networks": {
+       "items": {
+        "additionalProperties": false,
+        "properties": {
+         "block_type": {
+          "type": "string"
+         },
+         "box_inputs": {
+          "items": {
+           "$ref": "#/$defs/boxPort"
+          },
+          "type": "array"
+         },
+         "box_outputs": {
+          "items": {
+           "$ref": "#/$defs/boxPort"
+          },
+          "type": "array"
+         },
+         "branches": {
+          "items": {
+           "$ref": "#/$defs/branch"
+          },
+          "type": "array"
+         },
+         "call_name": {
+          "type": "string"
+         },
+         "coil": {
+          "$ref": "#/$defs/coil"
+         },
+         "comment": {
+          "type": "string"
+         },
+         "contacts": {
+          "items": {
+           "$ref": "#/$defs/contact"
+          },
+          "type": "array"
+         },
+         "disabled_eno": {
+          "type": "boolean"
+         },
+         "elements": {
+          "items": {
+           "$ref": "#/$defs/element"
+          },
+          "type": "array"
+         },
+         "enable": {
+          "$ref": "#/$defs/operand"
+         },
+         "equation": {
+          "type": "string"
+         },
+         "et": {
+          "$ref": "#/$defs/operand"
+         },
+         "fanout": {
+          "items": {
+           "additionalProperties": true,
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "input": {
+          "$ref": "#/$defs/operand"
+         },
+         "inputs": {
+          "items": {
+           "additionalProperties": true,
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "instance": {
+          "$ref": "#/$defs/instance"
+         },
+         "open_outputs": {
+          "items": {
+           "type": "string"
+          },
+          "type": "array"
+         },
+         "output": {
+          "$ref": "#/$defs/operand"
+         },
+         "outputs": {
+          "items": {
+           "$ref": "#/$defs/operand"
+          },
+          "type": "array"
+         },
+         "parameters": {
+          "items": {
+           "$ref": "#/$defs/parameter"
+          },
+          "type": "array"
+         },
+         "partName": {
+          "type": "string"
+         },
+         "part_name": {
+          "type": "string"
+         },
+         "pt": {
+          "$ref": "#/$defs/operand"
+         },
+         "q": {
+          "$ref": "#/$defs/operand"
+         },
+         "r": {
+          "$ref": "#/$defs/operand"
+         },
+         "reset": {
+          "$ref": "#/$defs/operand"
+         },
+         "stages": {
+          "items": {
+           "additionalProperties": true,
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "template_values": {
+          "items": {
+           "$ref": "#/$defs/templateValue"
+          },
+          "type": "array"
+         },
+         "timer": {
+          "type": "string"
+         },
+         "title": {
+          "type": "string"
+         },
+         "type": {
+          "type": "string"
+         },
+         "version": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "type"
+        ],
+        "type": "object"
+       },
+       "type": "array"
+      },
+      "programming_language": {
+       "type": "string"
+      },
+      "schemaVersion": {
+       "type": "string"
+      },
+      "schema_version": {
+       "type": "string"
+      },
+      "target_family": {
+       "type": "string"
+      },
+      "title": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "block_name",
+      "networks"
+     ],
+     "type": "object"
+    },
+    "plan_json": {
+     "type": "string"
+    },
+    "schema_version": {
+     "type": "string"
+    },
+    "target_family": {
+     "type": "string"
+    },
+    "tia_version": {
+     "type": "string"
+    }
+   },
+   "type": "object"
+  }
+ }
+}

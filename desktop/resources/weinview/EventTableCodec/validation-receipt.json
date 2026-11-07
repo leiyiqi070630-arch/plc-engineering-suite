@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "ok": true,
+  "helper": "F:\\plccode\\.local\\cache\\cmt-event-db-freeze\\dist\\EventTableCodec\\EventTableCodec.exe",
+  "helper_sha256": "D9287F4DFA02A8945DF5DBC026852DDB4A3A523EC6A7EFD3DC5745F02653B91E",
+  "checks": [
+    {
+      "name": "actual-native-cmt-two-events-179-and-chinese-font",
+      "passed": true
+    },
+    {
+      "name": "legacy-v3-170-preserved",
+      "passed": true
+    },
+    {
+      "name": "full-typed-native-import-reopen-equal-to-file-candidate",
+      "passed": true
+    },
+    {
+      "name": "frozen-cmt-append-preserves-existing-typed-events",
+      "passed": true
+    },
+    {
+      "name": "existing-frozen-ebm-inspector-preserved",
+      "passed": true
+    },
+    {
+      "name": "existing-safe-cxob-unpack-and-project-bytes-preserved",
+      "passed": true
+    },
+    {
+      "name": "actual-native-db-complete-typed-tables-and-records",
+      "passed": true
+    }
+  ],
+  "python_in_path": false,
+  "host_python_installed": true,
+  "clean_machine_verified": false,
+  "native_import_claimed_by_codec": false,
+  "sqlite_library_version": "3.49.1",
+  "finished_utc": "2026-10-06T06:17:58.234Z"
+}

@@ -1,0 +1,45 @@
+{
+ "contract": {
+  "name": "tia_openness_generate_web_pages_blocks",
+  "description": "Generates web pages blocks from a structured plan. Inputs: application_name, confirm, default_page, device_name, html_directory, override, project_match, save_project, tia_version. Required: html_directory, default_page, confirm. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "application_name": {
+     "type": "string"
+    },
+    "confirm": {
+     "type": "boolean"
+    },
+    "default_page": {
+     "type": "string"
+    },
+    "device_name": {
+     "type": "string"
+    },
+    "html_directory": {
+     "type": "string"
+    },
+    "override": {
+     "type": "boolean"
+    },
+    "project_match": {
+     "type": "string"
+    },
+    "save_project": {
+     "type": "boolean"
+    },
+    "tia_version": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "html_directory",
+    "default_page",
+    "confirm"
+   ],
+   "type": "object"
+  }
+ }
+}

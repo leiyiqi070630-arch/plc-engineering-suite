@@ -1,0 +1,352 @@
+{
+ "contract": {
+  "name": "tia_hmi_generate_screen_xml",
+  "description": "Generates HMI screen XML from a structured plan. Inputs: output_path, plan. Required: plan. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "output_path": {
+     "type": "string"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "properties": {
+      "back_color": {
+       "type": "string"
+      },
+      "culture": {
+       "type": "string"
+      },
+      "function_keys": {
+       "items": {
+        "additionalProperties": false,
+        "properties": {
+         "global_assignment": {
+          "type": "boolean"
+         },
+         "key": {
+          "type": "string"
+         },
+         "key_code": {
+          "type": "integer"
+         },
+         "led_tag_bit_number": {
+          "type": "integer"
+         },
+         "name": {
+          "type": "string"
+         }
+        },
+        "type": "object"
+       },
+       "type": "array"
+      },
+      "height": {
+       "type": "integer"
+      },
+      "items": {
+       "items": {
+        "additionalProperties": false,
+        "properties": {
+         "allow_overlap": {
+          "type": "boolean"
+         },
+         "color": {
+          "type": "string"
+         },
+         "fill_style": {
+          "type": "string"
+         },
+         "font_size": {
+          "maximum": 96,
+          "minimum": 6,
+          "type": "integer"
+         },
+         "format_pattern": {
+          "type": "string"
+         },
+         "height": {
+          "type": "integer"
+         },
+         "items": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "allow_overlap": {
+             "type": "boolean"
+            },
+            "color": {
+             "type": "string"
+            },
+            "fill_style": {
+             "type": "string"
+            },
+            "font_size": {
+             "maximum": 96,
+             "minimum": 6,
+             "type": "integer"
+            },
+            "format_pattern": {
+             "type": "string"
+            },
+            "height": {
+             "type": "integer"
+            },
+            "items": {
+             "items": {
+              "additionalProperties": false,
+              "properties": {
+               "allow_overlap": {
+                "type": "boolean"
+               },
+               "color": {
+                "type": "string"
+               },
+               "fill_style": {
+                "type": "string"
+               },
+               "font_size": {
+                "maximum": 96,
+                "minimum": 6,
+                "type": "integer"
+               },
+               "format_pattern": {
+                "type": "string"
+               },
+               "height": {
+                "type": "integer"
+               },
+               "left": {
+                "type": "integer"
+               },
+               "max": {
+                "type": "number"
+               },
+               "min": {
+                "type": "number"
+               },
+               "mode": {
+                "type": "string"
+               },
+               "name": {
+                "type": "string"
+               },
+               "navigate_to_screen": {
+                "minLength": 1,
+                "type": "string"
+               },
+               "off_color": {
+                "type": "string"
+               },
+               "on_color": {
+                "type": "string"
+               },
+               "show_date": {
+                "type": "boolean"
+               },
+               "show_time": {
+                "type": "boolean"
+               },
+               "tag": {
+                "type": "string"
+               },
+               "text": {
+                "type": "string"
+               },
+               "top": {
+                "type": "integer"
+               },
+               "type": {
+                "type": "string"
+               },
+               "width": {
+                "type": "integer"
+               },
+               "x1": {
+                "type": "integer"
+               },
+               "x2": {
+                "type": "integer"
+               },
+               "y1": {
+                "type": "integer"
+               },
+               "y2": {
+                "type": "integer"
+               }
+              },
+              "required": [
+               "type"
+              ],
+              "type": "object"
+             },
+             "type": "array"
+            },
+            "left": {
+             "type": "integer"
+            },
+            "max": {
+             "type": "number"
+            },
+            "min": {
+             "type": "number"
+            },
+            "mode": {
+             "type": "string"
+            },
+            "name": {
+             "type": "string"
+            },
+            "navigate_to_screen": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "off_color": {
+             "type": "string"
+            },
+            "on_color": {
+             "type": "string"
+            },
+            "show_date": {
+             "type": "boolean"
+            },
+            "show_time": {
+             "type": "boolean"
+            },
+            "tag": {
+             "type": "string"
+            },
+            "text": {
+             "type": "string"
+            },
+            "top": {
+             "type": "integer"
+            },
+            "type": {
+             "type": "string"
+            },
+            "width": {
+             "type": "integer"
+            },
+            "x1": {
+             "type": "integer"
+            },
+            "x2": {
+             "type": "integer"
+            },
+            "y1": {
+             "type": "integer"
+            },
+            "y2": {
+             "type": "integer"
+            }
+           },
+           "required": [
+            "type"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "left": {
+          "type": "integer"
+         },
+         "max": {
+          "type": "number"
+         },
+         "min": {
+          "type": "number"
+         },
+         "mode": {
+          "type": "string"
+         },
+         "name": {
+          "type": "string"
+         },
+         "navigate_to_screen": {
+          "minLength": 1,
+          "type": "string"
+         },
+         "off_color": {
+          "type": "string"
+         },
+         "on_color": {
+          "type": "string"
+         },
+         "show_date": {
+          "type": "boolean"
+         },
+         "show_time": {
+          "type": "boolean"
+         },
+         "tag": {
+          "type": "string"
+         },
+         "text": {
+          "type": "string"
+         },
+         "top": {
+          "type": "integer"
+         },
+         "type": {
+          "type": "string"
+         },
+         "width": {
+          "type": "integer"
+         },
+         "x1": {
+          "type": "integer"
+         },
+         "x2": {
+          "type": "integer"
+         },
+         "y1": {
+          "type": "integer"
+         },
+         "y2": {
+          "type": "integer"
+         }
+        },
+        "required": [
+         "type"
+        ],
+        "type": "object"
+       },
+       "type": "array"
+      },
+      "min_spacing": {
+       "default": 4,
+       "maximum": 128,
+       "minimum": 0,
+       "type": "integer"
+      },
+      "number": {
+       "type": "integer"
+      },
+      "panel_family": {
+       "type": "string"
+      },
+      "schema_version": {
+       "type": "string"
+      },
+      "screen_name": {
+       "type": "string"
+      },
+      "width": {
+       "type": "integer"
+      }
+     },
+     "required": [
+      "screen_name"
+     ],
+     "type": "object"
+    }
+   },
+   "required": [
+    "plan"
+   ],
+   "type": "object"
+  }
+ }
+}

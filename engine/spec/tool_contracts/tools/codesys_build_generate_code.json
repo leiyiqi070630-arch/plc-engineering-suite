@@ -1,0 +1,12 @@
+{
+ "contract": {
+  "name": "codesys_build_generate_code",
+  "description": "Generates build code from a structured plan. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {},
+   "type": "object"
+  }
+ }
+}

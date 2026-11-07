@@ -1,0 +1,30 @@
+{
+ "contract": {
+  "name": "codesys_lad_generate_instruction",
+  "description": "Generates LAD instruction from a structured plan. Inputs: confirm, disposable, instruction. Required: instruction, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_lad_instruction",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "instruction": {
+     "minLength": 1,
+     "type": "string"
+    }
+   },
+   "required": [
+    "instruction",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  }
+ }
+}

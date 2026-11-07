@@ -1,0 +1,50 @@
+{
+  "name": "plc-code-desktop",
+  "version": "2.1.13",
+  "plccodeBuildChannel": "stable",
+  "description": "Industrial PLC engineering desktop app (Electron + Rust agent engine)",
+  "author": {
+    "name": "leiyiqi070630-arch"
+  },
+  "copyright": "Copyright © 2026 leiyiqi070630-arch",
+  "main": "./out/main/index.js",
+  "license": "MIT",
+  "type": "commonjs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/build.mjs && electron .",
+    "dev": "node scripts/build.mjs && electron . --inspect=9229",
+    "obfuscate": "node scripts/obfuscate.mjs",
+    "pack": "node scripts/build.mjs && electron-builder --win portable --config electron-builder.yml",
+    "check": "node scripts/check.mjs",
+    "gen-ipc-doc": "node scripts/gen-ipc-doc.mjs src/preload/index.js src/main/index.js docs/02-IPC通道表.md"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.9.1",
+    "@codemirror/lang-xml": "^6.1.0",
+    "@codemirror/language": "^6.11.4",
+    "@codemirror/search": "^6.5.11",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.38.7",
+    "@lezer/highlight": "^1.2.1",
+    "@modelcontextprotocol/sdk": "1.27.1",
+    "diff": "^9.0.0",
+    "electron-updater": "^6.8.9",
+    "highlight.js": "^11.11.1",
+    "i18next": "^26.3.6",
+    "iconv-lite": "^0.6.3",
+    "lucide-react": "^1.28.0",
+    "mermaid": "^11.16.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-i18next": "^17.0.11",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "electron": "43.3.0",
+    "electron-builder": "^26.0.0",
+    "javascript-obfuscator": "^4.1.1"
+  }
+}

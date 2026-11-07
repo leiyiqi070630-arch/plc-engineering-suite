@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "purpose": "TIA Openness version routing candidates for the future C# bridge",
+  "truthPolicy": {
+    "planned": "Candidate route only; do not claim write capability.",
+    "source-verified": "Supported by official or mature source evidence, not necessarily tested locally.",
+    "local-detected": "Local installation/API layout detected.",
+    "local-verified": "Bridge executed the operation successfully against a real local TIA project."
+  },
+  "globalPolicy": {
+    "targetWorker": "net48",
+    "attachMode": "attach-ui-first",
+    "siemensDllBundling": "external-only",
+    "doNotBundle": ["Siemens.Engineering*.dll"],
+    "minimumSafeOperation": ["status", "attach", "list-devices", "external-source-generate-scl", "show-in-editor-optional"],
+    "notes": [
+      "This file is a routing specification, not proof of working Openness write support.",
+      "Each TIA version must be upgraded by evidence before enabling production actions.",
+      "PublicAPI layout must be detected from the local machine at runtime."
+    ]
+  },
+  "versions": {
+    "V15": { "status": "planned", "apiLayout": "classic-single-dll", "targetFramework": "net48", "evidence": [], "simaticSd": { "status": "not-available", "reason": "SIMATIC SD requires TIA Portal V20+" } },
+    "V16": { "status": "planned", "apiLayout": "classic-single-dll", "targetFramework": "net48", "evidence": [], "simaticSd": { "status": "not-available", "reason": "SIMATIC SD requires TIA Portal V20+" } },
+    "V17": { "status": "planned", "apiLayout": "classic-single-dll", "targetFramework": "net48", "evidence": [], "simaticSd": { "status": "not-available", "reason": "SIMATIC SD requires TIA Portal V20+" } },
+    "V18": { "status": "planned", "apiLayout": "classic-single-dll", "targetFramework": "net48", "evidence": ["local probe may upgrade this to local-detected when Siemens.Engineering.dll is found"], "simaticSd": { "status": "not-available", "reason": "SIMATIC SD requires TIA Portal V20+" } },
+    "V19": { "status": "planned", "apiLayout": "classic-single-dll", "targetFramework": "net48", "evidence": [], "simaticSd": { "status": "not-available", "reason": "SIMATIC SD requires TIA Portal V20+; V19 also has no locally verified XML template evidence (templates are V18 exports)" } },
+    "V20": { "status": "planned", "apiLayout": "classic-single-dll-or-package", "targetFramework": "net48", "evidence": ["requires official/source confirmation before implementation"], "simaticSd": { "status": "source-verified", "languages": ["LAD", "DB", "UDT"], "sclRequires": "V20 Update 4", "bridgeCommands": ["import-block-sd", "export-block-sd"], "caveats": ["SIMATIC SD is a per-version dialect: the .s7dcl header must match the target portal (V20 uses S7_Language; V21 uses S7_PreferredLanguage+S7_Version). A dialect mismatch fails import with Siemens' MISLEADING 'Block Language is not defined | .s7res has no en-US entries' — the real cause is the dialect, NOT the .s7res (real-machine confirmed: a V20 block with an empty .s7res imports fine on V20). Regenerate with schema_version matching the portal version."], "reason": "Siemens documents SIMATIC SD from V20; bridge commands exist via reflection but no local V20 import/compile proof is recorded" } },
+    "V21": { "status": "planned", "apiLayout": "split-net48-candidate", "targetFramework": "net48", "evidence": ["requires local PublicAPI probe or official/source confirmation before enabling"], "simaticSd": { "status": "source-verified", "languages": ["LAD", "FBD", "SCL", "DB", "UDT", "mixed-language"], "noStl": true, "bridgeCommands": ["import-block-sd", "export-block-sd"], "caveats": ["SIMATIC SD is a per-version dialect: the .s7dcl header must match the target portal (V20 uses S7_Language; V21 uses S7_PreferredLanguage+S7_Version). A dialect mismatch fails import with Siemens' MISLEADING 'Block Language is not defined | .s7res has no en-US entries' — the real cause is the dialect, NOT the .s7res (real-machine confirmed: a V20 block with an empty .s7res imports fine on V20). Regenerate with schema_version matching the portal version."], "reason": "Siemens V21 expands SIMATIC SD coverage; preferred route for new block exchange once locally verified" } }
+  }
+}

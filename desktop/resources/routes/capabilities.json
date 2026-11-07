@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "purpose": "TIA Openness capability and format route matrix",
+  "truthPolicy": "Routes describe supported authoring paths; live tool diagnostics refine the current project result.",
+  "families": {
+    "S7-300": { "status": "planned", "routes": { "SCL": "write-source", "LAD": "import-xml", "FBD": "import-xml", "DB": "write-source", "UDT": "write-source" }, "evidence": [] },
+    "S7-400": { "status": "planned", "routes": { "SCL": "write-source", "LAD": "import-xml", "FBD": "import-xml", "DB": "write-source", "UDT": "write-source" }, "evidence": [] },
+    "S7-1200": { "status": "planned", "routes": { "SCL": "write-source", "LAD": "import-xml", "FBD": "import-xml", "DB": "write-source", "UDT": "write-source" }, "evidence": [] },
+    "S7-1500": { "status": "planned", "routes": { "SCL": "write-source", "LAD": "import-xml", "FBD": "import-xml", "DB": "write-source", "UDT": "write-source" }, "evidence": [] }
+  },
+  "routeDefinitions": {
+    "write-source": {
+      "status": "planned",
+      "maturePattern": "ExternalSource.CreateFromFile + GenerateBlocksFromSource",
+      "guidance": "Direct text-source generation through ExternalSource.CreateFromFile + GenerateBlocksFromSource."
+    },
+    "import-xml": {
+      "status": "planned",
+      "maturePattern": "SimaticML/XML import using real exported templates",
+      "guidance": "Use the structured LAD/FBD generator directly; exported templates and evidence tools help diagnose uncovered shapes."
+    },
+    "import-sd": {
+      "status": "source-verified",
+      "maturePattern": "SIMATIC SD text documents (.s7dcl + .s7res) via Blocks.ImportFromDocuments / PlcBlock.ExportAsDocument",
+      "restriction": "TIA Portal V20+ only. V20: LAD/DB/UDT (SCL from V20 Update 4); V21 adds FBD and mixed-language blocks; no STL. SIMATIC SD is a per-version dialect: the .s7dcl header must match the target portal (V20: S7_Language; V21: S7_PreferredLanguage+S7_Version) — a dialect mismatch fails with Siemens' MISLEADING 'no en-US entries' error, which is a red herring (real-machine confirmed); regenerate with schema_version matching the portal. Bridge commands import-block-sd/export-block-sd exist but local import/compile proof is still pending; V15-V19 must use import-xml or write-source."
+    }
+  }
+}

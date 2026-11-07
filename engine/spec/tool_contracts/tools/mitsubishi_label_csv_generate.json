@@ -1,0 +1,59 @@
+{
+ "contract": {
+  "name": "mitsubishi_label_csv_generate",
+  "description": "Generates label CSV from a structured plan. Inputs: labels, path, project_name, title. Required: path, labels. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "labels": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "address": {
+        "type": "string"
+       },
+       "class": {
+        "type": "string"
+       },
+       "comment": {
+        "type": "string"
+       },
+       "constant": {
+        "type": "string"
+       },
+       "data_type": {
+        "type": "string"
+       },
+       "device": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "name"
+      ],
+      "type": "object"
+     },
+     "type": "array"
+    },
+    "path": {
+     "type": "string"
+    },
+    "project_name": {
+     "type": "string"
+    },
+    "title": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "path",
+    "labels"
+   ],
+   "type": "object"
+  }
+ }
+}

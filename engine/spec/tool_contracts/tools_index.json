@@ -1,0 +1,488 @@
+[
+ {
+  "name": "codesys_build_generate_code",
+  "permission": "DangerFullAccess",
+  "params": [],
+  "required": []
+ },
+ {
+  "name": "codesys_generate_st_plan",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "confirm",
+   "declaration",
+   "disposable",
+   "implementation",
+   "name"
+  ],
+  "required": [
+   "name",
+   "implementation",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_add",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "name"
+  ],
+  "required": [
+   "name",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_block",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "catalog",
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "symbolTypes",
+   "variables"
+  ],
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_contact_block",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "confirm",
+   "disposable",
+   "plan",
+   "task"
+  ],
+  "required": [
+   "plan",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_control_recipe",
+  "permission": "ReadOnly",
+  "params": [
+   "name",
+   "recipe",
+   "signals",
+   "task",
+   "timeout"
+  ],
+  "required": [
+   "recipe",
+   "name"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_instruction",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction"
+  ],
+  "required": [
+   "instruction",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_native",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "catalog",
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "symbolTypes",
+   "variables"
+  ],
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_native_template",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction",
+   "name"
+  ],
+  "required": [
+   "instruction",
+   "name",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_project_pou",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "variables"
+  ],
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_generate_recipe_plan",
+  "permission": "ReadOnly",
+  "params": [
+   "instruction",
+   "name",
+   "networks",
+   "recipe"
+  ],
+  "required": [
+   "recipe"
+  ]
+ },
+ {
+  "name": "codesys_lad_native_generate_instruction",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction"
+  ],
+  "required": [
+   "instruction",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "codesys_lad_native_generate_instruction_batch",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "pouName",
+   "symbolTypes",
+   "variables"
+  ],
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "inoproshop_lad_generate_add",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "name"
+  ],
+  "required": [
+   "name",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "inoproshop_lad_generate_block",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "plan"
+  ],
+  "required": [
+   "plan",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "inoproshop_lad_generate_contact_block",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "plan",
+   "task"
+  ],
+  "required": [
+   "plan",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "inoproshop_lad_generate_instruction",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction"
+  ],
+  "required": [
+   "instruction",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "inoproshop_lad_native_generate_instruction",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction"
+  ],
+  "required": [
+   "instruction",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "inoproshop_lad_native_generate_instruction_batch",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "pouName",
+   "symbolTypes",
+   "variables"
+  ],
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "inoproshop_object_regenerate",
+  "permission": "DangerFullAccess",
+  "params": [
+   "confirm",
+   "declaration",
+   "disposable",
+   "kind",
+   "name",
+   "networks",
+   "symbolTypes",
+   "target"
+  ],
+  "required": [
+   "target",
+   "kind",
+   "confirm",
+   "disposable"
+  ]
+ },
+ {
+  "name": "mitsubishi_csv_generate",
+  "permission": "ReadOnly",
+  "params": [
+   "family",
+   "project_name",
+   "rungs"
+  ],
+  "required": [
+   "family",
+   "rungs"
+  ]
+ },
+ {
+  "name": "mitsubishi_label_csv_generate",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "labels",
+   "path",
+   "project_name",
+   "title"
+  ],
+  "required": [
+   "path",
+   "labels"
+  ]
+ },
+ {
+  "name": "tia_hmi_generate_list_xml",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "output_path",
+   "plan"
+  ],
+  "required": [
+   "plan"
+  ]
+ },
+ {
+  "name": "tia_hmi_generate_screen_xml",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "output_path",
+   "plan"
+  ],
+  "required": [
+   "plan"
+  ]
+ },
+ {
+  "name": "tia_lad_generate_block_xml",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "block_number",
+   "output_directory",
+   "output_path",
+   "plan",
+   "plan_json",
+   "schema_version",
+   "target_family",
+   "tia_version"
+  ],
+  "required": []
+ },
+ {
+  "name": "tia_lad_generate_recipe_plan",
+  "permission": "ReadOnly",
+  "params": [
+   "block_name",
+   "block_type",
+   "recipe_id",
+   "schema_version",
+   "signals"
+  ],
+  "required": [
+   "recipe_id",
+   "block_name"
+  ]
+ },
+ {
+  "name": "tia_openness_generate_graph_block",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "output_path",
+   "plan",
+   "plan_json"
+  ],
+  "required": [
+   "plan"
+  ]
+ },
+ {
+  "name": "tia_openness_generate_loadable_file",
+  "permission": "DangerFullAccess",
+  "params": [
+   "block_paths",
+   "confirm",
+   "device_name",
+   "output_path",
+   "project_match",
+   "save_project",
+   "target_option",
+   "tia_version",
+   "unit_names"
+  ],
+  "required": [
+   "device_name",
+   "output_path",
+   "confirm"
+  ]
+ },
+ {
+  "name": "tia_openness_generate_source_from_blocks",
+  "permission": "DangerFullAccess",
+  "params": [
+   "block_paths",
+   "confirm",
+   "device_name",
+   "output_path",
+   "project_match",
+   "save_project",
+   "tia_version",
+   "with_dependencies"
+  ],
+  "required": [
+   "output_path",
+   "confirm"
+  ]
+ },
+ {
+  "name": "tia_openness_generate_web_pages_blocks",
+  "permission": "DangerFullAccess",
+  "params": [
+   "application_name",
+   "confirm",
+   "default_page",
+   "device_name",
+   "html_directory",
+   "override",
+   "project_match",
+   "save_project",
+   "tia_version"
+  ],
+  "required": [
+   "html_directory",
+   "default_page",
+   "confirm"
+  ]
+ },
+ {
+  "name": "tia_sd_generate_block",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "output_directory",
+   "plan",
+   "plan_json"
+  ],
+  "required": [
+   "plan"
+  ]
+ },
+ {
+  "name": "tia_watch_generate_table_xml",
+  "permission": "WorkspaceWrite",
+  "params": [
+   "output_path",
+   "plan",
+   "plan_json"
+  ],
+  "required": [
+   "plan"
+  ]
+ }
+]

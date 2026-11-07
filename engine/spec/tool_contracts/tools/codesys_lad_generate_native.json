@@ -1,0 +1,147 @@
+{
+ "contract": {
+  "name": "codesys_lad_generate_native",
+  "description": "Generates LAD from a structured plan. Inputs: catalog, confirm, disposable, name, networks, parent, symbolTypes, variables. Required: name, networks, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "additionalProperties": true,
+   "properties": {
+    "catalog": {
+     "additionalProperties": true,
+     "type": "object"
+    },
+    "confirm": {
+     "const": "generate_native_lad_instruction_batch",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "name": {
+     "type": "string"
+    },
+    "networks": {
+     "items": {
+      "additionalProperties": true,
+      "properties": {
+       "instructions": {
+        "items": {
+         "additionalProperties": true,
+         "properties": {
+          "dataType": {
+           "minLength": 1,
+           "type": "string"
+          },
+          "inouts": {
+           "additionalProperties": {
+            "type": "string"
+           },
+           "type": "object"
+          },
+          "inputs": {
+           "additionalProperties": {
+            "type": "string"
+           },
+           "type": "object"
+          },
+          "instance": {
+           "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+           "type": "string"
+          },
+          "instruction": {
+           "type": "string"
+          },
+          "namespace": {
+           "type": "string"
+          },
+          "objectGuid": {
+           "minLength": 1,
+           "type": "string"
+          },
+          "outputs": {
+           "additionalProperties": {
+            "type": "string"
+           },
+           "type": "object"
+          },
+          "symbolTypes": {
+           "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "type": "object"
+          }
+         },
+         "required": [
+          "instruction",
+          "inputs",
+          "outputs"
+         ],
+         "type": "object"
+        },
+        "type": "array"
+       },
+       "title": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "title",
+       "instructions"
+      ],
+      "type": "object"
+     },
+     "type": "array"
+    },
+    "parent": {
+     "type": "string"
+    },
+    "symbolTypes": {
+     "additionalProperties": {
+      "minLength": 1,
+      "type": "string"
+     },
+     "type": "object"
+    },
+    "variables": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "name": {
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "type": "string"
+       },
+       "section": {
+        "default": "local",
+        "enum": [
+         "input",
+         "output",
+         "local"
+        ],
+        "type": "string"
+       },
+       "type": {
+        "minLength": 1,
+        "type": "string"
+       }
+      },
+      "required": [
+       "name",
+       "type"
+      ],
+      "type": "object"
+     },
+     "type": "array"
+    }
+   },
+   "required": [
+    "name",
+    "networks",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  }
+ }
+}

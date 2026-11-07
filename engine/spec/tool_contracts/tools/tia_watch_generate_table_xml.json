@@ -1,0 +1,69 @@
+{
+ "contract": {
+  "name": "tia_watch_generate_table_xml",
+  "description": "Generates watch table XML from a structured plan. Inputs: output_path, plan, plan_json. Required: plan. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "$defs": {
+    "entry": {
+     "additionalProperties": false,
+     "properties": {
+      "address": {
+       "type": "string"
+      },
+      "display_format": {
+       "type": "string"
+      },
+      "modify_trigger": {
+       "type": "string"
+      },
+      "modify_value": {
+       "type": "string"
+      },
+      "monitor_trigger": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      }
+     },
+     "type": "object"
+    }
+   },
+   "additionalProperties": false,
+   "properties": {
+    "output_path": {
+     "type": "string"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "properties": {
+      "entries": {
+       "items": {
+        "$ref": "#/$defs/entry"
+       },
+       "type": "array"
+      },
+      "schema_version": {
+       "type": "string"
+      },
+      "table_name": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "table_name"
+     ],
+     "type": "object"
+    },
+    "plan_json": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "plan"
+   ],
+   "type": "object"
+  }
+ }
+}

@@ -1,0 +1,75 @@
+{
+ "contract": {
+  "name": "tia_lad_generate_recipe_plan",
+  "description": "Generates LAD recipe plan from a structured plan. Inputs: block_name, block_type, recipe_id, schema_version, signals. Required: recipe_id, block_name. Returns a structured result with status and diagnostics.",
+  "permission": "ReadOnly",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "block_name": {
+     "type": "string"
+    },
+    "block_type": {
+     "type": "string"
+    },
+    "recipe_id": {
+     "type": "string"
+    },
+    "schema_version": {
+     "type": "string"
+    },
+    "signals": {
+     "additionalProperties": {
+      "type": "string"
+     },
+     "properties": {
+      "steps": {
+       "items": {
+        "additionalProperties": false,
+        "properties": {
+         "next": {
+          "minimum": 1,
+          "type": "integer"
+         },
+         "outputs": {
+          "items": {
+           "type": "string"
+          },
+          "type": "array"
+         },
+         "transition": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "name": {
+             "type": "string"
+            },
+            "negated": {
+             "type": "boolean"
+            }
+           },
+           "required": [
+            "name"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         }
+        },
+        "type": "object"
+       },
+       "minItems": 1,
+       "type": "array"
+      }
+     },
+     "type": "object"
+    }
+   },
+   "required": [
+    "recipe_id",
+    "block_name"
+   ],
+   "type": "object"
+  }
+ }
+}

@@ -1,0 +1,183 @@
+{
+ "contract": {
+  "name": "tia_openness_generate_graph_block",
+  "description": "Generates graph block from a structured plan. Inputs: output_path, plan, plan_json. Required: plan. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "$defs": {
+    "action": {
+     "additionalProperties": false,
+     "properties": {
+      "qualifier": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      },
+      "target": {
+       "type": "string"
+      },
+      "value": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "qualifier",
+      "target"
+     ],
+     "type": "object"
+    },
+    "alternative": {
+     "additionalProperties": false,
+     "properties": {
+      "condition": {
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      },
+      "next": {
+       "type": "string"
+      },
+      "transition": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "next"
+     ],
+     "type": "object"
+    },
+    "contact": {
+     "additionalProperties": false,
+     "properties": {
+      "operand": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "operand"
+     ],
+     "type": "object"
+    },
+    "step": {
+     "additionalProperties": false,
+     "properties": {
+      "actions": {
+       "items": {
+        "$ref": "#/$defs/action"
+       },
+       "type": "array"
+      },
+      "alternatives": {
+       "items": {
+        "$ref": "#/$defs/alternative"
+       },
+       "type": "array"
+      },
+      "condition": {
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      },
+      "init": {
+       "type": "boolean"
+      },
+      "interlock": {
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      },
+      "name": {
+       "type": "string"
+      },
+      "next": {
+       "type": "string"
+      },
+      "supervision": {
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      },
+      "transition": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name"
+     ],
+     "type": "object"
+    },
+    "variable": {
+     "additionalProperties": false,
+     "properties": {
+      "datatype": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "datatype"
+     ],
+     "type": "object"
+    }
+   },
+   "additionalProperties": false,
+   "properties": {
+    "output_path": {
+     "type": "string"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "properties": {
+      "block_name": {
+       "type": "string"
+      },
+      "block_number": {
+       "type": "integer"
+      },
+      "culture": {
+       "type": "string"
+      },
+      "schema_version": {
+       "type": "string"
+      },
+      "steps": {
+       "items": {
+        "$ref": "#/$defs/step"
+       },
+       "type": "array"
+      },
+      "variables": {
+       "items": {
+        "$ref": "#/$defs/variable"
+       },
+       "type": "array"
+      }
+     },
+     "required": [
+      "block_name",
+      "steps"
+     ],
+     "type": "object"
+    },
+    "plan_json": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "plan"
+   ],
+   "type": "object"
+  }
+ }
+}

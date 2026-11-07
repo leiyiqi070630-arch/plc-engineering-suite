@@ -1,0 +1,499 @@
+{
+  "schema": 1,
+  "profile": "weinview-cn421-cmt-event-db-sqlite-v1",
+  "provenance": {
+    "native_snapshot_sha256": "0B4B24A2E34DA608050826F7D5BF808ECC2291AF80A565CBB4CED401DBB7F7A0",
+    "native_report_path": "F:\\plccode\\.local\\test-runs\\weinview-quality-20261005\\cmt-alarm-runtime-business-r1\\after-stop.event-db.json",
+    "native_report_sha256": "4715C89270C3EC72305E529F5087E7645CE5AA63187EA6964FDCDD165FF6C221",
+    "installation": "EasyBuilder Pro CN 6.10.02.421",
+    "model": "cMT3071",
+    "runtime": "cMTViewer/com_c30/dserver",
+    "file_only": true,
+    "timestamp_unit_verified": false,
+    "timezone_verified": false
+  },
+  "tables": [
+    {
+      "name": ".data_section",
+      "create_sql": "CREATE TABLE \".data_section\" (item INTEGER PRIMARY KEY, begin_number INTEGER, end_number INTEGER)",
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "item",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "ordinal": 1,
+          "name": "begin_number",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 2,
+          "name": "end_number",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ]
+    },
+    {
+      "name": "event",
+      "create_sql": "CREATE TABLE \"event\" (event_index INTEGER PRIMARY KEY AUTOINCREMENT, event_log_index  INTEGER, \"trigger_time@timestamp\" REAL NULL, \"confirm_time@timestamp\" REAL NULL, \"recover_time@timestamp\" REAL NULL, WATCH1 TEXT, WATCH2 TEXT, WATCH3 TEXT, WATCH4 TEXT, WATCH5 TEXT, WATCH6 TEXT, WATCH7 TEXT, WATCH8 TEXT, WATCH1_recover TEXT, WATCH2_recover TEXT, WATCH3_recover TEXT, WATCH4_recover TEXT, WATCH5_recover TEXT, WATCH6_recover TEXT, WATCH7_recover TEXT, WATCH8_recover TEXT, occurrence_count INTEGER, elapsed_time INTEGER, dynamic_string_id INTEGER)",
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "event_index",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "ordinal": 1,
+          "name": "event_log_index",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 2,
+          "name": "trigger_time@timestamp",
+          "native_declared_type": "REAL",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 3,
+          "name": "confirm_time@timestamp",
+          "native_declared_type": "REAL",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 4,
+          "name": "recover_time@timestamp",
+          "native_declared_type": "REAL",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 5,
+          "name": "WATCH1",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 6,
+          "name": "WATCH2",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 7,
+          "name": "WATCH3",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 8,
+          "name": "WATCH4",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 9,
+          "name": "WATCH5",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 10,
+          "name": "WATCH6",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 11,
+          "name": "WATCH7",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 12,
+          "name": "WATCH8",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 13,
+          "name": "WATCH1_recover",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 14,
+          "name": "WATCH2_recover",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 15,
+          "name": "WATCH3_recover",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 16,
+          "name": "WATCH4_recover",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 17,
+          "name": "WATCH5_recover",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 18,
+          "name": "WATCH6_recover",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 19,
+          "name": "WATCH7_recover",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 20,
+          "name": "WATCH8_recover",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 21,
+          "name": "occurrence_count",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 22,
+          "name": "elapsed_time",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 23,
+          "name": "dynamic_string_id",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ]
+    },
+    {
+      "name": "event_log",
+      "create_sql": "CREATE TABLE \"event_log\" (event_log_index INTEGER PRIMARY KEY, GUID  TEXT, category  INTEGER, priority  INTEGER, language1 TEXT, language2 TEXT, language3 TEXT, language4 TEXT, language5 TEXT, language6 TEXT, language7 TEXT, language8 TEXT, language9 TEXT, language10 TEXT, language11 TEXT, language12 TEXT, language13 TEXT, language14 TEXT, language15 TEXT, language16 TEXT, language17 TEXT, language18 TEXT, language19 TEXT, language20 TEXT, language21 TEXT, language22 TEXT, language23 TEXT, language24 TEXT, section INTEGER, subcategory_1 INTEGER, subcategory_2 INTEGER)",
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "event_log_index",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "ordinal": 1,
+          "name": "GUID",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 2,
+          "name": "category",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 3,
+          "name": "priority",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 4,
+          "name": "language1",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 5,
+          "name": "language2",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 6,
+          "name": "language3",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 7,
+          "name": "language4",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 8,
+          "name": "language5",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 9,
+          "name": "language6",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 10,
+          "name": "language7",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 11,
+          "name": "language8",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 12,
+          "name": "language9",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 13,
+          "name": "language10",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 14,
+          "name": "language11",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 15,
+          "name": "language12",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 16,
+          "name": "language13",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 17,
+          "name": "language14",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 18,
+          "name": "language15",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 19,
+          "name": "language16",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 20,
+          "name": "language17",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 21,
+          "name": "language18",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 22,
+          "name": "language19",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 23,
+          "name": "language20",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 24,
+          "name": "language21",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 25,
+          "name": "language22",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 26,
+          "name": "language23",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 27,
+          "name": "language24",
+          "native_declared_type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 28,
+          "name": "section",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 29,
+          "name": "subcategory_1",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "ordinal": 30,
+          "name": "subcategory_2",
+          "native_declared_type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ]
+    }
+  ]
+}

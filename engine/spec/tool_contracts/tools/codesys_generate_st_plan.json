@@ -1,0 +1,35 @@
+{
+ "contract": {
+  "name": "codesys_generate_st_plan",
+  "description": "Generates ST plan from a structured plan. Inputs: confirm, declaration, disposable, implementation, name. Required: name, implementation, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "write_pou",
+     "type": "string"
+    },
+    "declaration": {
+     "type": "string"
+    },
+    "disposable": {
+     "type": "boolean"
+    },
+    "implementation": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "name",
+    "implementation",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  }
+ }
+}

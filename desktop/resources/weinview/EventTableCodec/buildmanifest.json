@@ -1,0 +1,314 @@
+{
+  "format": 2,
+  "name": "EventTableCodec",
+  "architecture": "Windows x64",
+  "packaging": "PLCCode bundled Python plus pure-Python codec sources",
+  "python_version": "3.12",
+  "shared_runtime": "../../engine/python/python.exe",
+  "dependency_file_count": 33,
+  "dependency_bytes": 887780,
+  "source_and_package_files": [
+    {
+      "relative_path": "Invoke-EventTableCodec.ps1",
+      "bytes": 1276,
+      "sha256": "B564A71CD64F527BADB2811B4DE19346DD48EC0F2DEB88FD1865D3990585768A"
+    },
+    {
+      "relative_path": "licenses/olefile-0.47-LICENSE.txt",
+      "bytes": 2846,
+      "sha256": "CF1498D5B834B3758A89D06D224A1502C54A28B3A852F46130B761DEAA4890D1"
+    },
+    {
+      "relative_path": "licenses/PyInstaller-6.20.0-COPYING.txt",
+      "bytes": 32138,
+      "sha256": "DCF75FDB959DB1E3B41C0F8505069D2ECE781B5EC6B3D0A4D30975CFC6580245"
+    },
+    {
+      "relative_path": "licenses/Python-3.12-LICENSE.txt",
+      "bytes": 36874,
+      "sha256": "E502C6B880FF58D614901495A9009C136539CD0B1E2A2ABB8FC00B934C203419"
+    },
+    {
+      "relative_path": "licenses/SQLite-NOTICE.txt",
+      "bytes": 293,
+      "sha256": "0CAE32CCBBF72F55E4642C7788A9EDEB33C9918EF6515AFBEC85DA5D21A5830D"
+    },
+    {
+      "relative_path": "licenses/xlrd-2.0.2-LICENSE.txt",
+      "bytes": 3771,
+      "sha256": "B5A5DBCE60265E305A815A6CB83ED07F24519D8BA644F2A307994488BCED8815"
+    },
+    {
+      "relative_path": "licenses/xlwt-1.3.0-LICENSE.txt",
+      "bytes": 5089,
+      "sha256": "7F7B66F23FDAC4F68FE3B342DD16B329D511017A901784A5CEB83F505F2DE7C6"
+    },
+    {
+      "relative_path": "README.md",
+      "bytes": 6293,
+      "sha256": "B310AEE16EA8BD3A4BD48E6B27416412097B058C6D1F7DC5D76F70CE8B0B9991"
+    },
+    {
+      "relative_path": "Resolve-CodecPython.ps1",
+      "bytes": 1410,
+      "sha256": "E848424B450A6D7FACB9A851DA2D11DEA40031687E0E2C995F88A3C494CB5D06"
+    },
+    {
+      "relative_path": "schema/default.cmt.row.json",
+      "bytes": 3924,
+      "sha256": "B38E163767D3E2C7ACECF0DAFF9DCF2317EFFAAA66095865A963D0819E912002"
+    },
+    {
+      "relative_path": "schema/default.row.json",
+      "bytes": 3340,
+      "sha256": "8B3DDCDA0AA74F283E16613D68FF4226AF4964E2F98DF05F2123A27E9147EA62"
+    },
+    {
+      "relative_path": "schema/derived-empty.receipt.json",
+      "bytes": 762,
+      "sha256": "E5F94AD8373FC48075A15200FFE98BC15337BA55E2A2E8BF5780CE426300D728"
+    },
+    {
+      "relative_path": "schema/derived-empty.xls",
+      "bytes": 9728,
+      "sha256": "DFDB0BDB21BA870BD46042514DDCF4C5CE0C4BF4F871850F9BDE1C3D961783B7"
+    },
+    {
+      "relative_path": "schema/native-cmt-history-sqlite-v1.json",
+      "bytes": 13687,
+      "sha256": "AE6F0770AAE6DCD75C8DA0D0F769BF329BECC4850367E89E92600B434A673CF2"
+    },
+    {
+      "relative_path": "schema/native-event-v3-hw49-contract.json",
+      "bytes": 7464,
+      "sha256": "E930BE6FB0772E2A9F7F1BF7BB338A311B23A2A4CA1E4CDA866C5BE92022AB4C"
+    },
+    {
+      "relative_path": "schema/native-event-v4-hw72-contract.json",
+      "bytes": 8313,
+      "sha256": "2492F9C03E8B66716C4832D074A46E97A2EDC4F742F108276AE8B704CA09C35D"
+    },
+    {
+      "relative_path": "schema/provenance.json",
+      "bytes": 747,
+      "sha256": "DB8E2E738C22388C8EE12C35105DC56D31AFFB1953D92732288CF1BBFA42AE7A"
+    },
+    {
+      "relative_path": "source/_deps/olefile/__init__.py",
+      "bytes": 967,
+      "sha256": "719E959251C94A8332354270E733FF8638781BF1EC6A9F921902A0B055692456"
+    },
+    {
+      "relative_path": "source/_deps/olefile/LICENSE.txt",
+      "bytes": 2915,
+      "sha256": "0C349BED31CD2AF10983A8D95E7455E2D15744B98585B55941CA35BD70F5BCD7"
+    },
+    {
+      "relative_path": "source/_deps/olefile/olefile.py",
+      "bytes": 125455,
+      "sha256": "DCCE514EFDCBD04FA689BC920531A1985DF0837C92B57FE3AF0C45C46F1BBD87"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/__init__.py",
+      "bytes": 7320,
+      "sha256": "926B88133F1CBAD6AD1A38D6DC499A0294C481C1E672C628D027161FFB61D8FD"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/biffh.py",
+      "bytes": 16651,
+      "sha256": "1A3B41A08F4F34811D6D99864EF7C343C1EE85988B25DDA87DDA36AA6BA7CE60"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/book.py",
+      "bytes": 57527,
+      "sha256": "D4B1F1C9631BE74641230525642E14B4815E9B9CBCA3C337CC00DC74F085FFCE"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/compdoc.py",
+      "bytes": 21091,
+      "sha256": "DF191FB896CB44644C74F899541B160201A4B70EC99DAFB0DE9FE5713093E984"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/formatting.py",
+      "bytes": 45573,
+      "sha256": "E8C87A18E33B1594E3D1C2781474A5D02568FBC227603BF6288653332704C3A4"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/formula.py",
+      "bytes": 94460,
+      "sha256": "72011735609A6152B3219C1AEC85B4B43702D485F352F86A25750E2FBE57A1AC"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/info.py",
+      "bytes": 36,
+      "sha256": "030B2F2F9ED9FA598A0C368205F515A24C0CC0FBC92E7F638C6B6A3FD81EBCEC"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/sheet.py",
+      "bytes": 106806,
+      "sha256": "9A1C04A84B5E508418F632B90B25FCEECB6E9363265D444E35FF3A91940C858D"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/timemachine.py",
+      "bytes": 1757,
+      "sha256": "EC2B54EC563A9905BB1D23F91633352BDA487CD7B1542B7F3C95C6D8CDC51007"
+    },
+    {
+      "relative_path": "source/_deps/xlrd/xldate.py",
+      "bytes": 7934,
+      "sha256": "4BEB9468B5FC91AB86CB64A45FF33E4BE141AAA43A1FD11F4C0569BF914C5F42"
+    },
+    {
+      "relative_path": "source/_deps/xlrd-LICENSE.txt",
+      "bytes": 3771,
+      "sha256": "B5A5DBCE60265E305A815A6CB83ED07F24519D8BA644F2A307994488BCED8815"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/__init__.py",
+      "bytes": 298,
+      "sha256": "AEB71AC4BBB6718D4CD1072CD6D373C75FFF10BA1F76DBA70A500C01B18C5A45"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/antlr.py",
+      "bytes": 84153,
+      "sha256": "58A0F1D1C1AEA1E7F11A6B8A108E901614282E16BF6B265A803791AC22FFF2ED"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/BIFFRecords.py",
+      "bytes": 97384,
+      "sha256": "E3499133815C9B25F9E841388719CA6B68385FEA8CF2E93605A7A880888AABA3"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Bitmap.py",
+      "bytes": 10930,
+      "sha256": "91181CEFDF170E33903B8D32FF59749C0190F0663CFA9FBDEF001C9A4493B358"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Cell.py",
+      "bytes": 8559,
+      "sha256": "2AB9E68A6DA2D5831D58783CE10993AAD4AAEF94D816AB0FEEE2D5BA71946754"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Column.py",
+      "bytes": 1510,
+      "sha256": "1120EE58F85EA7A7A9E37415D6FEE5922E12C1CFD4D6F28183C79D810A72DC9B"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/compat.py",
+      "bytes": 544,
+      "sha256": "1C372DE749B14A5ED77D560F8B73EA7D2E6E6FE6DC8D3BED3EE06366717CB0DA"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/CompoundDoc.py",
+      "bytes": 9931,
+      "sha256": "DB838645160D4AEEE4E1971F2DE977FC6B95D199B8AB37B53E83D703A99DB8A9"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/ExcelFormula.py",
+      "bytes": 1382,
+      "sha256": "997BF3E06CDAA6AF7FA0CB2E3AA05EE437986BD1EF7136C5A011696E076B83CA"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/ExcelFormulaLexer.py",
+      "bytes": 4197,
+      "sha256": "69594A973B718ECF52B74D0129AE116469A0F27FE26EF4798CCE6819A2857E7E"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/ExcelFormulaParser.py",
+      "bytes": 22209,
+      "sha256": "A185579C974359513C03260EA6D7F7E73309096FC6146B45ACB4E7F22CD42397"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/ExcelMagic.py",
+      "bytes": 28839,
+      "sha256": "22289EE1CAD1B1630DA0A8815DA6E3A51122CE64A0E2F889BD59701E498EA3AC"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Formatting.py",
+      "bytes": 8542,
+      "sha256": "8A6E75A83B9ECB7DA17990546F2F72BF39B43330A40EF75272E9CD62B20F0114"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Row.py",
+      "bytes": 11732,
+      "sha256": "C8F63C3DE93AFD7BCEB56A9FF8BB8B6509705301A86365A241253D839D020F8A"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Style.py",
+      "bytes": 23716,
+      "sha256": "C81A2F343300AB09D3D336CB1999641F1DBCC9F9C8696C46C6F9D0337099D898"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/UnicodeUtils.py",
+      "bytes": 5033,
+      "sha256": "18A099B37FB48282E9E39FD4653F89548A05410326415786D711C9BE4747342B"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Utils.py",
+      "bytes": 5150,
+      "sha256": "C09BD11208D780C3CE5E375886B21A3973A675DD56E113C05823185120A053C4"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Workbook.py",
+      "bytes": 23632,
+      "sha256": "87BCB60DFC8B78AE391CEDFFB0CBB32A9FFFE5B33D561FEDBAB62EF7C016A0B9"
+    },
+    {
+      "relative_path": "source/_deps/xlwt/Worksheet.py",
+      "bytes": 47776,
+      "sha256": "E8111D56230088C6A8F5F7BE982BD997448F7F0FA879D690A572054315307B0E"
+    },
+    {
+      "relative_path": "source/ebm_codec.py",
+      "bytes": 7995,
+      "sha256": "D24D9D5EA8FAFDB66CDF67497605F469487D2A7714FEF7FE1753FEE7515F4B86"
+    },
+    {
+      "relative_path": "source/event_table_codec.py",
+      "bytes": 6317,
+      "sha256": "0934690A659357FA0826C6ED48D299AB041A0722425931B56BAB95119091A395"
+    },
+    {
+      "relative_path": "source/eventlog_xls.py",
+      "bytes": 12267,
+      "sha256": "ECD0930173040E3CBDB5ADE6EE1E7212C773ED484E498529B9D61DA81E1093BD"
+    },
+    {
+      "relative_path": "source/macro-default-cn421.ebm",
+      "bytes": 276,
+      "sha256": "78C3F181DC0F47B91F253D9DEDD202D232B1FFC9C000BD421A4D27A0F575185E"
+    },
+    {
+      "relative_path": "source/native-cmt-history-sqlite-v1.json",
+      "bytes": 13687,
+      "sha256": "AE6F0770AAE6DCD75C8DA0D0F769BF329BECC4850367E89E92600B434A673CF2"
+    },
+    {
+      "relative_path": "source/native-event-v3-hw49-contract.json",
+      "bytes": 7464,
+      "sha256": "E930BE6FB0772E2A9F7F1BF7BB338A311B23A2A4CA1E4CDA866C5BE92022AB4C"
+    },
+    {
+      "relative_path": "source/native-event-v4-hw72-contract.json",
+      "bytes": 8313,
+      "sha256": "2492F9C03E8B66716C4832D074A46E97A2EDC4F742F108276AE8B704CA09C35D"
+    },
+    {
+      "relative_path": "source/native_event_db.py",
+      "bytes": 7773,
+      "sha256": "A4A8674B8DEC850B642805D5B52239B2E71017769F51A8C05EBEA457728EEB39"
+    },
+    {
+      "relative_path": "source/native_event_xls.py",
+      "bytes": 8879,
+      "sha256": "F897BF4D4089916095E993D095479729707AA27F7B7BB2815BE073C324A55417"
+    },
+    {
+      "relative_path": "validation-receipt.json",
+      "bytes": 1147,
+      "sha256": "CE6F3D1AC178B0886A110864C4980D09DA98C9092350E0DB2FB76A87E5212FE4"
+    }
+  ],
+  "previous_manifest_sha256": "4D13E4D5FBC71A799A1A783407631EB5D9BD381F8DE770CB991C438F6654F624",
+  "native_import_verified": false
+}

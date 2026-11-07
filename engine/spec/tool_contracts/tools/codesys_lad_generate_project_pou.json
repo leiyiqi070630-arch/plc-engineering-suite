@@ -1,0 +1,332 @@
+{
+ "contract": {
+  "name": "codesys_lad_generate_project_pou",
+  "description": "Generates LAD project POU from a structured plan. Inputs: confirm, disposable, name, networks, parent, variables. Required: name, networks, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_project_pou",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "name": {
+     "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+     "type": "string"
+    },
+    "networks": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "branches": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "contacts": {
+           "items": {
+            "additionalProperties": false,
+            "properties": {
+             "name": {
+              "type": "string"
+             },
+             "negated": {
+              "type": "boolean"
+             }
+            },
+            "required": [
+             "name"
+            ],
+            "type": "object"
+           },
+           "minItems": 1,
+           "type": "array"
+          }
+         },
+         "required": [
+          "contacts"
+         ],
+         "type": "object"
+        },
+        "minItems": 2,
+        "type": "array"
+       },
+       "coil": {
+        "additionalProperties": false,
+        "properties": {
+         "name": {
+          "type": "string"
+         },
+         "target": {
+          "type": "string"
+         }
+        },
+        "type": "object"
+       },
+       "contacts": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "name": {
+           "type": "string"
+          },
+          "negated": {
+           "type": "boolean"
+          }
+         },
+         "required": [
+          "name"
+         ],
+         "type": "object"
+        },
+        "type": "array"
+       },
+       "counter": {
+        "enum": [
+         "CTU",
+         "CTD",
+         "CTUD"
+        ],
+        "type": "string"
+       },
+       "cv": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "enable": {
+        "additionalProperties": false,
+        "properties": {
+         "name": {
+          "type": "string"
+         }
+        },
+        "type": "object"
+       },
+       "et": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "input": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "inputs": {
+        "additionalProperties": {
+         "type": "string"
+        },
+        "type": "object"
+       },
+       "instance": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         }
+        ]
+       },
+       "instruction": {
+        "type": "string"
+       },
+       "load": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "outputs": {
+        "additionalProperties": {
+         "type": "string"
+        },
+        "type": "object"
+       },
+       "pt": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "pv": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "q": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "reset": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "timer": {
+        "enum": [
+         "TON",
+         "TOF",
+         "TP"
+        ],
+        "type": "string"
+       },
+       "type": {
+        "enum": [
+         "contact_coil",
+         "box",
+         "timer",
+         "counter",
+         "fb"
+        ],
+        "type": "string"
+       }
+      },
+      "required": [
+       "type"
+      ],
+      "type": "object"
+     },
+     "maxItems": 60,
+     "minItems": 1,
+     "type": "array"
+    },
+    "parent": {
+     "type": "string"
+    },
+    "variables": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "name": {
+        "type": "string"
+       },
+       "type": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "name",
+       "type"
+      ],
+      "type": "object"
+     },
+     "type": "array"
+    }
+   },
+   "required": [
+    "name",
+    "networks",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  }
+ }
+}

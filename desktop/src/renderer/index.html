@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: https: http:; media-src 'self' https: http:"
+    />
+    <!-- CSP 说明：img-src 需要放行 data:，否则粘贴/拖入的图片附件（data:image/...;base64）
+         会被 default-src 拦掉且控制台只给一条易被忽略的 violation 提示。script-src 与
+         style-src 保持收紧。 -->
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0f1110" />
+    <title>PLC Code</title>
+    <link rel="preload" href="./assets/NotoSerifSC-B28r8lj8.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="stylesheet" crossorigin href="./assets/index-pqC5qFDs.css" />
+    <link rel="stylesheet" href="./theme.css" />
+    <style>
+      /* 启动画面：纯 CSS 淡出，不依赖 React 挂载时机，全程不拦截交互。 */
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 18px;
+        background: #0f1110;
+        color: #f4f5f3;
+        font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+        pointer-events: none;
+        animation: splash-out 420ms ease 1100ms forwards;
+      }
+      #splash .mark {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        letter-spacing: .2px;
+        font-weight: 600;
+      }
+      #splash .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #8ee5a1;
+        box-shadow: 0 0 0 4px rgba(142, 229, 161, .16);
+        animation: splash-pulse 1400ms ease-in-out infinite;
+      }
+      #splash .hint {
+        font-size: 12px;
+        color: #8b918d;
+        letter-spacing: .3px;
+      }
+      #splash .bar {
+        width: 148px;
+        height: 2px;
+        border-radius: 2px;
+        background: #232b26;
+        overflow: hidden;
+      }
+      #splash .bar > i {
+        display: block;
+        width: 40%;
+        height: 100%;
+        border-radius: inherit;
+        background: #8ee5a1;
+        animation: splash-slide 1100ms ease-in-out infinite;
+      }
+      @keyframes splash-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(.72); opacity: .55; }
+      }
+      @keyframes splash-slide {
+        0% { transform: translateX(-110%); }
+        100% { transform: translateX(320%); }
+      }
+      @keyframes splash-out {
+        to { opacity: 0; visibility: hidden; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #splash { animation-duration: 1ms; animation-delay: 300ms; }
+        #splash .dot, #splash .bar > i { animation: none; }
+      }
+      /* 首帧背景色与主题一致，避免窗口出现的瞬间闪白。 */
+      html, body { background: #0f1110; }
+      html[data-theme='light'], html[data-theme='light'] body { background: #eef7f3; }
+    </style>
+  </head>
+  <body>
+    <div id="splash" aria-hidden="true">
+      <div class="mark"><span class="dot"></span>PLC Code</div>
+      <div class="bar"><i></i></div>
+      <div class="hint">正在加载工程工作区</div>
+    </div>
+    <div id="root"></div>
+    <script type="module" crossorigin src="./assets/index-CXb3UsfP.js"></script>
+  </body>
+</html>
