@@ -74,7 +74,7 @@ text{font-family:"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",Arial,sans-s
 <rect x="1273" y="499" width="445" height="174" rx="15" fill="#fff" stroke="#D8CEF3"/>
 <text x="1298" y="531" class="label" fill="#7657C3">支撑 Crates</text>
 <text x="1298" y="565" class="body">commands · plugins · telemetry</text>
-<text x="1298" y="594" class="body">win-proc-guard · api · runtime</text>
+<text x="1298" y="594" class="body">win-proc-guard</text>
 <text x="1298" y="630" class="small">共 9 个 Rust workspace crates</text>
 <text x="1298" y="653" class="small">任务命令 · 插件装载 · 遥测 · 进程守护</text>
 
