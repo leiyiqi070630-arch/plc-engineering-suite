@@ -1,0 +1,5 @@
+# tia_openness_list_blocks — extended contract
+
+Reference data moved from the resident card on 2026-09-18. Current schema, diagnostic receipts, user scope and target version take precedence; historical measurements are scoped observations. Read only for an unresolved detail.
+
+List PLC blocks from the active TIA Portal project. Returns deterministic paths for export, compile, rename, delete, and show-in-editor operations. device_name must name a device that EXISTS and HAS PlcSoftware: a wrong name, a PC/HMI station or a device without PLC software is refused with TIA_TARGET_PLC_NOT_FOUND (details.targetProblem) instead of returning an empty list, so blocks=[] always means a CONFIRMED PLC really has no block. When the receipt is larger than the runtime's per-result budget the model receives a SAMPLE: verified=false with resultComplete=false, truncated=true and verificationScope="transport_and_route_only" says exactly that (the payload still carries every block) — never report a sampled list as complete; narrow the call instead.

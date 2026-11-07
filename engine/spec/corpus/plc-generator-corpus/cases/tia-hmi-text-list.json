@@ -1,0 +1,61 @@
+{
+  "id": "tia-hmi-text-list",
+  "tool": "tia_hmi_generate_list_xml",
+  "route": "tia",
+  "title": "Classic HMI text-list offline shape",
+  "covers": [
+    "text-list"
+  ],
+  "language": "HMI",
+  "versions": [
+    "V18"
+  ],
+  "keywords": [
+    "HMI",
+    "text-list",
+    "list",
+    "XML",
+    "generator"
+  ],
+  "requirements": [
+    "Create a named classic HMI text-list with the specified distinct entries."
+  ],
+  "input": {
+    "plan": {
+      "name": "Example_text_list",
+      "kind": "text-list",
+      "schema_version": "V18",
+      "culture": "en-US",
+      "entries": [
+        {
+          "from": 0,
+          "text": "Stopped"
+        },
+        {
+          "from": 1,
+          "to": 3,
+          "entry_type": "Range",
+          "text": "Active"
+        }
+      ]
+    }
+  },
+  "expected": [
+    "Offline generator emits well-formed XML for the list.",
+    "No picture binding, IDE import/compile or runtime behavior is claimed."
+  ],
+  "preconditions": [
+    "Classic WinCC target; adapt the version and culture to the actual project before import.",
+    "Graphic entries use single values; picture references require a separate supported workflow."
+  ],
+  "pitfalls": [
+    "Do not pass graphic-list ranges or describe generated XML as a verified live HMI."
+  ],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-hmi-text-list.offline-generation.json",
+      "sha256": "36f98ae4edfb013dd7be4769c6ed14b633ac01f1b396595af4c811a170c12cc8"
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "block_name": "FB_Recipe_star_delta_basic_interlock",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "StartPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "StopPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultActive"
+      },
+      {
+        "datatype": "Bool",
+        "name": "StarSelect"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DeltaSelect"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "MainContactor"
+      },
+      {
+        "datatype": "Bool",
+        "name": "StarContactor"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DeltaContactor"
+      }
+    ],
+    "static_members": [
+      {
+        "datatype": "Bool",
+        "name": "MotorRun"
+      }
+    ]
+  },
+  "networks": [
+    {
+      "branches": [
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "StartPB",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "MotorRun",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "MotorRun",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "StopPB",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Motor run request",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "MainContactor",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "MotorRun",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Main contactor",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "StarContactor",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "MotorRun",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "StarSelect",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "DeltaContactor",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Star contactor interlock",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "DeltaContactor",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "MotorRun",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "DeltaSelect",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "StarContactor",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Delta contactor interlock",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

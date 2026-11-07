@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-pump-duty-standby-alternating",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "80340c50fff7927a174c6424d5d547deeb1325c38e899dfb9e532762350311b7",
+  "specificationHash": "817500561a994983abc71cb39de7c3d2303ec11184cea937dca6a3bf5f5d68c5",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:41.041622+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-pump-duty-standby-alternating.plan.json",
+      "sha256": "01dcfe1f24e02ab6f0d2a17442917c0c7b01d3bcde86ebd1f41fc3c99a645c59"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

@@ -1,0 +1,37 @@
+{
+  "caseId": "ino-contact-tp-wrong-instance-rejected",
+  "stage": "offline-rejection",
+  "passed": true,
+  "inputHash": "f8a9b9076b854aa97ecd4a2509dbccd609b1f81a488a5b82581d2e2717d8f54d",
+  "specificationHash": "ba5795e7e1e1fff3e9efb37b7f0fb2afdfa583f1d4b86d94f3949c79fcd25463",
+  "contractHash": "dd7207b2aad12c127e5f68ef4a70a4458eb6ff8f4297317b6886edaf661e8a45",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "bridgeSourceHashes": {
+      "contact_lad_compiler.py": "b6755127695bab960413453c1b02b2c83adc77577689c3e333ddfc6249405b2e",
+      "lad_generator.py": "1c1124b1026a0b0f83d483677f7f5cfbcbc759b103d547806caf1165be606c92",
+      "persistent_bridge.py": "45ef88ef99eaf316d24287cf08b036502caffbf1315c566ced0544c81ac73293"
+    },
+    "targetFormat": "InoProShop V1.10.0.3 native serialization"
+  },
+  "checkedAt": "2026-09-20T11:54:36.177685+00:00",
+  "checks": [
+    "Compiler rejected before emitting XML",
+    "Exception kind and every path/expected/actual matched the independent rejection specification"
+  ],
+  "artifacts": [],
+  "boundary": "Negative validation example only; no XML output, IDE mutation or runtime behavior was verified. Do not use its input as a writable program example.",
+  "outcome": "rejected",
+  "xmlEmitted": false,
+  "diagnostic": {
+    "exceptionType": "PlanRejected",
+    "issues": [
+      {
+        "path": "plan.networks[0].instance (instance 'Delay')",
+        "expected": "TP declared member",
+        "actual": "TON",
+        "remediation": "Timer instances must be declared TP in static_members."
+      }
+    ]
+  }
+}

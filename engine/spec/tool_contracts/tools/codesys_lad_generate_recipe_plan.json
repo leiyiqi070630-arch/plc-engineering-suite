@@ -1,0 +1,31 @@
+{
+ "contract": {
+  "description": "Build a structured native InoProShop LAD generation plan from a verified recipe. The recipe name must ALREADY be in codesys_lad_list_program_recipes (unknown names fail 'unknown recipe; call codesys_lad_list_program_recipes first') — only single_native_instruction and native_instruction_batch are verified.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "instruction": {
+     "type": "string"
+    },
+    "name": {
+     "type": "string"
+    },
+    "networks": {
+     "type": "array"
+    },
+    "recipe": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "recipe"
+   ],
+   "type": "object"
+  },
+  "name": "codesys_lad_generate_recipe_plan",
+  "permission": "ReadOnly"
+ },
+ "contractHash": "d1b91e7ef0927de3690ab74689ca96e4b4e8b97894eb4e93703540f3f80722d2",
+ "name": "codesys_lad_generate_recipe_plan",
+ "schemaHash": "ebe9bbfdc14db6577bd4837cce3eb002ad6d025005410e3398e38560a0015539"
+}

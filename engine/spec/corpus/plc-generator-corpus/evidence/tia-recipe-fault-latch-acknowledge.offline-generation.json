@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-fault-latch-acknowledge",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "453b465276ffdba30877db79c6cdbab8448975d1e6c2d2eb74045b3c861df0d9",
+  "specificationHash": "bf9188646149fc06cdbc1365b59a2e628658a9f6a6052469694bdc2dde405a13",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:40.127152+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-fault-latch-acknowledge.plan.json",
+      "sha256": "e29fb6408c2788813e34bfff3bafcdbed8dc7a33c4fcd7074f354d8b36e73a31"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

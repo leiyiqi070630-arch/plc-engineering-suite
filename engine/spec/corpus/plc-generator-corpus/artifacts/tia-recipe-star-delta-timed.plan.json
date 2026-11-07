@@ -1,0 +1,229 @@
+{
+  "block_name": "FB_Recipe_star_delta_timed",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "StartPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "StopPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultActive"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "MotorRun"
+      },
+      {
+        "datatype": "Bool",
+        "name": "MainContactor"
+      },
+      {
+        "datatype": "Bool",
+        "name": "StarContactor"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DeltaContactor"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Running"
+      }
+    ],
+    "static_members": [
+      {
+        "datatype": "Bool",
+        "name": "StarDone"
+      },
+      {
+        "datatype": "TON",
+        "name": "StarTimer"
+      }
+    ]
+  },
+  "networks": [
+    {
+      "branches": [
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "StartPB",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "MotorRun",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "MotorRun",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "StopPB",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Motor seal-in with stop and fault",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "MainContactor",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "MotorRun",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Main contactor follows run",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "StarContactor",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "MotorRun",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "StarDone",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "DeltaContactor",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Star contactor: closed until transition done",
+      "type": "contact_coil"
+    },
+    {
+      "input": {
+        "name": "MotorRun",
+        "scope": "LocalVariable"
+      },
+      "instance": {
+        "name": "StarTimer",
+        "scope": "LocalVariable"
+      },
+      "pt": {
+        "constant_value": "T#3s",
+        "datatype": "Time",
+        "name": "T#3s"
+      },
+      "q": {
+        "name": "StarDone",
+        "scope": "LocalVariable"
+      },
+      "timer": "TON",
+      "title": "Star-delta transition timer",
+      "type": "timer"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "DeltaContactor",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "MotorRun",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "StarDone",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "StarContactor",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Delta contactor: takes over after transition (star drops same scan)",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Running",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "MotorRun",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Running status",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

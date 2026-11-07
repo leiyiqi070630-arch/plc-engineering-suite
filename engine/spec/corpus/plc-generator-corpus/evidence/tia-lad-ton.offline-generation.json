@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-lad-ton",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "143f1a05f02268eb57554e81c70a695eb5ee36b2e6cc948759d751f82c6516a3",
+  "specificationHash": "5153b9137f7e7ac7e5f7cad80328940260af13cbdc008c51f720127f8bbedc29",
+  "contractHash": "0e273628c96e0d5b04bb7a0e14a06b8530a74c30d590616a904cdfaf41ce5fa9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:38.942665+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-lad-ton.xml",
+      "sha256": "8d5c45e82cb47555764ea2918698c78b60c44ee9af4efd66843626e3e539fd18"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

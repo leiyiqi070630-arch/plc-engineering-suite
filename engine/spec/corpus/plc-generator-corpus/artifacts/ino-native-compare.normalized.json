@@ -1,0 +1,35 @@
+[
+  {
+    "ok": true,
+    "errors": [],
+    "normalized": {
+      "instruction": "GT",
+      "operatorEnum": "Gt",
+      "dataType": "INT",
+      "inputs": [
+        {
+          "index": 0,
+          "name": "IN1",
+          "type": "INT",
+          "value": "A"
+        },
+        {
+          "index": 1,
+          "name": "IN2",
+          "type": "INT",
+          "value": "B"
+        }
+      ],
+      "inouts": [],
+      "outputs": [
+        {
+          "index": 0,
+          "name": "OUT",
+          "type": "BOOL",
+          "value": "Greater"
+        }
+      ],
+      "instance": null
+    }
+  }
+]

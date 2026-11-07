@@ -1,0 +1,16 @@
+[knowledge] source=embedded files=771 bytes=15710204
+Skills
+  11 available skills
+
+User home roots:
+  hmi-design · Design and improve industrial HMI screens with coherent background panels, process grouping, typography and operator feedback. Use for new Classic/Unified screens or layout beautification; verify bindings, events, IO modes and actual preview separately from compilation.
+  mermaid-diagrams · Draw Mermaid diagrams in chat, or load when a previous diagram rendered incorrectly. The chat UI embeds the official mermaid.js (v11 offline build); all diagram types and official syntax are available. This covers the most common sources of render breakage (label quoting / ID rules), a per-diagram-type cheat sheet, and the fallback behavior when no WebView2 runtime is present.
+  mitsubishi-fx · On-demand knowledge for the Mitsubishi route: the FX2/FX3 GX Works2 file route (ST structured text + GX MAIN CSV ladder/list) and the MC-protocol online read channel (mitsubishi_mc_*, MELSEC Communication 3E frame). Load when the turn involves FX2N/FX2NC/FX3U/FX3UC or a Q/L/iQ-R/FX5 CPU, writing ST or GX CSV, reading a live Mitsubishi PLC over Ethernet, or needs precise device-addressing / instruction / control-flow / format facts. Provides directly usable route facts plus source-of-truth pointers.
+  multi-agent-patterns · Delegate focused independent work to continuable subagents.
+  plc-design-team · Obtain focused engineering perspectives for a PLC design when the task needs them.
+  plc-program-design · Vendor-agnostic map of PLC program structure and control engineering. Load when this turn needs to design a complete PLC program from requirements, review/refactor an existing program, or judge whether the safety and timing structure is healthy (applies to Mitsubishi / Siemens / TIA alike). Provides an engineering-judgment framework, not one vendor's syntax.
+  plc-sim-animation · 把真实 PLC 程序做成可交互的 HTML 模拟动画(电梯、流水线、阀站、泵站、红绿灯等有状态机的设备)。用户说"做个展示动画""可视化演示""模拟器""把程序跑起来看看"时使用。工程任务而非美术任务:先读取/理解程序的每个网络和块调用关系(OB→FB/FC→DB),动画状态机与 PLC 程序严格一致,转移条件/时间常数/锁存必须来自真实代码,禁止凭标题或常识伪造逻辑;画面简约但完整呈现真实运行效果(状态名、楼层、方向、门、指示灯、故障、日志带真实网络编号)。
+  review-team · Review an already-written or generated PLC program with a multi-perspective panel plus adversarial verification, to catch semantic and safety problems that compile and lint cannot detect.
+  siemens-s7-200-awl · On-demand knowledge for the Siemens S7-200 (STEP 7-Micro/WIN) STL / AWL statement-list route. Load when the turn involves S7-200 / S7-200 SMART, writing AWL/STL statement list, or needs precise addressing and mnemonic facts. Provides directly usable route facts and boundaries.
+  tia-portal · Optional version/CPU reference index for Siemens TIA Portal and S7-300/400/1200/1500 work. Normal authoring starts directly from the active route and tool contracts; load one leaf only when a version-specific detail or diagnostic needs it.
+  windows-computer-use · Use when PLCCode needs to inspect or operate Windows desktop engineering applications. Read screenshots and UI Automation elements, target a specific app window, invoke controls, enter values, and read compilation/simulation results when existing PLC integrations do not cover the task.

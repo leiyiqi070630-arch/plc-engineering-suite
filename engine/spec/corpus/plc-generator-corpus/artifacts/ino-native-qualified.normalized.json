@@ -1,0 +1,29 @@
+[
+  {
+    "ok": true,
+    "errors": [],
+    "normalized": {
+      "instruction": "MOVE",
+      "operatorEnum": "Move",
+      "dataType": "REAL",
+      "inputs": [
+        {
+          "index": 0,
+          "name": "IN",
+          "type": "REAL",
+          "value": "GVL.Source"
+        }
+      ],
+      "inouts": [],
+      "outputs": [
+        {
+          "index": 0,
+          "name": "OUT",
+          "type": "REAL",
+          "value": "GVL.Target"
+        }
+      ],
+      "instance": null
+    }
+  }
+]

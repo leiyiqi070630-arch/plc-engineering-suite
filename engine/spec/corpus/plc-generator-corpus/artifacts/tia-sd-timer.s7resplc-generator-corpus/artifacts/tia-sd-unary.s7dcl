@@ -1,0 +1,25 @@
+{
+    S7_Optimized := "TRUE";
+    S7_Language := "LAD";
+}
+FUNCTION_BLOCK "FB_SD_unary"
+    VAR_INPUT
+        A : Real;
+    END_VAR
+    VAR_OUTPUT
+        Value : Real;
+    END_VAR
+
+    { S7_Language := "LAD" }
+    NETWORK
+        RUNG wire#powerrail
+            Abs{
+                SrcType := Real; 
+                DisableENO := FALSE
+            }(
+                IN := #A,
+                OUT => #Value
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

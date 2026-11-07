@@ -1,0 +1,9 @@
+node_modules/
+out/
+dist/
+data/
+.claw/
+*.log
+run-test*.log
+.DS_Store
+Thumbs.db

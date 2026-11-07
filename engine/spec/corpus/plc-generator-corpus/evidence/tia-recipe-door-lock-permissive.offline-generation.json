@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-door-lock-permissive",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "0c3b01ee6cfdab750a468feca9236b47b6c55717e27e8b62592e67df2a667aee",
+  "specificationHash": "3fd294278d8aaf8a0a3fdb03ff5c54dc52dccc59ec8a8f07d076482404d2b328",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:39.945182+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-door-lock-permissive.plan.json",
+      "sha256": "74dabbf05d2fc07b0e7946235c95d0ddeb0edb76d2f91b561af93775e762c550"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

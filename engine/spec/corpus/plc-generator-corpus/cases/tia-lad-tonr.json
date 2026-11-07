@@ -1,0 +1,107 @@
+{
+  "id": "tia-lad-tonr",
+  "tool": "tia_lad_generate_block_xml",
+  "route": "tia",
+  "title": "TONR 定时器与实例",
+  "covers": [
+    "timer",
+    "TONR"
+  ],
+  "language": "LAD",
+  "versions": [
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "timer",
+    "TONR",
+    "定时器与实例",
+    "tia",
+    "LAD",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "TONR 定时器与实例"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FB_Example_tonr",
+      "block_type": "FB",
+      "target_family": "S7-1500",
+      "interface": {
+        "input": [
+          {
+            "name": "Enable",
+            "datatype": "Bool"
+          },
+          {
+            "name": "Reset",
+            "datatype": "Bool"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "Bool"
+          },
+          {
+            "name": "Elapsed",
+            "datatype": "Time"
+          }
+        ],
+        "static_members": [
+          {
+            "name": "Delay",
+            "datatype": "TONR_TIME"
+          }
+        ]
+      },
+      "networks": [
+        {
+          "type": "timer",
+          "timer": "TONR",
+          "instance": {
+            "name": "Delay"
+          },
+          "input": {
+            "name": "Enable"
+          },
+          "pt": {
+            "constant_value": "T#2s",
+            "datatype": "Time"
+          },
+          "q": {
+            "name": "Q"
+          },
+          "et": {
+            "name": "Elapsed"
+          },
+          "r": {
+            "name": "Reset"
+          }
+        }
+      ]
+    }
+  },
+  "expected": [
+    "TONR 的 IN、PT、Q、ET 接到明确的操作数；TONR 另接 R。",
+    "本例展示接线形状；延时、掉电和复位行为需按扫描周期单独验证。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-lad-tonr.offline-generation.json",
+      "sha256": "3f52398aec9b8948f0fb6fddd9db72391546a28669c4785ee76d3bddede59211"
+    }
+  ]
+}

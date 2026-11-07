@@ -1,0 +1,28 @@
+{
+  "caseId": "ino-native-blink",
+  "stage": "offline-normalization",
+  "passed": true,
+  "inputHash": "4d0b416bb9c129718d69314bc640ec5dc9a4e7160276d10e247e7b1fc507726e",
+  "specificationHash": "973633baae92a0f48a92258fd7740e4a69fb11addb7587a86163b55872b9acf4",
+  "contractHash": "2691f8fb7d89cc1dfeb0507803bee85c5906aa1e9aaf14dfc5e4028aa0f88e24",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "bridgeSourceHashes": {
+      "contact_lad_compiler.py": "b6755127695bab960413453c1b02b2c83adc77577689c3e333ddfc6249405b2e",
+      "lad_generator.py": "1c1124b1026a0b0f83d483677f7f5cfbcbc759b103d547806caf1165be606c92",
+      "persistent_bridge.py": "45ef88ef99eaf316d24287cf08b036502caffbf1315c566ced0544c81ac73293"
+    },
+    "signatureResolution": "Source operator validator or fixed standard port fixture; not live IDE"
+  },
+  "checkedAt": "2026-09-20T11:54:36.181674+00:00",
+  "checks": [
+    "Native operator validation / fixed standard port check passed; no emission/import/behavior claim"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/ino-native-blink.normalized.json",
+      "sha256": "7f9db71c17e03eaa3f2dc803e8280ba10e2192e6f09c08dc01b5a45cdfde5521"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

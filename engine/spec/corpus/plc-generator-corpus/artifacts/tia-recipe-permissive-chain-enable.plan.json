@@ -1,0 +1,105 @@
+{
+  "block_name": "FB_Recipe_permissive_chain_enable",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "EStopOk"
+      },
+      {
+        "datatype": "Bool",
+        "name": "GuardClosed"
+      },
+      {
+        "datatype": "Bool",
+        "name": "AirPressureOk"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultActive"
+      },
+      {
+        "datatype": "Bool",
+        "name": "AutoMode"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "SystemReady"
+      },
+      {
+        "datatype": "Bool",
+        "name": "AutoEnable"
+      }
+    ],
+    "static_members": []
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "SystemReady",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "EStopOk",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "GuardClosed",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "AirPressureOk",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "System permissive chain",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "AutoEnable",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "SystemReady",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "AutoMode",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Automatic enable",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

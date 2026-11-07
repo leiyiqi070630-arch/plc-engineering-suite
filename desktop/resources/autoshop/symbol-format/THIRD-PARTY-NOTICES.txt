@@ -1,0 +1,12 @@
+This separately distributed format-helper directory includes unmodified xlrd 2.0.2 and xlwt 1.3.0 Python source distributions.
+
+xlrd: portions copyright Stephen John Machin / Lingfo Pty Ltd and contributors; other copyright and license terms are preserved in licenses/xlrd-2.0.2.dist-info-LICENSE.
+
+xlwt: portions copyright Stephen John Machin / Lingfo Pty Ltd and contributors.
+This product includes software developed by Roman V. Kiseliov <roman@kiseliov.ru>.
+Portions of xlwt.Utils are based on pyXLWriter, copyright Evgeny Filatov and John McNamara, under GNU Lesser General Public License 2.1 or later.
+The same-version source distribution's complete terms are preserved in licenses/xlwt-1.3.0-packaged-licenses.rst. Upstream LICENSE is also preserved in licenses/xlwt-upstream-LICENSE; LGPL 2.1 full text is in licenses/LGPL-2.1.txt. Unmodified corresponding Python source is supplied under vendor/xlwt and the hash-pinned original source archive is retained.
+
+xlwt incorporates ANTLR 2.7.7 / PyANTLR: developed by Terence Parr, with Wolfgang Haefelinger's Python runtime contribution. Original copyright/public-domain and acknowledgement text remains intact in vendor/xlwt/antlr.py and is copied into licenses/ANTLR-2.7.7-notice.txt.
+
+These library sources are supplied as separate readable files, without freezing or obfuscation. Retain the complete notices and corresponding sources, including applicable source-delivery and replaceability obligations. A broad "BSD" package tag alone omits applicable terms. This engineering notice is not a legal assurance.

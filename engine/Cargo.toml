@@ -1,0 +1,11 @@
+# 工程化的 workspace 骨架。members 与引擎内出现的 crate 名一致。
+# 设计基线:  (MIT)
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+publish = false

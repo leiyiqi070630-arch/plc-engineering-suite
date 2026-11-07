@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-hmi-views",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "cc9db2623c30ee86f5396a1e64bad6fc08a89af8b26712e48ca95f231d088a66",
+  "specificationHash": "c08347f8b166e5ad379728565ebcca1b8bab422a743c0bb99c71f6e099289348",
+  "contractHash": "5de4abc3305f27d48655b24da7717fae5df5c3c6753a1d68100de3c01cdff844",
+  "runnerHash": "bf5c4ce44a116ce630618f7fc2b0bba1254986f48f1107104b42bf55b707656c",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-10-04T15:51:49.375757+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-hmi-views.xml",
+      "sha256": "f371a47401421ef4a250894a349665b370b3ab7f162becb034095bd21418fdfe"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

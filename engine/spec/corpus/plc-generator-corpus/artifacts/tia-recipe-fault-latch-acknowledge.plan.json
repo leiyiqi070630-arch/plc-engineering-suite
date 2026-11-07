@@ -1,0 +1,95 @@
+{
+  "block_name": "FB_Recipe_fault_latch_acknowledge",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "FaultCondition"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ResetPB"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "AlarmOutput"
+      }
+    ],
+    "static_members": [
+      {
+        "datatype": "Bool",
+        "name": "FaultLatched"
+      }
+    ]
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "set_coil",
+        "operand": {
+          "name": "FaultLatched",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "FaultCondition",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Fault latch",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "FaultLatched",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ResetPB",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultCondition",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Fault reset only after fault clears",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "AlarmOutput",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "FaultLatched",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Alarm output",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

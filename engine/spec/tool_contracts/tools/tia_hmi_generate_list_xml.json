@@ -1,0 +1,90 @@
+{
+ "contract": {
+  "description": "Generate a classic HMI TEXT LIST or GRAPHIC LIST (WinCC Basic/Comfort panels, TIA V16-V21) as SimaticML XML from a structured plan. Classic HMI Openness has NO Create for lists (TextListComposition/GraphicListComposition only declare Import), so whole-list XML import is the only authoring path: generate, then import with tia_openness_import_hmi_xml (kind=text-list / graphic-list, or omit kind and let the sniffer read the root element). EVERY SHAPE HERE IS MEASURED on a real V18 round trip (2026-09-16) - in particular an entry's identity is the From/To RANGE, not a Value attribute: TIA answers \"The 'Value' attribute at the 'Siemens.Engineering.Hmi.TextGraphicList.TextListEntry' object ... is not supported\", while From/To (the model's IHmiListEntry.From/.To) imports and re-exports identically. A single value is the degenerate range from == to. entry_type is SingleValue (default) or Range (both verified, Range verified with from=5/to=9); default_entry is a bool and at most one entry may set it; a text list entry's text goes to a MultilingualText composition named Text. GRAPHIC LIST ENTRIES MUST BE SINGLE VALUES: TIA requires From == To for a graphic list of the type \"Single value\" and answers a non-degenerate range with a NonRecoverableException that CLOSES the TIA Portal (measured on V18 2026-09-16) - the generator therefore refuses from != to for kind=graphic-list before writing anything. Text lists are the kind whose entries accept ranges. list_range defaults to Decimal - the only value verified end-to-end; anything else is emitted as given with a warning (not refused, since the manual lists other range types we have not measured). A graphic-list entry's picture reference has NO verified shape yet: pass picture and it is reported as a warning, not written. The document is generated offline (no TIA attach) and is NOT machine proof - import it, then re-export to confirm.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "output_path": {
+     "description": "Optional file path; omitted returns the XML inline.",
+     "type": "string"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "properties": {
+      "culture": {
+       "description": "Project language for the entry texts, e.g. zh-CN (default) or en-US. Must exist in the target project or TIA rejects the import.",
+       "type": "string"
+      },
+      "entries": {
+       "description": "The list entries. Every entry must cover a distinct range; a text list entry should carry text.",
+       "items": {
+        "additionalProperties": false,
+        "properties": {
+         "default_entry": {
+          "description": "Mark this entry as the list's default entry (default false). At most one entry may set it.",
+          "type": "boolean"
+         },
+         "entry_type": {
+          "description": "SingleValue (default) or Range. Both verified on a real import; any other value is refused rather than guessed.",
+          "type": "string"
+         },
+         "from": {
+          "description": "Range start. Omit both from/to and the entry is refused (the range IS the identity). For kind=graphic-list this must equal `to` - TIA rejects a graphic-list range with a NonRecoverableException that closes the Portal.",
+          "type": "integer"
+         },
+         "picture": {
+          "description": "Graphic list only, and NOT written: a graphic-list entry's picture reference has no verified shape yet - it is reported as a warning so the picture can be assigned in TIA.",
+          "type": "string"
+         },
+         "text": {
+          "description": "Entry text (MultilingualText, in plan.culture). A text entry without text imports but shows nothing - reported as a warning.",
+          "type": "string"
+         },
+         "to": {
+          "description": "Range end; defaults to from (single value). Must equal `from` for a graphic list entry.",
+          "type": "integer"
+         }
+        },
+        "type": "object"
+       },
+       "type": "array"
+      },
+      "kind": {
+       "description": "text-list (default) or graphic-list. Accepts textlist/graphiclist spellings.",
+       "type": "string"
+      },
+      "list_range": {
+       "description": "Range type of the list. Default Decimal (the only value verified end-to-end). Any other value is written as given with a warning.",
+       "type": "string"
+      },
+      "mode": {
+       "description": "Graphic list only: Simple (default) or Enhanced. Ignored with a warning for a text list.",
+       "type": "string"
+      },
+      "name": {
+       "description": "List name (the object name TIA creates).",
+       "type": "string"
+      },
+      "schema_version": {
+       "description": "TIA version for the document header, e.g. V18. Defaults to the project's openness_version, else V17.",
+       "type": "string"
+      }
+     },
+     "required": [
+      "name"
+     ],
+     "type": "object"
+    }
+   },
+   "required": [
+    "plan"
+   ],
+   "type": "object"
+  },
+  "name": "tia_hmi_generate_list_xml",
+  "permission": "WorkspaceWrite"
+ },
+ "contractHash": "bd56563ef230775f2f6b5866dcb09af1f78ca38016401d7cd7b48927e7d0d4aa",
+ "name": "tia_hmi_generate_list_xml",
+ "schemaHash": "deba896b4f861755018afac037d347750e19c69d6762ba16bfa1fb7997bfb4d2"
+}

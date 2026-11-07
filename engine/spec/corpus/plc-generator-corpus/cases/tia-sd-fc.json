@@ -1,0 +1,98 @@
+{
+  "id": "tia-sd-fc",
+  "tool": "tia_sd_generate_block",
+  "route": "tia",
+  "title": "SD FC 块接口",
+  "covers": [
+    "FC"
+  ],
+  "language": "SD",
+  "versions": [
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "contact",
+    "i_contact",
+    "coil",
+    "SD",
+    "接点、反相及线圈",
+    "tia",
+    "生成器",
+    "generator",
+    "FC"
+  ],
+  "requirements": [
+    "生成 SD FC，遵循该块类型的接口限制。"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FC_Example",
+      "block_type": "FC",
+      "interface": {
+        "input": [
+          {
+            "name": "A",
+            "datatype": "Bool"
+          },
+          {
+            "name": "B",
+            "datatype": "Bool"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "Bool"
+          }
+        ],
+        "var": [],
+        "var_retain": []
+      },
+      "networks": [
+        {
+          "rungs": [
+            {
+              "wire_in": "powerrail",
+              "elements": [
+                {
+                  "op": "contact",
+                  "operand": {
+                    "name": "A"
+                  }
+                },
+                {
+                  "op": "i_contact",
+                  "operand": {
+                    "name": "B"
+                  }
+                },
+                {
+                  "op": "coil",
+                  "operand": {
+                    "name": "Q"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expected": [
+    "生成 FC 的 S7DCL 文本；不把 FB Static 实例复制进 OB/FC。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-sd-fc.offline-generation.json",
+      "sha256": "3f49aae8d3818a508f1e4cab85c8cb0b674e93ddc5b68422b0ac50ff6349c0cb"
+    }
+  ]
+}

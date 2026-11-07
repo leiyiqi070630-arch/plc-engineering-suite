@@ -1,0 +1,68 @@
+{
+  "id": "ino-native-qualified",
+  "tool": "codesys_lad_generate_native",
+  "route": "inoproshop",
+  "title": "汇川原生指令 MOVE",
+  "covers": [
+    "qualified-symbols"
+  ],
+  "language": "LAD",
+  "versions": [],
+  "keywords": [
+    "qualified-symbols",
+    "汇川原生指令",
+    "MOVE",
+    "inoproshop",
+    "LAD",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "汇川原生指令 MOVE"
+  ],
+  "input": {
+    "name": "Example_qualified",
+    "networks": [
+      {
+        "title": "MOVE example",
+        "instructions": [
+          {
+            "instruction": "MOVE",
+            "inputs": {
+              "IN": "GVL.Source"
+            },
+            "outputs": {
+              "OUT": "GVL.Target"
+            },
+            "dataType": "REAL"
+          }
+        ]
+      }
+    ],
+    "confirm": "generate_native_lad_instruction_batch",
+    "disposable": true,
+    "symbolTypes": {
+      "GVL.Source": "REAL",
+      "GVL.Target": "REAL"
+    }
+  },
+  "expected": [
+    "使用具名 inputs/outputs；FB 实例由生成器声明，原生运算符显式给出 dataType。",
+    "生成/编译回执不证明实际扫描行为；符号类型与指令端口需与当前目标一致。"
+  ],
+  "preconditions": [
+    "未提供 namespace 时允许桥接按真实签名解析；若已知目标签名歧义，应先一次性定向查 instruction_spec。",
+    "这是指定线路的示例；不得跨用标准 CODESYS 与 InoProShop 的原生输入。",
+    "写入入口仅在已授权的实验工程/副本使用；确认对象放置、现有任务和输出接线。示例 confirm/disposable 不替用户授权。"
+  ],
+  "pitfalls": [
+    "不要把普通 ADD 写成宽整数库指令 ADD64_64；它们是不同签名。"
+  ],
+  "evidence": [
+    {
+      "stage": "offline-normalization",
+      "path": "evidence/ino-native-qualified.offline-normalization.json",
+      "sha256": "1fad34edcf7ba2df13d4a4f5b0c428841b4de39c72035c7a8f0f355efaf87295"
+    }
+  ]
+}

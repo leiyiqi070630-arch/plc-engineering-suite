@@ -1,0 +1,721 @@
+{
+ "contract": {
+  "description": "Topology-free LAD writer (networks: instruction_box, timer, fb_call, move). NOT AVAILABLE on the InoProShop line as delivered: MEASURED 2026-09-19, every call answers errorCode=lad_plan_adapter_unavailable with expected=\"loaded plccode_lad_plan_adapter\" - the plan-adapter plugin is not part of this installation, so the op cannot emit anything. Do NOT retry it and do not treat it as a missing feature: use the ROUTE's own writers instead - codesys_lad_generate_native (canonical batch generator: one POU, networks[].instructions[] with exact ports; library FBs work, e.g. instruction=PID_FIXCYCLE namespace=UTIL with an instance, verified 2026-09-19 with a 0-error compile and a passing simulation assertion) or codesys_lad_generate_contact_block for contacts/branches/coils. For an FB call in LAD the native schema is {instruction, namespace, instance, inputs:{PORT:VARIABLE}, outputs:{PORT:VARIA…",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_lad_block",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "properties": {
+      "block_name": {
+       "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+       "type": "string"
+      },
+      "block_number": {
+       "minimum": 0,
+       "type": "integer"
+      },
+      "block_type": {
+       "description": "InoProShop native production currently supports PROGRAM.",
+       "type": "string"
+      },
+      "callee_interfaces": {
+       "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+         "inout": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "comment": {
+             "type": "string"
+            },
+            "datatype": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "name": {
+             "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+             "type": "string"
+            },
+            "type": {
+             "minLength": 1,
+             "type": "string"
+            }
+           },
+           "required": [
+            "name"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "input": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "comment": {
+             "type": "string"
+            },
+            "datatype": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "name": {
+             "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+             "type": "string"
+            },
+            "type": {
+             "minLength": 1,
+             "type": "string"
+            }
+           },
+           "required": [
+            "name"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "output": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "comment": {
+             "type": "string"
+            },
+            "datatype": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "name": {
+             "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+             "type": "string"
+            },
+            "type": {
+             "minLength": 1,
+             "type": "string"
+            }
+           },
+           "required": [
+            "name"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         }
+        },
+        "type": "object"
+       },
+       "type": "object"
+      },
+      "comment": {
+       "type": "string"
+      },
+      "culture": {
+       "type": "string"
+      },
+      "interface": {
+       "additionalProperties": false,
+       "properties": {
+        "constant": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "comment": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+           },
+           "type": {
+            "minLength": 1,
+            "type": "string"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "inout": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "comment": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+           },
+           "type": {
+            "minLength": 1,
+            "type": "string"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "input": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "comment": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+           },
+           "type": {
+            "minLength": 1,
+            "type": "string"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "output": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "comment": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+           },
+           "type": {
+            "minLength": 1,
+            "type": "string"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "static_members": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "comment": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+           },
+           "type": {
+            "minLength": 1,
+            "type": "string"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "temp": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "comment": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+           },
+           "type": {
+            "minLength": 1,
+            "type": "string"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        }
+       },
+       "type": "object"
+      },
+      "networks": {
+       "items": {
+        "additionalProperties": false,
+        "properties": {
+         "block_type": {
+          "type": "string"
+         },
+         "box_inputs": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "constant_value": {
+             "type": "string"
+            },
+            "datatype": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "name": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "operand": {
+             "additionalProperties": false,
+             "properties": {
+              "constant_value": {
+               "type": "string"
+              },
+              "datatype": {
+               "minLength": 1,
+               "type": "string"
+              },
+              "name": {
+               "minLength": 1,
+               "type": "string"
+              },
+              "scope": {
+               "type": "string"
+              }
+             },
+             "type": "object"
+            },
+            "port": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "scope": {
+             "type": "string"
+            }
+           },
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "box_outputs": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "constant_value": {
+             "type": "string"
+            },
+            "datatype": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "name": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "operand": {
+             "additionalProperties": false,
+             "properties": {
+              "constant_value": {
+               "type": "string"
+              },
+              "datatype": {
+               "minLength": 1,
+               "type": "string"
+              },
+              "name": {
+               "minLength": 1,
+               "type": "string"
+              },
+              "scope": {
+               "type": "string"
+              }
+             },
+             "type": "object"
+            },
+            "port": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "scope": {
+             "type": "string"
+            }
+           },
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "call_name": {
+          "type": "string"
+         },
+         "comment": {
+          "type": "string"
+         },
+         "disabled_eno": {
+          "type": "boolean"
+         },
+         "enable": {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "scope": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         },
+         "equation": {
+          "type": "string"
+         },
+         "et": {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "scope": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         },
+         "fanout": {
+          "items": {
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "input": {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "scope": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         },
+         "instance": {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "scope": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         },
+         "open_outputs": {
+          "items": {
+           "type": "string"
+          },
+          "type": "array"
+         },
+         "outputs": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "constant_value": {
+             "type": "string"
+            },
+            "datatype": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "name": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "scope": {
+             "type": "string"
+            }
+           },
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "parameters": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "datatype": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "direction": {
+             "type": "string"
+            },
+            "name": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "operand": {
+             "additionalProperties": false,
+             "properties": {
+              "constant_value": {
+               "type": "string"
+              },
+              "datatype": {
+               "minLength": 1,
+               "type": "string"
+              },
+              "name": {
+               "minLength": 1,
+               "type": "string"
+              },
+              "scope": {
+               "type": "string"
+              }
+             },
+             "type": "object"
+            },
+            "section": {
+             "type": "string"
+            }
+           },
+           "required": [
+            "name",
+            "operand"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "part_name": {
+          "minLength": 1,
+          "type": "string"
+         },
+         "pt": {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "scope": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         },
+         "q": {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "scope": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         },
+         "r": {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "datatype": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "name": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "scope": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         },
+         "stages": {
+          "items": {
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "template_values": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "name": {
+             "minLength": 1,
+             "type": "string"
+            },
+            "value": {
+             "type": "string"
+            },
+            "value_type": {
+             "type": "string"
+            }
+           },
+           "required": [
+            "name",
+            "value"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "timer": {
+          "type": "string"
+         },
+         "title": {
+          "type": "string"
+         },
+         "type": {
+          "description": "Topology-free PLCCode network discriminator for this writer: instruction_box, timer, fb_call, or move. Do not put contacts, branches, coils, fanout, or other power-flow topology here; send those plans to inoproshop_lad_generate_contact_bloc",
+          "enum": [
+           "instruction_box",
+           "timer",
+           "fb_call",
+           "move"
+          ],
+          "type": "string"
+         },
+         "version": {
+          "type": "string"
+         }
+        },
+        "required": [
+         "type"
+        ],
+        "type": "object"
+       },
+       "maxItems": 64,
+       "minItems": 1,
+       "type": "array"
+      },
+      "schema_version": {
+       "type": "string"
+      },
+      "target_family": {
+       "type": "string"
+      },
+      "title": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "block_name",
+      "networks"
+     ],
+     "type": "object"
+    }
+   },
+   "required": [
+    "plan",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  },
+  "name": "inoproshop_lad_generate_block",
+  "permission": "DangerFullAccess"
+ },
+ "contractHash": "16d38b19d87af0329fe143a4ceadf772207b878c9dfa2aa7eb1f2576fc2493af",
+ "name": "inoproshop_lad_generate_block",
+ "schemaHash": "8069b017f6305c89e200590ddc8630f089732c2ce451e23c41ee1e1d3d19b1d0"
+}

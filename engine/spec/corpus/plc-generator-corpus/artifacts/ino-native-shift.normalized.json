@@ -1,0 +1,35 @@
+[
+  {
+    "ok": true,
+    "errors": [],
+    "normalized": {
+      "instruction": "SHL",
+      "operatorEnum": "Shl",
+      "dataType": "WORD",
+      "inputs": [
+        {
+          "index": 0,
+          "name": "IN",
+          "type": "WORD",
+          "value": "Bits"
+        },
+        {
+          "index": 1,
+          "name": "N",
+          "type": "DINT",
+          "value": "1"
+        }
+      ],
+      "inouts": [],
+      "outputs": [
+        {
+          "index": 0,
+          "name": "OUT",
+          "type": "WORD",
+          "value": "Shifted"
+        }
+      ],
+      "instance": null
+    }
+  }
+]

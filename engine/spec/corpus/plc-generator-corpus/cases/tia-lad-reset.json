@@ -1,0 +1,88 @@
+{
+  "id": "tia-lad-reset",
+  "tool": "tia_lad_generate_block_xml",
+  "route": "tia",
+  "title": "条件驱动置位/复位线圈 RCoil",
+  "covers": [
+    "contact_coil",
+    "reset-coil"
+  ],
+  "language": "LAD",
+  "versions": [
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "contact_coil",
+    "reset-coil",
+    "条件驱动置位/复位线圈",
+    "RCoil",
+    "tia",
+    "LAD",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "条件驱动置位/复位线圈 RCoil"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FB_Example_reset",
+      "block_type": "FB",
+      "target_family": "S7-1500",
+      "interface": {
+        "input": [
+          {
+            "name": "Request",
+            "datatype": "Bool"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "Bool"
+          }
+        ],
+        "static_members": []
+      },
+      "networks": [
+        {
+          "type": "contact_coil",
+          "contacts": [
+            {
+              "operand": {
+                "name": "Request"
+              }
+            }
+          ],
+          "coil": {
+            "operand": {
+              "name": "Q"
+            },
+            "kind": "RCoil"
+          }
+        }
+      ]
+    }
+  },
+  "expected": [
+    "输出使用 RCoil，不是每扫描无条件赋值的普通线圈。",
+    "同一状态多个网络写入时必须明确扫描顺序和置复位优先级。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-lad-reset.offline-generation.json",
+      "sha256": "9668008152a212460f3f1f3b24ef3e19b35987aaf91f59886d0fe75c8e6699db"
+    }
+  ]
+}

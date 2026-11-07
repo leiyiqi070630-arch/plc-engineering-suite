@@ -1,0 +1,116 @@
+{
+  "id": "tia-lad-parallel",
+  "tool": "tia_lad_generate_block_xml",
+  "route": "tia",
+  "title": "两个并联入口",
+  "covers": [
+    "contact_coil",
+    "parallel"
+  ],
+  "language": "LAD",
+  "versions": [
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "contact_coil",
+    "parallel",
+    "两个并联入口",
+    "tia",
+    "LAD",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "两个并联入口"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FB_Example_parallel",
+      "block_type": "FB",
+      "target_family": "S7-1500",
+      "interface": {
+        "input": [
+          {
+            "name": "A",
+            "datatype": "Bool"
+          },
+          {
+            "name": "B",
+            "datatype": "Bool"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "Bool"
+          }
+        ],
+        "static_members": []
+      },
+      "networks": [
+        {
+          "type": "contact_coil",
+          "branches": [
+            {
+              "contacts": [
+                {
+                  "operand": {
+                    "name": "A"
+                  }
+                }
+              ]
+            },
+            {
+              "contacts": [
+                {
+                  "operand": {
+                    "name": "B"
+                  }
+                }
+              ]
+            }
+          ],
+          "coil": {
+            "operand": {
+              "name": "Q"
+            },
+            "kind": "Coil"
+          }
+        }
+      ]
+    }
+  },
+  "expected": [
+    "两个并联入口"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-lad-parallel.offline-generation.json",
+      "sha256": "4cb6de41bd8099abd07e4085848feff66606445a0900e73b114f3b27d0eea5fb"
+    },
+    {
+      "stage": "behavior",
+      "path": "evidence/tia-lad-parallel.behavior.json",
+      "sha256": "0e736728bd511dc913cdb582dcb980ad3908de5f7094d9760af9000e75d88984"
+    }
+  ],
+  "behaviorSpec": {
+    "inputs": [
+      "A",
+      "B"
+    ],
+    "output": "Q",
+    "expression": "A or B"
+  }
+}

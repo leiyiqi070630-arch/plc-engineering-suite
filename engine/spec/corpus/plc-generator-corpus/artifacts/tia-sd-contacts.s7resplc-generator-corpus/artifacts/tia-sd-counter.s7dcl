@@ -1,0 +1,31 @@
+{
+    S7_Optimized := "TRUE";
+    S7_Language := "LAD";
+}
+FUNCTION_BLOCK "FB_SD_counter"
+    VAR_INPUT
+        Pulse : Bool;
+        Reset : Bool;
+    END_VAR
+    VAR_OUTPUT
+        Q : Bool;
+        Count : Int;
+    END_VAR
+    VAR
+        { S7_Setpoint := "False" }
+        Counter : CTU_INT;
+    END_VAR
+
+    { S7_Language := "LAD" }
+    NETWORK
+        RUNG wire#powerrail
+            Contact( #Pulse )
+            #Counter.CTU{ value_type := Int }(
+                R := #Reset,
+                PV := 10,
+                CV => #Count
+            )
+            Coil( #Q )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

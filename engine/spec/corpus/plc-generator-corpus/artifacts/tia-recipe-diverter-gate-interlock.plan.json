@@ -1,0 +1,154 @@
+{
+  "block_name": "FB_Recipe_diverter_gate_interlock",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "RouteACmd"
+      },
+      {
+        "datatype": "Bool",
+        "name": "RouteBCmd"
+      },
+      {
+        "datatype": "Bool",
+        "name": "RouteALimit"
+      },
+      {
+        "datatype": "Bool",
+        "name": "RouteBLimit"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ProductPresent"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultActive"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "GateAOutput"
+      },
+      {
+        "datatype": "Bool",
+        "name": "GateBOutput"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DiverterReady"
+      }
+    ],
+    "static_members": []
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "DiverterReady",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ProductPresent",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Diverter ready",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "GateAOutput",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "DiverterReady",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "RouteACmd",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "RouteALimit",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "GateBOutput",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Route A gate interlock",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "GateBOutput",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "DiverterReady",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "RouteBCmd",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "RouteBLimit",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "GateAOutput",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Route B gate interlock",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

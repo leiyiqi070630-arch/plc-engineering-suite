@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-hmi-pump-overview-page",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "ea3429ed26156a6c3d19f4415d602d5d835a71f0bbc2ee6bcd4658d7b880338f",
+  "specificationHash": "d147c76c42038431deded338eea5d5404a957ebf723b79b1480af543f7934622",
+  "contractHash": "5de4abc3305f27d48655b24da7717fae5df5c3c6753a1d68100de3c01cdff844",
+  "runnerHash": "bf5c4ce44a116ce630618f7fc2b0bba1254986f48f1107104b42bf55b707656c",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-10-04T15:51:49.322306+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-hmi-pump-overview-page.xml",
+      "sha256": "53084fd79ef81673d85467f53ac04b114ca59ce48ea501a32dc3f744d575410a"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

@@ -1,0 +1,29 @@
+{
+  "caseId": "ino-contact-tp",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "5837d9bc4f2f01dd3ebd3fd6cfa9831d8e2bd04624146c85fca0119f9b1f2475",
+  "specificationHash": "c11499dab3575e3cfea0f924f15b395b3d575ab9318574b1eb78515b4107be82",
+  "contractHash": "dd7207b2aad12c127e5f68ef4a70a4458eb6ff8f4297317b6886edaf661e8a45",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "bridgeSourceHashes": {
+      "contact_lad_compiler.py": "b6755127695bab960413453c1b02b2c83adc77577689c3e333ddfc6249405b2e",
+      "lad_generator.py": "1c1124b1026a0b0f83d483677f7f5cfbcbc759b103d547806caf1165be606c92",
+      "persistent_bridge.py": "45ef88ef99eaf316d24287cf08b036502caffbf1315c566ced0544c81ac73293"
+    },
+    "targetFormat": "InoProShop V1.10.0.3 native serialization"
+  },
+  "checkedAt": "2026-09-20T11:54:36.180704+00:00",
+  "checks": [
+    "Original source compiler validation passed",
+    "Generated native XML parses; no IDE import"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/ino-contact-tp.xml",
+      "sha256": "95746cd189442346836d689ca99645ea187da3419b88377f6ac269309870c153"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

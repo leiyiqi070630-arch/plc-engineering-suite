@@ -1,0 +1,33 @@
+{
+ "contract": {
+  "description": "ALIAS — call codesys_lad_generate_native instead; legacy/diagnostic use only. Resolve one installed LD/FBD signature and construct a parameterized LAD POU directly through InoProShop's native NWL Network/Box/Operand r…",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_native_lad_instruction",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "instruction": {
+     "minLength": 1,
+     "type": "string"
+    }
+   },
+   "required": [
+    "instruction",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  },
+  "name": "codesys_lad_native_generate_instruction",
+  "permission": "DangerFullAccess"
+ },
+ "contractHash": "dc7dcbb44aeec9d9dcb7d591e1e5a1995bf8e38392748c795cdc0a117ccfe185",
+ "name": "codesys_lad_native_generate_instruction",
+ "schemaHash": "b7326cac70835ff1e8bfe3248cba76a397324cbf9ad01b6f6181554782dc1295"
+}

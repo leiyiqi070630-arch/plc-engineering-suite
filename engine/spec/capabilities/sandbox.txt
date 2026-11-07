@@ -1,0 +1,15 @@
+[knowledge] source=embedded files=771 bytes=15710204
+Sandbox
+  Enabled           true
+  Active            false
+  Supported         false
+  In container      false
+  Requested ns      true
+  Active ns         false
+  Requested net     false
+  Active net        false
+  Filesystem mode   workspace-only
+  Filesystem active true
+  Allowed mounts    <none>
+  Markers           <none>
+  Fallback reason   namespace isolation unavailable (requires Linux with `unshare`)

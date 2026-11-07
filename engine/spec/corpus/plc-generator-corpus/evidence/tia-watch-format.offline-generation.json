@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-watch-format",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "bc6506e88bed80a1fe500d17cfc1c061302016592ecc1d549cae251a6deca4f5",
+  "specificationHash": "4eea4f83b0a140a71a3a81457e0d7ba34f413887716f20ce4866afc10c5ded90",
+  "contractHash": "132e7a1430aa2765cfbc28c523d863eb285a1edc707e4711b91e675f8bc39f9f",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:42.893476+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-watch-format.xml",
+      "sha256": "47049990bc44c33d8b15a9629d9e4e2cb5881ecddd7fcafdf54234aee267839e"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

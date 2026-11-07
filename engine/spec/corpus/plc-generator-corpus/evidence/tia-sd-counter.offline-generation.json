@@ -1,0 +1,30 @@
+{
+  "caseId": "tia-sd-counter",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "649b677276bd61d72bc5296d86693a371ec4fe51f5916cdf63aac162929b8c5c",
+  "specificationHash": "b640d35400433e26130f37dd00bcca094cf0930e3e32a5fe5ac1b0e644415a0f",
+  "contractHash": "b97ddb65d4ea1a18dba597e01828476209bf4481e281fbb4121d55528d7de0b9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V20",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:42.305954+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "SD text and resource document both present; CRLF checked"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-sd-counter.s7dcl",
+      "sha256": "b57bfaa99f6dce6e996022ead4f22060b2cf725f626b31588c070bc39b7d2ed4"
+    },
+    {
+      "path": "artifacts/tia-sd-counter.s7res",
+      "sha256": "f0de2b7b5e3cc766fd54c97a9b14843273a0066f2434b6919bf7ff0fb20c48d0"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

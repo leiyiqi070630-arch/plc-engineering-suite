@@ -1,0 +1,22 @@
+{
+    S7_Optimized := "TRUE";
+    S7_Language := "LAD";
+}
+FUNCTION_BLOCK "FB_SD_call"
+    VAR_INPUT
+        A : Int;
+    END_VAR
+    VAR_OUTPUT
+        Result : Int;
+    END_VAR
+
+    { S7_Language := "LAD" }
+    NETWORK
+        RUNG wire#powerrail
+            FC_Compute(
+                A := #A,
+                Result => #Result
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

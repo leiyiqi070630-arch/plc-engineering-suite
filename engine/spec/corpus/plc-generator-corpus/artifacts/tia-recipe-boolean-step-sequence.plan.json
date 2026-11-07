@@ -1,0 +1,305 @@
+{
+  "block_name": "FB_Recipe_boolean_step_sequence",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "StartPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ResetPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Sensor1"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Sensor2"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DoneSensor"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "Step1Output"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Step2Output"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Step3Output"
+      }
+    ],
+    "static_members": [
+      {
+        "datatype": "Bool",
+        "name": "Step1"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Step2"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Step3"
+      }
+    ]
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "set_coil",
+        "operand": {
+          "name": "Step1",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "StartPB",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Start step 1",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "Step1",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ResetPB",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Reset step 1",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "Step2",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ResetPB",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Reset step 2",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "Step3",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ResetPB",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Reset step 3",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Step1Output",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step1",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Step 1 output",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "set_coil",
+        "operand": {
+          "name": "Step2",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step1",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "Sensor1",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Advance to step 2",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "Step1",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step2",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Leave step 1",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Step2Output",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step2",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Step 2 output",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "set_coil",
+        "operand": {
+          "name": "Step3",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step2",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "Sensor2",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Advance to step 3",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "Step2",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step3",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Leave step 2",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Step3Output",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step3",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Step 3 output",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "Step3",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step3",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "DoneSensor",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Finish sequence",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

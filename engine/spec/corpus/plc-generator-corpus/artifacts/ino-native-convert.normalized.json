@@ -1,0 +1,29 @@
+[
+  {
+    "ok": true,
+    "errors": [],
+    "normalized": {
+      "instruction": "INT_TO_REAL",
+      "operatorEnum": "Conversion",
+      "dataType": "REAL",
+      "inputs": [
+        {
+          "index": 0,
+          "name": "IN",
+          "type": "INT",
+          "value": "Count"
+        }
+      ],
+      "inouts": [],
+      "outputs": [
+        {
+          "index": 0,
+          "name": "OUT",
+          "type": "REAL",
+          "value": "Value"
+        }
+      ],
+      "instance": null
+    }
+  }
+]

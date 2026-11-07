@@ -1,0 +1,176 @@
+{
+  "block_name": "FB_Recipe_material_feeder_interlock",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "Demand"
+      },
+      {
+        "datatype": "Bool",
+        "name": "HopperLow"
+      },
+      {
+        "datatype": "Bool",
+        "name": "HopperHigh"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DownstreamReady"
+      },
+      {
+        "datatype": "Bool",
+        "name": "JamFault"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ResetPB"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "FeederRun"
+      }
+    ],
+    "static_members": [
+      {
+        "datatype": "Bool",
+        "name": "FeedRequest"
+      },
+      {
+        "datatype": "Bool",
+        "name": "JamLatched"
+      }
+    ]
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "set_coil",
+        "operand": {
+          "name": "JamLatched",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "JamFault",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Jam latch",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "JamLatched",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ResetPB",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "JamFault",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Jam reset",
+      "type": "contact_coil"
+    },
+    {
+      "branches": [
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "Demand",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "FeedRequest",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "FeedRequest",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "HopperLow",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "HopperHigh",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "DownstreamReady",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "JamLatched",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Feed request seal-in",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "FeederRun",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "FeedRequest",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Feeder run",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

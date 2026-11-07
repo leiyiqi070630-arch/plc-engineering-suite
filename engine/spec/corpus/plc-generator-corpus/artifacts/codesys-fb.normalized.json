@@ -1,0 +1,46 @@
+{
+  "block_name": "Example_fb",
+  "networks": [
+    {
+      "type": "fb",
+      "instruction": "SR",
+      "instance": "Latch",
+      "power": {
+        "port": "SET1",
+        "value": "Set"
+      },
+      "data": {
+        "RESET": "Reset"
+      },
+      "dataPins": [
+        {
+          "port": "RESET",
+          "expr": "Reset"
+        }
+      ],
+      "outputs": {
+        "Q1": "Latched"
+      },
+      "outputPins": [
+        {
+          "port": "Q1",
+          "expr": "Latched"
+        }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "Set",
+      "type": "BOOL"
+    },
+    {
+      "name": "Reset",
+      "type": "BOOL"
+    },
+    {
+      "name": "Latched",
+      "type": "BOOL"
+    }
+  ]
+}

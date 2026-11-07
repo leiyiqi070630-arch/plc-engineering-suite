@@ -1,0 +1,12 @@
+[knowledge] source=embedded files=771 bytes=15710204
+Agents
+  7 active agents
+
+User home roots:
+  plc-architect · Read-only architecture review for a genuinely unresolved whole-program block map, IO ownership, state structure, and data strategy. · inherit
+  plc-logic-review · Read-only semantic audit of completed PLC code against requirements, state/timing behavior, resets, faults, and compiler-invisible logic defects. · inherit
+  plc-red-team · Read-only adversarial review of a concrete draft for hollow blocks, missing features, unsafe shortcuts, groupthink, and unsupported claims. · inherit
+  plc-research-evidence · Read-only evidence research for one unresolved PLC fact such as instruction pins, version behavior, addressing, or a standards clause. · inherit
+  plc-safety-reviewer · Read-only safety review of a concrete design or program for fail-safe behavior, restart inhibition, interlocks, latching, and certified-safety boundaries. · inherit
+  plc-synthesizer · Read-only convergence of several completed sub-agent reports into one executable PLC design with disagreements and evidence resolved. · inherit
+  plc-technical-reviewer · Read-only feasibility audit of a concrete PLC draft against route, instruction, data-type, instance, generator, import, and compile constraints. · inherit

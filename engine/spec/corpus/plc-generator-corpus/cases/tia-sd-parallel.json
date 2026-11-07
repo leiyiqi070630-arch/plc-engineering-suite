@@ -1,0 +1,96 @@
+{
+  "id": "tia-sd-parallel",
+  "tool": "tia_sd_generate_block",
+  "route": "tia",
+  "title": "SD 高层并联自动展开 wire#",
+  "covers": [
+    "wire",
+    "parallel"
+  ],
+  "language": "SD",
+  "versions": [
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "wire",
+    "parallel",
+    "SD",
+    "高层并联自动展开",
+    "wire#",
+    "tia",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "SD 高层并联自动展开 wire#"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FB_SD_Parallel",
+      "block_type": "FB",
+      "interface": {
+        "input": [
+          {
+            "name": "A",
+            "datatype": "Bool"
+          },
+          {
+            "name": "B",
+            "datatype": "Bool"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "Bool"
+          }
+        ]
+      },
+      "networks": [
+        {
+          "branches": [
+            {
+              "contacts": [
+                {
+                  "operand": {
+                    "name": "A"
+                  }
+                }
+              ]
+            },
+            {
+              "contacts": [
+                {
+                  "operand": {
+                    "name": "B"
+                  }
+                }
+              ]
+            }
+          ],
+          "coil": {
+            "operand": {
+              "name": "Q"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": [
+    "A OR B 驱动 Q；wire# 名称和汇合由生成器构造。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-sd-parallel.offline-generation.json",
+      "sha256": "ca04d3dd0b01558238fdecf98a714dfbdee25266e80aea550ae19ee723207c2e"
+    }
+  ]
+}

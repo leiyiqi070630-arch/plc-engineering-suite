@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-lad-optimized-ob",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "d8964b94d98395a3a8bbc99232d801141fc00530ed5e8f2d293b8b060f65ad28",
+  "specificationHash": "ccf956ef93714a0e772f6e1b9f0f5dd412c7dbc9a23abeb5d2a09ad40397eb2c",
+  "contractHash": "0e273628c96e0d5b04bb7a0e14a06b8530a74c30d590616a904cdfaf41ce5fa9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:38.666323+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-lad-optimized-ob.xml",
+      "sha256": "f85e7ff3a774358af6dcf93fc6fc2b1a50ae8ba30ba2ddb79dc31d4dffc115ea"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

@@ -1,0 +1,68 @@
+{
+  "id": "mitsubishi-labels",
+  "tool": "mitsubishi_label_csv_generate",
+  "route": "mitsubishi",
+  "title": "标签地址、常量与中文注释",
+  "covers": [
+    "labels",
+    "constants",
+    "encoding"
+  ],
+  "language": "CSV",
+  "versions": [],
+  "keywords": [
+    "labels",
+    "constants",
+    "encoding",
+    "标签地址、常量与中文注释",
+    "mitsubishi",
+    "CSV",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "标签地址、常量与中文注释"
+  ],
+  "input": {
+    "path": "example-labels.csv",
+    "project_name": "ExampleMotor",
+    "labels": [
+      {
+        "name": "Start",
+        "device": "X0",
+        "data_type": "BOOL",
+        "comment": "启动按钮"
+      },
+      {
+        "name": "Motor",
+        "device": "Y0",
+        "data_type": "BOOL"
+      },
+      {
+        "name": "Count",
+        "device": "D0",
+        "data_type": "INT"
+      },
+      {
+        "name": "MaxCount",
+        "class": "VAR_GLOBAL_CONSTANT",
+        "data_type": "INT",
+        "constant": "100"
+      }
+    ]
+  },
+  "expected": [
+    "写出 UTF-16LE BOM 的 TAB 分隔标签文件；X/Y 用八进制地址，不能出现 X8/Y9。"
+  ],
+  "preconditions": [
+    "目标 example-labels.csv 是允许写入的新文件；真实标签类型、地址、常量类别符合目标 GX 工程。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/mitsubishi-labels.offline-generation.json",
+      "sha256": "96fc8cfbe784f562ddbe1a7f4013f240d12981f33e1e17eb90c3cdf689307f86"
+    }
+  ]
+}

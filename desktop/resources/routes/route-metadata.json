@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Single source of truth for PLC route metadata: the closed set of supported routes (vendor / family / language / integration / lint profile / default model) plus the family-token classification rules and the TIA Openness version list. Consumed by the Rust engine (route_metadata::canonical_family and the route gate) and the WPF desktop (ProjectTemplate catalog, InferProfile, DefaultModelFor). Add or change a route HERE; do not re-encode the mapping in engine or desktop code.",
+  "familyTokens": [
+    {
+      "token": "weinview",
+      "match": [
+        "weinview",
+        "easybuilder_pro",
+        "easybuilder pro",
+        "ebpro"
+      ]
+    },
+    {
+      "token": "autoshop",
+      "match": [
+        "autoshop",
+        "h5u"
+      ]
+    },
+    {
+      "token": "s7_200",
+      "match": [
+        "s7_200",
+        "s7200",
+        "s7-200"
+      ]
+    },
+    {
+      "token": "fx3",
+      "match": [
+        "fx3"
+      ]
+    },
+    {
+      "token": "fx2",
+      "match": [
+        "fx2"
+      ]
+    },
+    {
+      "token": "inoproshop",
+      "match": [
+        "inoproshop",
+        "inovance",
+        "am600",
+        "am400",
+        "am300",
+        "am500",
+        "am800"
+      ]
+    },
+    {
+      "token": "codesys",
+      "match": [
+        "codesys"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "id": "mitsubishi-gxworks3-native",
+      "name": "Mitsubishi GX Works3 Native Engineering",
+      "vendor": "mitsubishi",
+      "vendorName": "Mitsubishi",
+      "family": "gxworks3",
+      "series": "iQ-F / iQ-R",
+      "software": "GX Works3",
+      "format": "Native GX3 / IEC61131-10 ST XML / LAD CSV",
+      "language": "st",
+      "displayLanguage": "ST",
+      "canvas": "code",
+      "mainFile": "",
+      "integration": "gxworks3_native",
+      "lintProfile": "",
+      "rulesetVersion": "gxworks3_native_engineering_v1",
+      "defaultModel": ""
+    },
+    {
+      "id": "mitsubishi-gxworks2-native",
+      "name": "Mitsubishi GX Works2 Native Engineering",
+      "vendor": "mitsubishi",
+      "vendorName": "Mitsubishi",
+      "family": "gxworks2",
+      "series": "FX / Q / L",
+      "software": "GX Works2",
+      "format": "Native GXW / structured ST / simple LAD",
+      "language": "st",
+      "displayLanguage": "ST / LAD",
+      "canvas": "code",
+      "mainFile": "",
+      "integration": "gxworks2_native",
+      "lintProfile": "",
+      "rulesetVersion": "gxworks2_native_engineering_v1",
+      "defaultModel": ""
+    },
+    {
+      "id": "weinview-native",
+      "name": "Weinview EasyBuilder Pro Native HMI",
+      "vendor": "weinview",
+      "vendorName": "Weinview",
+      "family": "weinview",
+      "series": "",
+      "software": "EasyBuilder Pro 6.10.02.421 (zh-CN)",
+      "format": "Native EMTP / offline macro",
+      "language": "hmi",
+      "displayLanguage": "HMI",
+      "canvas": "native",
+      "mainFile": "",
+      "integration": "weinview_native",
+      "lintProfile": "",
+      "rulesetVersion": "weinview_61002421_tk_macro_v1",
+      "defaultModel": ""
+    },
+    {
+      "id": "siemens-s7-200-smart-awl",
+      "name": "Siemens S7-200 SMART AWL/STL",
+      "vendor": "siemens",
+      "vendorName": "Siemens",
+      "family": "s7_200",
+      "series": "S7-200 SMART",
+      "software": "STEP 7 Micro/WIN SMART",
+      "format": "AWL / STL text",
+      "language": "awl",
+      "displayLanguage": "AWL",
+      "canvas": "code",
+      "mainFile": "main.awl",
+      "integration": "file_import",
+      "lintProfile": "siemens.s7_200.awl",
+      "rulesetVersion": "s7_200_awl_micro_win_v1",
+      "defaultModel": "S7-200 SMART ST40"
+    },
+    {
+      "id": "siemens-s7-200-awl",
+      "name": "Siemens S7-200 Classic AWL/STL",
+      "vendor": "siemens",
+      "vendorName": "Siemens",
+      "family": "s7_200",
+      "series": "S7-200 Classic",
+      "software": "STEP 7 Micro/WIN",
+      "format": "AWL / STL text",
+      "language": "awl",
+      "displayLanguage": "AWL",
+      "canvas": "code",
+      "mainFile": "main.awl",
+      "integration": "file_import",
+      "lintProfile": "siemens.s7_200.awl",
+      "rulesetVersion": "s7_200_awl_micro_win_v1",
+      "defaultModel": "S7-200"
+    },
+    {
+      "id": "siemens-tia-openness",
+      "name": "Siemens TIA Openness XML",
+      "vendor": "siemens",
+      "vendorName": "Siemens",
+      "family": "tia_openness",
+      "series": "S7-300/400/1200/1500",
+      "software": "TIA Portal V18 Openness",
+      "format": "XML / SimaticML",
+      "language": "xml",
+      "displayLanguage": "XML",
+      "canvas": "code",
+      "mainFile": "main.xml",
+      "integration": "tia_openness",
+      "lintProfile": "",
+      "rulesetVersion": "",
+      "defaultModel": ""
+    },
+    {
+      "id": "inoproshop-lad",
+      "name": "Inovance InoProShop LAD",
+      "vendor": "inovance",
+      "vendorName": "Inovance",
+      "family": "inoproshop",
+      "series": "AM300 / AM400 / AM500 / AM600 / AM800",
+      "software": "InoProShop V1.10.0.3",
+      "format": "PLCopenXML / vendor native XML",
+      "language": "xml",
+      "displayLanguage": "LAD",
+      "canvas": "lad",
+      "mainFile": "main.xml",
+      "integration": "inoproshop_bridge",
+      "lintProfile": "inoproshop.lad",
+      "rulesetVersion": "inoproshop_lad_v1",
+      "defaultModel": "AM600-CPU1608TP/TN"
+    },
+    {
+      "id": "codesys-v35-lad",
+      "name": "CODESYS V3.5 LAD/ST",
+      "vendor": "codesys",
+      "vendorName": "CODESYS",
+      "family": "codesys",
+      "series": "V3.5 SP22 (Ladder plugin)",
+      "software": "CODESYS Development System V3.5 SP22",
+      "format": "PLCopenXML / ST text",
+      "language": "st",
+      "displayLanguage": "LAD/ST",
+      "canvas": "lad",
+      "mainFile": "main.st",
+      "integration": "codesys_bridge",
+      "lintProfile": "",
+      "rulesetVersion": "",
+      "defaultModel": "CODESYS V3.5 SP22 Patch 3"
+    },
+    {
+      "id": "autoshop-litest",
+      "name": "Inovance AutoShop Native Engineering",
+      "vendor": "inovance",
+      "vendorName": "Inovance",
+      "family": "autoshop",
+      "series": "H0U / H1U / H2U / H3U / H5U / Easy (native catalog)",
+      "software": "AutoShop V4.11.0.5",
+      "format": "Native HCP / model-specific language",
+      "language": "st",
+      "displayLanguage": "LiteST",
+      "canvas": "native",
+      "mainFile": "",
+      "integration": "autoshop_bridge",
+      "lintProfile": "",
+      "rulesetVersion": "",
+      "defaultModel": ""
+    }
+  ],
+  "tiaVersions": {
+    "supportedMajor": [
+      "V15",
+      "V16",
+      "V17",
+      "V18",
+      "V19",
+      "V20",
+      "V21"
+    ],
+    "supportedMinor": [
+      "V15.1"
+    ]
+  }
+}

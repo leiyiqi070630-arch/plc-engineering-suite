@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-runtime-accumulator-tonr",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "c1524a254cf166fe316d56c9ffe147e6d034f5c50b3af1b1753f5c1e4b1eaf87",
+  "specificationHash": "eadce1bd6a141bcef4a2b9a609c1c8c7df9d3f944f93899de76a8504f4aa6093",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:41.226503+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-runtime-accumulator-tonr.plan.json",
+      "sha256": "b25a97ab71b97ac6108c15640c9c74d894472f92746215acfa3f4f0add84acee"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

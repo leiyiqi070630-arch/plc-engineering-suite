@@ -1,0 +1,471 @@
+{
+ "contract": {
+  "description": "Canonical contact/timer LAD generator: calls lad.generate_contact_block once with the exact plan schema below, imports the native graph, saves it, and returns independent precompile/compile diagnostics. plan uses interface={input,inout,output,static_members,local,temp} arrays of {name,datatype}; do not pass a declaration string. contact_coil semantics: coil=(OR of branches[] legs) AND (AND of contacts[] series terms); a seal-in rung uses branches=[start leg,self-coil leg] and contacts=[NC stop/interlocks]. timer uses timer/instance/input/q/pt; instance,input,q,et accept either a member name string or {name}, and every timer instance MUST be declared in interface.static_members with datatype TON/TOF/TP/TONR. INOPROSHOP NATIVE CONSTRAINT (C23, verified): every contact_coil network needs at least TWO series contacts when it has no branches, and a network WITH branches needs at least one series contact plus two or more branch legs â€” a one-contact rung is not importable; add an enable/interlock contact or restructure as branches. Pass task=<exact task name, e.g. MainTask> and the bridge wires the generated PROGRAM into that task automatically (cross-task conflict preflight + exact readback) â€” do NOT follow up with task_pou_set; the default PLC_PRG stays unless you delete it with inoproshop_object_delete. Examples below cover seal-in, interlock, TON, and flash patterns; copy their shapes. Use codesys_lad_generate_control_recipe for the standard pump_station_control composition, and codesys_lad_generate_native when the program needs counters/latches/edges/timers/compare/logic/math/operators.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_contact_block",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "description": "Canonical contact/timer plan. interface is an object of member arrays, never a VAR_* declaration string. Each contact_coil network needs declared contacts and a writable coil; timer networks use TON/TOF/TP/TONR with instance, input, q, and pt.",
+     "examples": [
+      {
+       "block_name": "MotorControl",
+       "interface": {
+        "input": [
+         {
+          "datatype": "BOOL",
+          "name": "xStart"
+         },
+         {
+          "datatype": "BOOL",
+          "name": "xStop"
+         },
+         {
+          "datatype": "BOOL",
+          "name": "xSafe"
+         }
+        ],
+        "output": [
+         {
+          "datatype": "BOOL",
+          "name": "qMotor"
+         }
+        ],
+        "static_members": []
+       },
+       "networks": [
+        {
+         "branches": [
+          {
+           "contacts": [
+            {
+             "name": "xStart"
+            }
+           ]
+          },
+          {
+           "contacts": [
+            {
+             "name": "qMotor"
+            }
+           ]
+          }
+         ],
+         "coil": {
+          "name": "qMotor"
+         },
+         "contacts": [
+          {
+           "name": "xStop",
+           "negated": true
+          },
+          {
+           "name": "xSafe"
+          }
+         ],
+         "title": "seal-in: start OR self, AND NOT stop, AND safe",
+         "type": "contact_coil"
+        }
+       ]
+      },
+      {
+       "block_name": "DelayPump",
+       "interface": {
+        "input": [
+         {
+          "datatype": "BOOL",
+          "name": "xRun"
+         }
+        ],
+        "output": [
+         {
+          "datatype": "BOOL",
+          "name": "qOn"
+         }
+        ],
+        "static_members": [
+         {
+          "datatype": "TON",
+          "name": "tonDelay"
+         }
+        ]
+       },
+       "networks": [
+        {
+         "input": {
+          "name": "xRun"
+         },
+         "instance": {
+          "name": "tonDelay"
+         },
+         "pt": {
+          "constant_value": "T#3s"
+         },
+         "q": {
+          "name": "qOn"
+         },
+         "timer": "TON",
+         "title": "3s ON delay",
+         "type": "timer"
+        }
+       ]
+      }
+     ],
+     "properties": {
+      "block_name": {
+       "type": "string"
+      },
+      "interface": {
+       "additionalProperties": false,
+       "properties": {
+        "inout": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "datatype": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "name",
+           "datatype"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "input": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "datatype": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "name",
+           "datatype"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "local": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "datatype": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "name",
+           "datatype"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "output": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "datatype": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "name",
+           "datatype"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "static_members": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "datatype": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "name",
+           "datatype"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        },
+        "temp": {
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "datatype": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "name",
+           "datatype"
+          ],
+          "type": "object"
+         },
+         "type": "array"
+        }
+       },
+       "required": [
+        "input",
+        "output",
+        "static_members"
+       ],
+       "type": "object"
+      },
+      "networks": {
+       "items": {
+        "additionalProperties": false,
+        "properties": {
+         "branches": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "contacts": {
+             "items": {
+              "additionalProperties": false,
+              "properties": {
+               "name": {
+                "type": "string"
+               },
+               "negated": {
+                "type": "boolean"
+               }
+              },
+              "required": [
+               "name"
+              ],
+              "type": "object"
+             },
+             "maxItems": 1,
+             "minItems": 1,
+             "type": "array"
+            }
+           },
+           "required": [
+            "contacts"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "coil": {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           },
+           "negated": {
+            "type": "boolean"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         },
+         "contacts": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "name": {
+             "type": "string"
+            },
+            "negated": {
+             "type": "boolean"
+            }
+           },
+           "required": [
+            "name"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "et": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "additionalProperties": false,
+            "properties": {
+             "name": {
+              "type": "string"
+             }
+            },
+            "required": [
+             "name"
+            ],
+            "type": "object"
+           }
+          ]
+         },
+         "input": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "additionalProperties": false,
+            "properties": {
+             "name": {
+              "type": "string"
+             },
+             "negated": {
+              "type": "boolean"
+             }
+            },
+            "required": [
+             "name"
+            ],
+            "type": "object"
+           }
+          ]
+         },
+         "instance": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "additionalProperties": false,
+            "properties": {
+             "name": {
+              "type": "string"
+             }
+            },
+            "required": [
+             "name"
+            ],
+            "type": "object"
+           }
+          ]
+         },
+         "pt": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "additionalProperties": false,
+            "properties": {
+             "constant_value": {
+              "type": "string"
+             },
+             "name": {
+              "type": "string"
+             }
+            },
+            "type": "object"
+           }
+          ]
+         },
+         "q": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "additionalProperties": false,
+            "properties": {
+             "name": {
+              "type": "string"
+             }
+            },
+            "required": [
+             "name"
+            ],
+            "type": "object"
+           }
+          ]
+         },
+         "timer": {
+          "enum": [
+           "TON",
+           "TOF",
+           "TP",
+           "TONR"
+          ],
+          "type": "string"
+         },
+         "title": {
+          "type": "string"
+         },
+         "type": {
+          "enum": [
+           "contact_coil",
+           "timer"
+          ],
+          "type": "string"
+         }
+        },
+        "required": [
+         "type"
+        ],
+        "type": "object"
+       },
+       "minItems": 1,
+       "type": "array"
+      }
+     },
+     "required": [
+      "block_name",
+      "interface",
+      "networks"
+     ],
+     "type": "object"
+    },
+    "task": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "plan",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  },
+  "name": "codesys_lad_generate_contact_block",
+  "permission": "WorkspaceWrite"
+ },
+ "contractHash": "dd7207b2aad12c127e5f68ef4a70a4458eb6ff8f4297317b6886edaf661e8a45",
+ "name": "codesys_lad_generate_contact_block",
+ "schemaHash": "717b61e699c499eeec000ed84eab4e746537250161e53526d485c7cb85067da0"
+}

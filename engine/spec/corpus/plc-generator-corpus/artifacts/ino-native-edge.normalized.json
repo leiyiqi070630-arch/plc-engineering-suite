@@ -1,0 +1,31 @@
+[
+  {
+    "fixedPortFixture": {
+      "name": "R_TRIG",
+      "pouType": "FunctionBlock",
+      "inputs": [
+        {
+          "name": "CLK",
+          "type": "BOOL"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Q",
+          "type": "BOOL"
+        }
+      ]
+    },
+    "input": {
+      "instruction": "R_TRIG",
+      "inputs": {
+        "CLK": "Signal"
+      },
+      "outputs": {
+        "Q": "Pulse"
+      },
+      "instance": "Edge"
+    },
+    "liveIdentityVerified": false
+  }
+]

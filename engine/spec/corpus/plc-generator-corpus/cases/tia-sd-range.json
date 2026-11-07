@@ -1,0 +1,96 @@
+{
+  "id": "tia-sd-range",
+  "tool": "tia_sd_generate_block",
+  "route": "tia",
+  "title": "SD 区间判断",
+  "covers": [
+    "range"
+  ],
+  "language": "SD",
+  "versions": [
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "range",
+    "SD",
+    "区间判断",
+    "tia",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "SD 区间判断"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FB_SD_range",
+      "block_type": "FB",
+      "interface": {
+        "input": [
+          {
+            "name": "Value",
+            "datatype": "Int"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "Bool"
+          }
+        ],
+        "var": [],
+        "var_retain": []
+      },
+      "networks": [
+        {
+          "rungs": [
+            {
+              "wire_in": "powerrail",
+              "elements": [
+                {
+                  "op": "range",
+                  "kind": "InRange",
+                  "min": {
+                    "constant_value": "0",
+                    "scope": "constant"
+                  },
+                  "in": {
+                    "name": "Value"
+                  },
+                  "max": {
+                    "constant_value": "100",
+                    "scope": "constant"
+                  },
+                  "src_type": "Int"
+                },
+                {
+                  "op": "coil",
+                  "operand": {
+                    "name": "Q"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expected": [
+    "SD 区间判断：生成 S7DCL 文本并保留声明与端口方向。",
+    "SD 仅适用 V20/V21；编译与行为检查另行执行。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-sd-range.offline-generation.json",
+      "sha256": "b0cd86efa065d41625ed004141b6dc53f6cc0122af7695ad244d5f93b2630b6a"
+    }
+  ]
+}

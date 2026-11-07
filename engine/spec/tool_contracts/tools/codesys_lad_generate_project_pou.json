@@ -1,0 +1,336 @@
+{
+ "contract": {
+  "description": "CANONICAL vanilla-CODESYS (SP22, CODESYS Ladder plugin) LAD generator. ONE call = ONE PROGRAM POU with the complete networks[] array (each element = one network, max 60). NETWORK TYPES - EXACT ACCEPTED SURFACE (bridge `_normalize_project_network`, measured 2026-09-10; the `type` enum in the schema below IS the complete contract: contact_coil | box | timer | counter | fb. timer and counter are SUGAR over fb - each becomes an FB-instance call with instruction+instance): (1) contact_coil - relay logic only. REQUIRED coil{target} (the bridge also accepts coil{name|value}). REQUIRED-ONE-OF contacts[] (series, each {name, negated?}; negated=true IS the NC contact and IS emitted) OR branches[] (>=2 parallel OR legs, each {contacts:[{name,negated?}]}); giving both means coil := (OR of branch legs) AND (AND of series contacts). Example: {\"type\":\"contact_coil\",\"contacts\":[{\"name\":\"xPermit\"},{\"name\":\"xStop\",\"negated\":true}],\"coil\":{\"target\":\"xOut\"}}. (2) box - ONE library FUNCTION or IEC built-in operator (a FunctionBlock here is rejected plcopen_project_box_function_only - use fb). REQUIRED instruction; outputs{PORT:target} where a built-in's output pin IS the instruction name: {\"type\":\"box\",\"instruction\":\"GT\",\"inputs\":{\"IN1\":\"iLevel\",\"IN2\":\"iSet\"},\"outputs\":{\"GT\":\"xHigh\"}}. OPTIONAL inputs{PORT:expr} (pin names validated against the live signature), enable{name} (defaults to TRUE; becomes the EN contact), coil is rejected for box networks (plcopen_project_box_coil_unsupported); wire the result through outputs. Only ONE data output. (3) timer - REQUIRED timer (TON|TOF|TP) or instruction, instance (string or {name}), input{name} (BOOL power contact wired to the FB's FIRST input pin), pt{constant_value:\"T#3s\"|name}, q{name}. OPTIONAL et{name} - schema-only, NOT wired (Q only). Example: {\"type\":\"timer\",\"timer\":\"TON\",\"instance\":\"tonDelay\",\"input\":{\"name\":\"xRun\"},\"pt\":{\"constant_value\":\"T#3s\"},\"q\":{\"name\":\"xDelayDone\"}}. (4) counter - REQUIRED counter (CTU|CTD|CTUD) or instruction, instance, input{name} (CU/CD power contact), pv{constant_value|name} (WORD-typed on the vanilla standard library - bind a WORD variable), q{name}. OPTIONAL reset{name}, load{name} (wired to RESET/LOAD when the signature has them), cv{name} - schema-only, NOT wired. Example: {\"type\":\"counter\",\"counter\":\"CTU\",\"instance\":\"ctuParts\",\"input\":{\"name\":\"xPartEdge\"},\"pv\":{\"name\":\"wTarget\"},\"q\":{\"name\":\"xBatchDone\"}}. (5) fb - the generic FB instance, for EVERY library or project-internal FunctionBlock that is not a plain timer/counter. REQUIRED instruction, instance (string or {name}), input{name} (BOOL contact wired to the FB's FIRST input pin: CTU=CU, R_TRIG=CLK, TON=IN - a data-only FB whose first pin is not BOOL must be wrapped in an ST FUNCTION_BLOCK with a BOOL first pin), outputs{EXACTLY ONE port: target} (a second output is rejected plcopen_project_fb_single_output; that one output is emitted as a coil). OPTIONAL inputs{PORT:expr} (data pins, port names matched case-insensitively, CONSTANT LITERALS ALLOWED here - unlike generic box pins). Example: {\"type\":\"fb\",\"instruction\":\"R_TRIG\",\"instance\":\"rtStart\",\"input\":{\"name\":\"xStart\"},\"outputs\":{\"Q\":\"xStartEdge\"}}. WHEN box/fb IS MANDATORY, NOT OPTIONAL: any time- or count-dependent behaviour (ON/OFF delay, pulse, PWM duty, batch count, totalizer), edge detection and every 'act once per press' step, comparisons (GT/GE/LT/LE/EQ/NE), arithmetic (ADD/SUB/MUL/DIV/MOD), selection (SEL/MUX/LIMIT/MIN/MAX), conversions, string functions, and EVERY user-FB or library-FB instance. NEVER emulate a timer or a counter with self-holding contacts or by counting scans: contact/coil networks have no time base and no count state, the phase drifts with the task period, and the defect is INVISIBLE at compile time (E2E V2 R053: a PWM period emulated with a self-holding contact kept running through the stop cycle - measured 347 ms against a nominal 2000 ms high time; only codesys_sim_assert exposed it; the fix was an explicit command contact in series with the seal-in leg). contact_coil is ONLY for genuinely Boolean relay logic: seal-in, interlock, permissive chain, lamp/valve drive. POU NAME: pass `name`, the required field in this tool schema. The bridge also accepts block_name/pouName internally for compatibility; use name in public calls. The name must be a non-reserved IEC identifier and must NOT equal an instruction name. READBACK COUNT SEMANTICS (E2E V2 R050): readbackCounts.coil/contact count every output line and every pin contact â€” a fb network's Q output line counts as a coil and its CLK/IN pin contact counts as a contact, so 2 contact_coil networks + 1 fb network can report coil=3 / contact=7. Compare the network SHAPE, not the raw counts. The bridge emits deterministic PLCopen TC6 XML, imports it through the Ladder plugin's own converter, then checks that native-export readback contains graphical nodes (ladderBodyVerified + readbackCounts). These fields prove node presence only, not correct wiring or requested control behaviour; use selected block readback and appropriate logic tests for those claims â€” a clean compile alone is NOT proof of a real LAD body. IMPORT LOCATION (E2E V1 R036 false-green trap): the POU lands in the resolved device Application node (result carries parent + importedPath) â€” never the project root, where build.compile passes 0/0/0 while the POU does not participate; pass parent only to place it elsewhere. ACCEPTANCE: ladderBodyVerified + readbackCounts AND a final whole-project compile with the POU in the task call list (codesys_task_pou_set) â€” an unreferenced POU compiles clean but never runs. TYPE CONTRACT (E2E V1 R036): CODESYS standard-library CTU/CTD/CTUD are WORD-typed â€” bind pv/cv to WORD variables (or literal values 0..65535), NOT DINT/INT. NOT GENERATABLE (verified absent on the vanilla line): SET/RESET COILS and negated coils, MOVE box, constant literals on generic box inputs, initial values on variables[] â€” use SR/RS FB networks for latches, R_TRIG/F_TRIG FB networks for edges, and SEL chains for conditional assignment. FB NETWORKS (type \"fb\"): a generic FunctionBlock instance â€” {instruction, instance, input:{name} (BOOL contact wired to the FIRST input pin â€” for CTU that pin is CU, i.e. the COUNT-ENABLE contact, not a power rail; for R_TRIG it is CLK; for TON it is IN), inputs:{PORT: expr} (data pins, CONSTANT LITERALS ALLOWED â€” unlike generic box pins), outputs:{FIRST_OUTPUT_PORT: target}}; ONLY the first output pin can be wired (the Ladder plugin editor rejects a second output, 2026-09-08 verified). instruction may be a library FB OR a PROJECT-INTERNAL user FB (E2E V2 R031 verified: a user FB created on the ST channel is called from LAD with this shape, 0/0) â€” this generator only creates PROGRAM POUs, so an FB-shaped deliverable means: ST channel creates the FB body, LAD fb networks instance and call it. The instance is auto-declared in the POU's local vars â€” do NOT also declare the same name in a GVL (silent duplicate). The timer/counter kinds are the SAME shape with friendlier fields. MACHINE-VERIFIED FBs (probe 2026-09-09: import + native-export readback + task call + whole-PLC 0/0): TON/TOF/TP/CTU/CTD/CTUD plus SR (SET1 bus / RESET data -> Q1), RS (SET bus / RESET1 data -> Q1), R_TRIG (CLK -> Q), F_TRIG (CLK -> Q). NOT in the local catalog (rejected before import with instruction_signature_unresolved): BLINK (the Util library is not referenced by the Standard.project template) and TONR (no signature) â€” do not plan on either. SCAN SEMANTICS (E2E V2 R024, verified 33-network shift at 0/0): coils evaluate in network order and a coil reads the value written EARLIER THIS SCAN â€” a shift register MUST compute the next state into temp bits first, then copy temp->state in a LATER network (ascending copy double-sets the wrap bit; descending copy dead-locks at all-zero). A pure-OR network (no series contacts) is driven from an always-ON GVL bool (`xAlwaysOn : BOOL := TRUE;`) â€” the machine-verified form; an empty contacts[] with branches is ALSO the accepted pure-OR form (validator + emitter contract), so pick either; timer pt.constant_value accepts T#500MS literals verbatim and readback echoes them (T#8h also verified, E2E V2 R029). DECLARATION CONTRACT (E2E V2 R029): the generator auto-declares FB INSTANCES only â€” contact/coil/q/pt/pv TARGET variables must be declared by YOU (GVL or variables[]); a missing one compiles to æ²¡æœ‰å®ä¹‰æ ‡è¯†ç¬¦ at the whole-project build while this tool's own diagnostics stay 0. The result lists pouLocalUndeclaredReferences (names not declared in THIS POU's own interface/variables) plus resolvedInGlobalScope (of those, found in a project GVL) and missingEverywhere (in neither) â€” declare the missingEverywhere names before the first build. To add variables to an existing GVL use codesys_pou_add_variable (verified); full declaration rewrites still need delete+recreate. Box networks need NO series contacts â€” enable defaults to TRUE (omit it or pass enable:{name} for gating); a single-output function box may feed its output back into its own input (ADD and SEL both verified: accumulators and hold-latches). ALGORITHMIC WORK (arrays, indexing, loops) is NOT expressible in these network shapes â€” put it in an ST-channel POU (codesys_pou_upsert / codesys_source_import) and keep LAD as the operation/IO layer (E2E V2 R031/R033 verified architecture). A FUNCTION-shaped deliverable maps to a PROGRAM POU whose interface lives in a GVL (VAR_INPUT/VAR_OUTPUT semantics = GVL members, E2E V2 R035 verified: 0/0). VERIFIED SHAPES (E2E V2 R027, 41-network PID at 0/0): a box whose output feeds back into its OWN input of the same name is a legal accumulator (`ADD IN1:=rIAcc -> rIAcc` does rIAcc += term â€” verified by native readback); without a MOVE box, copy a variable with `ADD(IN1:=src, IN2:=rZero)`; analog direct addresses AT %IW0/%QW0 compile 0/0 on the Control Win V3 soft PLC. TABLE INTERPOLATION (E2E V2 R038, 6-segment cam table at 0/0): expand a lookup as an ASCENDING chain of `GE(phase>=P_k)` gated `SEL` segments â€” later segments win (descending order fails: the k=0 leg is always-true and overwrites everything); task call order (task_pou_set pous array order) IS the same-scan data-visibility order, so a MAIN->CAM->OUT chain passes data forward through GVL members in one scan. TIME CONTRACT (E2E V2 R025, 4 compile errors evidence): box DIV/MUL/ADD evaluate DINT/REAL ONLY â€” TIME never participates in arithmetic, there is NO DINT_TO_TIME, and pt accepts only TIME literals or TIME variable names, so LAD ITSELF cannot COMPUTE a period. A variable-PT timer IS usable when the TIME value is computed elsewhere (E2E V2 R036 verified: `pt:{name: tPulsePeriod}` with tPulsePeriod computed in an ST-channel POU, 0/0) â€” for LAD-only variable duty/frequency use the verified pattern instead: a TP timebase (pt = TIME literal) + two CTU counters (PV WORD-typed from the GVL) with the effective timebase = PT + task period compensated by a GVL constant (18 networks, 0/0). The schema's et/cv fields EXIST but are NOT wired (Q only) â€” never plan on reading ET/CV. VERIFIED REGISTRY (real-machine, 142 library instructions + 23 IEC built-in operators, every batch import + readback + precompile 0/0/0, 2026-09-08): 6 FunctionBlocks CTU/CTD/CTUD/TOF/TON/TP; 24 typed comparisons (INT64__EQ/NE/GT/GE/LT/LE, REAL32__*, REAL64__*, UINT64__*...); 28 typed arithmetic (INT32/INT64/REAL32/REAL64/UINT64 __ADD/SUB/MUL/DIV/MOD/ABS; NOTE E2E V2 R034: INT32__ADD answers not_found on live queries on this machine â€” use the built-in ADD operator instead, verified 0/0); 23 typed conversions (X__TO__Y casts + NEW__REAL32__TO__STRING/WSTRING); 9 STANDARD string functions CONCAT/DELETE/FIND/INSERT/LEFT/LEN/MID/REPLACE/RIGHT; 24 typed math (REAL32/REAL64 __SIN/COS/TAN/ASIN/ACOS/ATAN/EXP/EXPT/LN/LOG/SQRT/TRUNC); 4 typed logic (UINT64__AND/OR/XOR/NOT); 14 typed LIMIT/MAX/MIN; 10 typed shifts (UINT32/UINT64/INT32/INT64 __ROL/ROR/SHL/SHR). EXCLUDED (internal/context, each pinned by a real diagnostic): ADDR/ID/MAKE_EVENTID/CODEM*/EVENT*/GETSUPPLIERVERSION/SLOT_ID/SUBSLOT_ID/RESMANINCHARGE/LEN_INTERNAL/MYSTRING_TO_UDINT/MYUDINT_TO_STRING/ANY*__TO__*/multi-output functions. Network kinds: (1) contact_coil: series contacts[] (each {name, negated?} â€” negated=true is the NC contact) + optional branches[] (>=2 parallel OR legs, each {contacts:[...]}) + one coil {target}; semantics: coil = (OR of branch legs) AND (AND of series contacts); branch+NC verified as ONE network on the real machine. (2) box: one Function instruction with port-keyed inputs/outputs maps â€” instruction may be an IEC built-in operator (NOT in the library catalog): compare GT/LT/GE/LE/EQ/NE ports IN1,IN2 -> <the INSTRUCTION NAME>; arithmetic ADD/SUB/MUL/DIV ports IN1,IN2 -> <the INSTRUCTION NAME>; selection SEL (G:BOOL,IN0,IN1), MUX (K,IN0,IN1), LIMIT (MN,IN,MX), MAX/MIN (IN1,IN2); math ABS/SQRT/TRUNC (IN -> <the INSTRUCTION NAME>); conversions INT_TO_REAL/REAL_TO_INT/BOOL_TO_INT/INT_TO_BOOL/WORD_TO_INT/INT_TO_WORD (IN -> <the INSTRUCTION NAME>). The output pin of a box is the instruction name itself, NOT the word 'result' (E2E R027: MUL with outputs.result was rejected, knownPins=[MUL]); read codesys_lad_instruction_signatures when unsure; an instruction with no live catalog or built-in entry is rejected with instruction_signature_unresolved (E2E R032: REAL_TO_DWORD), so pick a name from the registry/list above or query the signatures first â€” or a library instruction from the VERIFIED REGISTRY above whose pins the bridge resolves live. The box is emitted as ONE series rung (contact(enable)->EN); ONLY ONE data output per box (the plugin editor rejects more with 'too many outputs'); string/wstring variables are legal (the emitter writes TC6-legal lowercase string elements). (3) timer: TON/TOF/TP â€” instance + input{name} (BOOL power contact) + pt{constant_value:T#..s|name} + q{name}; v1 emits Q only. (4) counter: CTU/CTD/CTUD â€” instance + input{name} (CU/CD power) + pv + optional reset/load + q{name} (v1: Q only). variables[] = POU local variables {name,type} with IEC primitive types; timer/counter instances are auto-declared (never put FB types in variables[]). Instruction names are validated against the LIVE catalog + the built-in operator table; a rejection carries the exact path + knownPins + remediation. confirm must be generate_project_pou, disposable=true. Requires the vanilla CODESYS project open (the InoProShop line keeps its own tools).",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_project_pou",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "name": {
+     "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+     "type": "string"
+    },
+    "networks": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "branches": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "contacts": {
+           "items": {
+            "additionalProperties": false,
+            "properties": {
+             "name": {
+              "type": "string"
+             },
+             "negated": {
+              "type": "boolean"
+             }
+            },
+            "required": [
+             "name"
+            ],
+            "type": "object"
+           },
+           "minItems": 1,
+           "type": "array"
+          }
+         },
+         "required": [
+          "contacts"
+         ],
+         "type": "object"
+        },
+        "minItems": 2,
+        "type": "array"
+       },
+       "coil": {
+        "additionalProperties": false,
+        "properties": {
+         "name": {
+          "type": "string"
+         },
+         "target": {
+          "type": "string"
+         }
+        },
+        "type": "object"
+       },
+       "contacts": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "name": {
+           "type": "string"
+          },
+          "negated": {
+           "type": "boolean"
+          }
+         },
+         "required": [
+          "name"
+         ],
+         "type": "object"
+        },
+        "type": "array"
+       },
+       "counter": {
+        "enum": [
+         "CTU",
+         "CTD",
+         "CTUD"
+        ],
+        "type": "string"
+       },
+       "cv": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "enable": {
+        "additionalProperties": false,
+        "properties": {
+         "name": {
+          "type": "string"
+         }
+        },
+        "type": "object"
+       },
+       "et": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "input": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "inputs": {
+        "additionalProperties": {
+         "type": "string"
+        },
+        "type": "object"
+       },
+       "instance": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "required": [
+           "name"
+          ],
+          "type": "object"
+         }
+        ]
+       },
+       "instruction": {
+        "type": "string"
+       },
+       "load": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "outputs": {
+        "additionalProperties": {
+         "type": "string"
+        },
+        "type": "object"
+       },
+       "pt": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "pv": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "constant_value": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "q": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "reset": {
+        "oneOf": [
+         {
+          "type": "string"
+         },
+         {
+          "additionalProperties": false,
+          "properties": {
+           "name": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
+       "timer": {
+        "enum": [
+         "TON",
+         "TOF",
+         "TP"
+        ],
+        "type": "string"
+       },
+       "type": {
+        "enum": [
+         "contact_coil",
+         "box",
+         "timer",
+         "counter",
+         "fb"
+        ],
+        "type": "string"
+       }
+      },
+      "required": [
+       "type"
+      ],
+      "type": "object"
+     },
+     "maxItems": 60,
+     "minItems": 1,
+     "type": "array"
+    },
+    "parent": {
+     "description": "Optional placement target (e.g. PLCWinNT/Plc Logic/Application). Omitted: the bridge resolves the device Application node automatically â€” never the project root (E2E V1 R036 false-green trap).",
+     "type": "string"
+    },
+    "variables": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "name": {
+        "type": "string"
+       },
+       "type": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "name",
+       "type"
+      ],
+      "type": "object"
+     },
+     "type": "array"
+    }
+   },
+   "required": [
+    "name",
+    "networks",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  },
+  "name": "codesys_lad_generate_project_pou",
+  "permission": "WorkspaceWrite"
+ },
+ "contractHash": "ce012c8130ec0436aa04b6620999141b4e5d6cf3dd7a49e990a4917cbe196c19",
+ "name": "codesys_lad_generate_project_pou",
+ "schemaHash": "549bcf27e754202ce7e77169e3a12450ea81168eae0892e39f301bcc5ca4d272"
+}

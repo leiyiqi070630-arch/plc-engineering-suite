@@ -1,0 +1,158 @@
+{
+ "contract": {
+  "description": "Canonical batch generator for the InoProShop instruction surface (260-entry verified core registry, trimmed 2026-09-08: counters CTU/CTD/CTUD, timers TON/TOF/TP, latch SR, edges R_TRIG/F_TRIG, BLINK, PLUS the full native-Operator set â€” comparison boxes EQ/NE/GT/GE/LT/LE, logic AND/OR/XOR/NOT, arithmetic ADD/SUB/MUL/DIV/MOD/ABS/NEG/LIMIT/MIN/MAX/SEL/MUX, MOVE, shifts SHL/SHR/ROL/ROR, real functions EXP/EXPT/LN/LOG/SIN/COS/TAN/ASIN/ACOS/ATAN/SQRT, and the full X_TO_Y conversion matrix â€” ALL verified 0/0 on AM600; the library long tail moved to excludedLowValueDeprecated). ONE call = exactly ONE POU: put the POU's complete network set in this single networks=[{title,instructions:[{instruction,namespace,inputs:{PORT:VARIABLE},inouts:{PORT:VARIABLE},outputs:{PORT:VARIABLE}}]}] array â€” each array element becomes one sequentially numbered network inside that POU. Use the schema and inline port tables when they cover the requested instruction. If a required pin, namespace or shape is missing or ambiguous, query codesys_lad_instruction_spec for that instruction BEFORE generating; do not invent it or repeat broad catalog searches. NATIVE OPERATOR item shape: {instruction,dataType,inputs,outputs} â€” dataType is REQUIRED and is the explicit IEC operand type (numeric types for compare/arith: SINT/USINT/INT/UINT/DINT/UDINT/LINT/ULINT/REAL/LREAL â€” NOT WORD/BYTE, so convert CTU.CV WORD first with WORD_TO_INT; bit types BOOL/BYTE/WORD/DWORD/LWORD for logic; the TARGET type for conversions, e.g. INT_TO_REAL -> dataType=REAL; MOD takes INTEGER operands only (INT-family â€” NOT REAL); real functions EXP/EXPT/LN/LOG/SIN/COS/TAN/ASIN/ACOS/ATAN/SQRT take REAL/LREAL operands only). Compare ports: IN1/IN2 -> OUT:BOOL. Logic ports: IN1/IN2 -> OUT (NOT: IN -> OUT). SEL has G:BOOL+IN0/IN1; MUX has K:DINT+IN0/IN1; LIMIT has MN/IN/MX; shifts SHL/SHR/ROL/ROR have IN=bit type (BOOL/BYTE/WORD/DWORD/LWORD)+N:DINT. Every output variable gets exactly ONE writer. Verified shapes (live catalog 2026-09-06): TON/TOF/TP inputs IN:BOOL+PT:TIME, outputs Q:BOOL+ET:TIME; CTU inputs CU:BOOL+RESET:BOOL+PV:WORD, outputs Q:BOOL+CV:WORD (Q = CV>=PV); CTD inputs CD:BOOL+LOAD:BOOL+PV:WORD, outputs Q:BOOL+CV:WORD (Q = CV=0); CTUD inputs CU/CD/RESET/LOAD:BOOL+PV:WORD, outputs QU/QD:BOOL+CV:WORD (QU = CV>=PV full, QD = CV<=0 empty â€” use these boundary outputs for æ»¡ä½/ç©ºä½ judgments); SR inputs SET1/RESET:BOOL, output Q1:BOOL (RS is NOT in the registry); R_TRIG/F_TRIG input CLK:BOOL, output Q:BOOL; BLINK inputs ENABLE:BOOL+TIMELOW:TIME+TIMEHIGH:TIME, output OUT:BOOL. Namespace is STANDARD for these FBs, UTIL for BLINK. Same-name calls fail with destination_exists (no overwrite/append) â€” use inoproshop_object_regenerate to replace. Qualified symbols (GVL.Member) REQUIRE a top-level symbolTypes map with each symbol's exact IEC type. Rules: bind ports to EXACT types (CTU/CTUD.CV is WORD â€” bind a WORD symbol); TIME literals plain single-unit (T#1s, T#500ms â€” NOT T#1s500ms); variable declarations accept IEC primitive types only; NEVER use a variables array to declare FB instances (SR/BLINK/TON...) â€” the generator auto-declares instances from the instruction/instance fields (c29 trap: declaring SR/BLINK instances as variables fails UNSUPPORTED_VARIABLE_TYPE); BLINK works OUT OF THE BOX â€” the generator auto-references the UTIL library, never call any library tool for it; the native batch does NOT accept a task field â€” wire via inoproshop_task_pou_set or inoproshop_project_finalize afterwards; ADD64_64/SUB64_64 (SM0) are practically unusable on AM600 â€” accumulate in ST with ULINT. data.acceptanceVerdict is the compilation/diagnostic verdict (pass/fail from observedErrorCount), not proof of requested control behaviour â€” exitCode/compileOk are transport noise. On lad_preexisting_diagnostics the plan is almost never at fault â€” the tool auto-flushes stale IDE diagnostics and retries once. NAMESPACE PREWARM (E2E V2 R090, measured on AM600-CPU1608TP/TN): on a freshly created project the STANDARD namespace is not registered until the project has been compiled once, so the FIRST generation of a Standard FB (R_TRIG/TON/TOF/CTU/CTD/CTUD) fails at validate_plan with SIGNATURE_SELECTOR_NOT_FOUND expected=STANDARD candidates=[]. The tool now runs ONE offline build itself and re-runs the SAME plan once; read data.namespacePrewarm = {performed, reason, build:{errorCount,warningCount,compileStatus,acceptanceVerdict}, retried, recoveredOnRetry, originalFailure}. The trigger requires EVERY reported failure to be SIGNATURE_SELECTOR_NOT_FOUND with an EMPTY candidates[] list; this does not prove that the requested instruction exists. The original errors[] remain in data.namespacePrewarm.originalFailure if the retry also fails. Read data.namespacePrewarm: do not repeat a manual compile plus unchanged generation after performed=true and retried=true. If it still fails, use the final diagnostics and originalFailure to check the requested instruction/namespace against the current live catalog. If performed=false or buildError is present, fix the reported build/environment prerequisite before retrying; an incomplete prewarm does not prove the instruction is absent.",
+  "inputSchema": {
+   "additionalProperties": true,
+   "properties": {
+    "catalog": {
+     "additionalProperties": true,
+     "description": "Optional exact live catalog data (common/signatures), passed through unchanged; omit for automatic live lookup.",
+     "type": "object"
+    },
+    "confirm": {
+     "const": "generate_native_lad_instruction_batch",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "name": {
+     "type": "string"
+    },
+    "networks": {
+     "description": "Each network contains title and instructions[]. Bind exact ports using inputs/outputs maps. Verified timer shape: {\"instruction\":\"TON\",\"instance\":\"tonDelay\",\"inputs\":{\"IN\":\"xRun\",\"PT\":\"T#1s\"},\"outputs\":{\"Q\":\"xDone\"}}. Native operators additionally require dataType; qualified symbols require exact symbolTypes.",
+     "items": {
+      "additionalProperties": true,
+      "properties": {
+       "instructions": {
+        "items": {
+         "additionalProperties": true,
+         "properties": {
+          "dataType": {
+           "description": "Required for native operators: explicit IEC operand type; for conversion operators use the destination type. See the inline per-operator rules.",
+           "minLength": 1,
+           "type": "string"
+          },
+          "inouts": {
+           "additionalProperties": {
+            "type": "string"
+           },
+           "type": "object"
+          },
+          "inputs": {
+           "additionalProperties": {
+            "type": "string"
+           },
+           "type": "object"
+          },
+          "instance": {
+           "description": "FB instance name; instances are declared by the generator, not in variables[].",
+           "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+           "type": "string"
+          },
+          "instruction": {
+           "type": "string"
+          },
+          "namespace": {
+           "type": "string"
+          },
+          "objectGuid": {
+           "description": "Optional exact instruction object GUID from live signature lookup.",
+           "minLength": 1,
+           "type": "string"
+          },
+          "outputs": {
+           "additionalProperties": {
+            "type": "string"
+           },
+           "type": "object"
+          },
+          "symbolTypes": {
+           "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "description": "Exact IEC types for qualified symbols used by this instruction.",
+           "type": "object"
+          }
+         },
+         "required": [
+          "instruction",
+          "inputs",
+          "outputs"
+         ],
+         "type": "object"
+        },
+        "type": "array"
+       },
+       "title": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "title",
+       "instructions"
+      ],
+      "type": "object"
+     },
+     "type": "array"
+    },
+    "parent": {
+     "type": "string"
+    },
+    "symbolTypes": {
+     "additionalProperties": {
+      "minLength": 1,
+      "type": "string"
+     },
+     "description": "Exact IEC types of qualified symbols such as GVL.Value.",
+     "type": "object"
+    },
+    "variables": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "name": {
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "type": "string"
+       },
+       "section": {
+        "default": "local",
+        "enum": [
+         "input",
+         "output",
+         "local"
+        ],
+        "type": "string"
+       },
+       "type": {
+        "description": "IEC primitive type; FB instances are auto-declared.",
+        "minLength": 1,
+        "type": "string"
+       }
+      },
+      "required": [
+       "name",
+       "type"
+      ],
+      "type": "object"
+     },
+     "type": "array"
+    }
+   },
+   "required": [
+    "name",
+    "networks",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  },
+  "name": "codesys_lad_generate_native",
+  "permission": "WorkspaceWrite"
+ },
+ "contractHash": "2691f8fb7d89cc1dfeb0507803bee85c5906aa1e9aaf14dfc5e4028aa0f88e24",
+ "name": "codesys_lad_generate_native",
+ "schemaHash": "530d262286e189b935b98468b6c0869c5535d998909f73f6f0285d1eb7ac13bc"
+}

@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-hmi-graphic-list",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "0fc59ce1aff28bcef50d6c2fb89a3d9aca48bfe3036ed6eda5d1740fd6a4d4bb",
+  "specificationHash": "27a051386170a30fba95dc3594bd14ed1eb861c6b7a6b07faff1daeb0f97a40b",
+  "contractHash": "bd56563ef230775f2f6b5866dcb09af1f78ca38016401d7cd7b48927e7d0d4aa",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:37.946630+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-hmi-graphic-list.xml",
+      "sha256": "6ec2ac37ded90ad46fb97424f6f3e03667734148acdd4882d801b9caebfcf6a2"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

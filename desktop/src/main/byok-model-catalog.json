@@ -1,0 +1,418 @@
+{
+  "glm-5.2": {
+    "label": "GLM-5.2 · 1M · 原生",
+    "vision": false,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "deepseek-v4-pro-0813": {
+    "label": "DeepSeek V4 Pro-0813 · 1M · 原生",
+    "vision": false,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "kimi-k2.6": {
+    "label": "Kimi K2.6 · 256K · 原生",
+    "vision": true,
+    "contextLength": 256000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "qwen3.8-max": {
+    "label": "Qwen3.8 Max · 1M · 转换",
+    "vision": true,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "glm-5.1": {
+    "label": "GLM-5.1 · 200K · 原生",
+    "vision": false,
+    "contextLength": 200000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "glm-5.3": {
+    "label": "GLM-5.3 · 1M · 转换",
+    "vision": false,
+    "contextLength": 1048576,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "deepseek-v4.1-flash-1017": {
+    "label": "DeepSeek V4.1 Flash-1017 · 1M · 原生",
+    "vision": true,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "deepseek-flash": {
+    "label": "DeepSeek Flash · 1M · 原生",
+    "vision": true,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "deepseek-v4-flash-0731": {
+    "label": "DeepSeek V4 Flash-0731 · 1M · 转换",
+    "vision": false,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "kimi-k3": {
+    "label": "Kimi K3 · 1M · 转换",
+    "vision": true,
+    "contextLength": 1048576,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "kimi-k2.7-code": {
+    "label": "Kimi K2.7 Code · 256K · 转换",
+    "vision": true,
+    "contextLength": 256000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "mimo-v2.6-pro": {
+    "label": "MIMO v2.6 Pro · 1M · 原生",
+    "vision": true,
+    "contextLength": 1048576,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "mimo-v2.6-flash": {
+    "label": "MIMO v2.6 Flash · 1M · 原生",
+    "vision": true,
+    "contextLength": 1048576,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "mimo-v2.5-pro": {
+    "label": "MIMO v2.5 Pro · 256K · 原生",
+    "vision": false,
+    "contextLength": 256000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "minimax-m2.7": {
+    "label": "MiniMax M2.7 · 200K · 原生",
+    "vision": false,
+    "contextLength": 200000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "minimax-m3.1-flash-preview": {
+    "label": "MiniMax M3.1 Flash-Preview · 1M · 转换",
+    "vision": true,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "qwen3.7-max": {
+    "label": "Qwen3.7 Max · 1M · 转换",
+    "vision": false,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "qwen3.8-27b": {
+    "label": "Qwen3.8 27B · 1M · 转换",
+    "vision": true,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "qwen3.8-flash": {
+    "label": "Qwen3.8 Flash · 1M · 转换",
+    "vision": true,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "qwen3.7-flash": {
+    "label": "Qwen3.7 Flash · 1M · 转换",
+    "vision": true,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "glm-5.3-flashx": {
+    "label": "GLM-5.3 FlashX · 1M · 原生",
+    "vision": true,
+    "contextLength": 1048576,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "glm-5.3-flash": {
+    "label": "GLM-5.3 Flash · 1M · 转换",
+    "vision": true,
+    "contextLength": 1048576,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "seed-2.1-pro": {
+    "label": "Seed 2.1 Pro · 262K · 转换",
+    "vision": true,
+    "contextLength": 262144,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "seed-2.1-turbo": {
+    "label": "Seed 2.1 Turbo · 262K · 转换",
+    "vision": true,
+    "contextLength": 262144,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "longcat-2.0": {
+    "label": "LongCat 2.0 · 1M · 转换",
+    "vision": false,
+    "contextLength": 1000000,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  },
+  "neohorse-1-9b": {
+    "label": "NeoHorse 1 9B · 262K · 转换",
+    "vision": false,
+    "contextLength": 262144,
+    "supportsReasoningEffort": true,
+    "reasoningEfforts": {
+      "auto": "auto",
+      "fast": "minimal",
+      "standard": "medium",
+      "deep": "high"
+    },
+    "thinkingKind": "reasoning_content",
+    "thinkingFields": [
+      "reasoning_content"
+    ]
+  }
+}

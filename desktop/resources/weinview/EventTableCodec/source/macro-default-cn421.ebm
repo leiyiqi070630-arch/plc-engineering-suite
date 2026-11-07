@@ -1,0 +1,11 @@
+﻿macro_definition_begin
+    "id": "0"
+    "name": "PLCCode_Test"
+    "startup": "false"
+    "periodic": [ "false" ]
+    "interlock": [ "false" ]
+macro_definition_end
+macro_command main()
+short value = 123
+SetData(value, "Local HMI", LW, 100, 1)
+end macro_command

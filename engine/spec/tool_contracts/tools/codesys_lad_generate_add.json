@@ -1,0 +1,33 @@
+{
+ "contract": {
+  "description": "Generate one parameterized IEC ADD ladder POU from the verified PLCopen sample, import it through InoProShop, export native XML, save, comp…",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_lad_add",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "name": {
+     "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+     "type": "string"
+    }
+   },
+   "required": [
+    "name",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  },
+  "name": "codesys_lad_generate_add",
+  "permission": "DangerFullAccess"
+ },
+ "contractHash": "bee79e308ddc72eeca3d9dafbe60fac1866c6db3bccb83c72b8f80575b9be573",
+ "name": "codesys_lad_generate_add",
+ "schemaHash": "52d9335908e3363a89b53bfefd203a856e88c7bce2fe614138296fd1b4310517"
+}

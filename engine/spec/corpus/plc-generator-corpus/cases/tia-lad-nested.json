@@ -1,0 +1,151 @@
+{
+  "id": "tia-lad-nested",
+  "tool": "tia_lad_generate_block_xml",
+  "route": "tia",
+  "title": "嵌套并联：(A 或 B) 且 C，另一路 D",
+  "covers": [
+    "contact_coil",
+    "nested-branches"
+  ],
+  "language": "LAD",
+  "versions": [
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "contact_coil",
+    "nested-branches",
+    "嵌套并联：(A",
+    "或",
+    "B)",
+    "且",
+    "C，另一路",
+    "D",
+    "tia",
+    "LAD",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "嵌套并联：(A 或 B) 且 C，另一路 D"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FB_Example_nested",
+      "block_type": "FB",
+      "target_family": "S7-1500",
+      "interface": {
+        "input": [
+          {
+            "name": "A",
+            "datatype": "Bool"
+          },
+          {
+            "name": "B",
+            "datatype": "Bool"
+          },
+          {
+            "name": "C",
+            "datatype": "Bool"
+          },
+          {
+            "name": "D",
+            "datatype": "Bool"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "Bool"
+          }
+        ],
+        "static_members": []
+      },
+      "networks": [
+        {
+          "type": "contact_coil",
+          "branches": [
+            {
+              "branches": [
+                {
+                  "contacts": [
+                    {
+                      "operand": {
+                        "name": "A"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "contacts": [
+                    {
+                      "operand": {
+                        "name": "B"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "contacts": [
+                {
+                  "operand": {
+                    "name": "C"
+                  }
+                }
+              ]
+            },
+            {
+              "contacts": [
+                {
+                  "operand": {
+                    "name": "D"
+                  }
+                }
+              ]
+            }
+          ],
+          "coil": {
+            "operand": {
+              "name": "Q"
+            },
+            "kind": "Coil"
+          }
+        }
+      ]
+    }
+  },
+  "expected": [
+    "嵌套并联：(A 或 B) 且 C，另一路 D"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-lad-nested.offline-generation.json",
+      "sha256": "44c738f461fc9621d6797228fca6d4aacbb4591d9422c3efb7e6d69776cb466c"
+    },
+    {
+      "stage": "behavior",
+      "path": "evidence/tia-lad-nested.behavior.json",
+      "sha256": "b4519ec7a4f946d3ed0cd4d4b7f16615c66cb8312ecc0aabb6dd88d210765d96"
+    }
+  ],
+  "behaviorSpec": {
+    "inputs": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "output": "Q",
+    "expression": "((A or B) and C) or D"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "id": "tia-graph-actions",
+  "tool": "tia_openness_generate_graph_block",
+  "route": "tia",
+  "title": "GRAPH 动作、互锁和监控",
+  "covers": [
+    "actions-N-S-R",
+    "interlock",
+    "supervision"
+  ],
+  "language": "GRAPH",
+  "versions": [
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "actions-N-S-R",
+    "interlock",
+    "supervision",
+    "GRAPH",
+    "动作、互锁和监控",
+    "tia",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "GRAPH 动作、互锁和监控"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FB_Graph_actions",
+      "steps": [
+        {
+          "name": "Idle",
+          "actions": [
+            {
+              "qualifier": "R",
+              "target": "Latched"
+            }
+          ]
+        },
+        {
+          "name": "Run",
+          "interlock": [
+            {
+              "operand": "Permit"
+            }
+          ],
+          "supervision": [
+            {
+              "operand": "Healthy"
+            }
+          ],
+          "actions": [
+            {
+              "qualifier": "N",
+              "target": "Value",
+              "value": "1"
+            },
+            {
+              "qualifier": "S",
+              "target": "Latched"
+            }
+          ],
+          "next": "Idle"
+        }
+      ],
+      "variables": [
+        {
+          "name": "Latched",
+          "datatype": "Bool"
+        },
+        {
+          "name": "Value",
+          "datatype": "Int"
+        }
+      ]
+    }
+  },
+  "expected": [
+    "生成 GRAPH FB，连接由 steps/next/alternatives 推导。",
+    "无条件转换与竞争分支优先级须按需求检查，编译通过不等于设备动作顺序正确。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-graph-actions.offline-generation.json",
+      "sha256": "72f965d34dc81532bcdd212b1955d62aeef782fce7e5ea43bd61dad0cec7edbf"
+    }
+  ]
+}

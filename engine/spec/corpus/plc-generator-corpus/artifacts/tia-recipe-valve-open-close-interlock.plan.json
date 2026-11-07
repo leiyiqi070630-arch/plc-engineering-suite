@@ -1,0 +1,176 @@
+{
+  "block_name": "FB_Recipe_valve_open_close_interlock",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "OpenCmd"
+      },
+      {
+        "datatype": "Bool",
+        "name": "CloseCmd"
+      },
+      {
+        "datatype": "Bool",
+        "name": "OpenLimit"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ClosedLimit"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultActive"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ResetPB"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "OpenOutput"
+      },
+      {
+        "datatype": "Bool",
+        "name": "CloseOutput"
+      }
+    ],
+    "static_members": [
+      {
+        "datatype": "Bool",
+        "name": "FaultLatched"
+      }
+    ]
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "set_coil",
+        "operand": {
+          "name": "FaultLatched",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Valve fault latch",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "FaultLatched",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ResetPB",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Valve fault reset",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "OpenOutput",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "OpenCmd",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "OpenLimit",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "CloseOutput",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultLatched",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Open output interlock",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "CloseOutput",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "CloseCmd",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "ClosedLimit",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "OpenOutput",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultLatched",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Close output interlock",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

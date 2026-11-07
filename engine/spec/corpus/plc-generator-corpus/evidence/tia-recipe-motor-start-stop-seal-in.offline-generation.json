@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-motor-start-stop-seal-in",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "852a85ea80210d413efc404f81fb84bd00e83e850956fd094e330cfba319b5d2",
+  "specificationHash": "e1a6c88bbc4f31249063e4037928681e471676be9758b08b65869bd35cafa89a",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:40.855700+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-motor-start-stop-seal-in.plan.json",
+      "sha256": "ef157275e46248917ddb2eade14f7e6cb10aece9a87ff039662db3738fe0dc43"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

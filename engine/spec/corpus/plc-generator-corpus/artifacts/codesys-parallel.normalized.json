@@ -1,0 +1,57 @@
+{
+  "block_name": "Example_parallel",
+  "networks": [
+    {
+      "type": "contact_coil",
+      "branches": [
+        {
+          "contacts": [
+            {
+              "name": "A"
+            },
+            {
+              "name": "B"
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "name": "C"
+            }
+          ]
+        }
+      ],
+      "contacts": [
+        {
+          "name": "Permit"
+        }
+      ],
+      "coil": {
+        "target": "Q"
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "A",
+      "type": "BOOL"
+    },
+    {
+      "name": "B",
+      "type": "BOOL"
+    },
+    {
+      "name": "C",
+      "type": "BOOL"
+    },
+    {
+      "name": "Permit",
+      "type": "BOOL"
+    },
+    {
+      "name": "Q",
+      "type": "BOOL"
+    }
+  ]
+}

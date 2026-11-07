@@ -1,0 +1,122 @@
+{
+  "block_name": "FB_Recipe_hoist_up_down_interlock",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "UpCmd"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DownCmd"
+      },
+      {
+        "datatype": "Bool",
+        "name": "UpperLimit"
+      },
+      {
+        "datatype": "Bool",
+        "name": "LowerLimit"
+      },
+      {
+        "datatype": "Bool",
+        "name": "OverloadFault"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "HoistUp"
+      },
+      {
+        "datatype": "Bool",
+        "name": "HoistDown"
+      }
+    ],
+    "static_members": []
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "HoistUp",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "UpCmd",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "UpperLimit",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "HoistDown",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "OverloadFault",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Hoist up interlock",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "HoistDown",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "DownCmd",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "LowerLimit",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "HoistUp",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "OverloadFault",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Hoist down interlock",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

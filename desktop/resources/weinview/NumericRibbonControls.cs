@@ -1,0 +1,13 @@
+using System;using System.IO;using System.Runtime.InteropServices;using System.Security.Cryptography;
+namespace PLCCode.Weinview {
+ public static class NumericRibbonControls {
+ [StructLayout(LayoutKind.Sequential)]struct R{public int l,t,r,b;}[StructLayout(LayoutKind.Sequential)]struct P{public int x,y;}
+ [DllImport("user32.dll")]static extern bool GetWindowRect(IntPtr h,out R r);[DllImport("user32.dll")]static extern bool ScreenToClient(IntPtr h,ref P p);[DllImport("user32.dll")]static extern bool IsChild(IntPtr a,IntPtr b);[DllImport("user32.dll")]static extern IntPtr GetForegroundWindow();[DllImport("user32.dll")]static extern bool PostMessageW(IntPtr h,uint m,UIntPtr w,IntPtr l);
+ public static void Click(NativeControls n,NativeSemanticControls.RibbonProof proof,double x,double y,string label){
+ if(proof==null||(label!="元件"&&label!="元亻牛"&&label!="数值")||x<0||y<0||x>=proof.Width||y>=proof.Height||(DateTime.UtcNow-proof.CapturedUtc).TotalSeconds>20||GetForegroundWindow().ToInt64()!=proof.Main)throw new InvalidOperationException("Fresh exact numeric ribbon proof/foreground required");
+ string hash;using(var sha=SHA256.Create())using(var f=File.OpenRead(proof.Path))hash=BitConverter.ToString(sha.ComputeHash(f)).Replace("-","");if(hash!=proof.Hash)throw new InvalidOperationException("Ribbon proof changed");R r;if(!GetWindowRect(new IntPtr(proof.Hwnd),out r)||r.l!=proof.Left||r.t!=proof.Top||r.r-r.l!=proof.Width||r.b-r.t!=proof.Height)throw new InvalidOperationException("Ribbon geometry changed");
+ int sx=proof.Left+(int)x,sy=proof.Top+(int)y;long qt=0;foreach(var c in n.EnumChildControls(proof.Main)){if(c.Class!="Qt5QWindowIcon"||!c.Visible||!c.Enabled||c.Title!="EasyBuilder Pro"||!IsChild(new IntPtr(proof.Main),new IntPtr(c.Hwnd)))continue;R b;if(GetWindowRect(new IntPtr(c.Hwnd),out b)&&b.l==proof.Left&&b.t==proof.Top&&b.r-b.l==proof.Width&&b.b-b.t==proof.Height&&sx>=b.l&&sx<b.r&&sy>=b.t&&sy<b.b){if(qt!=0)throw new InvalidOperationException("Numeric ribbon input Qt ambiguous");qt=c.Hwnd;}}
+ if(qt==0)throw new InvalidOperationException("Numeric ribbon input Qt unavailable");P p=new P{x=sx,y=sy};if(!ScreenToClient(new IntPtr(qt),ref p)||p.x<0||p.y<0||p.x>32767||p.y>32767)throw new InvalidOperationException("Numeric ribbon client point invalid");IntPtr lp=new IntPtr((p.y<<16)|p.x);if(!PostMessageW(new IntPtr(qt),0x201,new UIntPtr(1),lp)||!PostMessageW(new IntPtr(qt),0x202,UIntPtr.Zero,lp))throw new InvalidOperationException("Numeric ribbon single click failed");
+ }
+ }
+}

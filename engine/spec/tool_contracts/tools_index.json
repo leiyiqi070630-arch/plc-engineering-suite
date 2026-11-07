@@ -1,0 +1,552 @@
+[
+ {
+  "name": "codesys_build_generate_code",
+  "permission": "DangerFullAccess",
+  "required": [],
+  "params": [],
+  "desc_len": 73,
+  "hash": "363c33e182acff41a001ae8a177652982f0de2b418326a102b4f849aed767be5"
+ },
+ {
+  "name": "codesys_generate_st_plan",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "name",
+   "implementation",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "declaration",
+   "disposable",
+   "implementation",
+   "name"
+  ],
+  "desc_len": 108,
+  "hash": "c5fd552ee0a06954263518e30e161d3acb1159b3b29e2d11a1c51637d64db83a"
+ },
+ {
+  "name": "codesys_lad_generate_add",
+  "permission": "DangerFullAccess",
+  "required": [
+   "name",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "name"
+  ],
+  "desc_len": 140,
+  "hash": "bee79e308ddc72eeca3d9dafbe60fac1866c6db3bccb83c72b8f80575b9be573"
+ },
+ {
+  "name": "codesys_lad_generate_block",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "catalog",
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "symbolTypes",
+   "variables"
+  ],
+  "desc_len": 248,
+  "hash": "178f9217f90906396ff8a94d2152d786cc065af738d54df3939863cd4cee462e"
+ },
+ {
+  "name": "codesys_lad_generate_contact_block",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "plan",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "plan",
+   "task"
+  ],
+  "desc_len": 1615,
+  "hash": "dd7207b2aad12c127e5f68ef4a70a4458eb6ff8f4297317b6886edaf661e8a45"
+ },
+ {
+  "name": "codesys_lad_generate_control_recipe",
+  "permission": "ReadOnly",
+  "required": [
+   "recipe",
+   "name"
+  ],
+  "params": [
+   "name",
+   "recipe",
+   "signals",
+   "task",
+   "timeout"
+  ],
+  "desc_len": 441,
+  "hash": "55e40e7698d01df5cba8530685db20eca5d9944ec588eb2a2d2b8442a6577c68"
+ },
+ {
+  "name": "codesys_lad_generate_instruction",
+  "permission": "DangerFullAccess",
+  "required": [
+   "instruction",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction"
+  ],
+  "desc_len": 139,
+  "hash": "51e185487bbfa97499eaa69421afdfdcf1f9cef6a95fc6f3eed9a3957a5185d5"
+ },
+ {
+  "name": "codesys_lad_generate_native",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "catalog",
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "symbolTypes",
+   "variables"
+  ],
+  "desc_len": 5207,
+  "hash": "2691f8fb7d89cc1dfeb0507803bee85c5906aa1e9aaf14dfc5e4028aa0f88e24"
+ },
+ {
+  "name": "codesys_lad_generate_native_template",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "instruction",
+   "name",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction",
+   "name"
+  ],
+  "desc_len": 347,
+  "hash": "55abbcd8fd5a769c760a15476ab1861ef6c9ce08d960682682fcbdfe34eb5660"
+ },
+ {
+  "name": "codesys_lad_generate_project_pou",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "variables"
+  ],
+  "desc_len": 14530,
+  "hash": "ce012c8130ec0436aa04b6620999141b4e5d6cf3dd7a49e990a4917cbe196c19"
+ },
+ {
+  "name": "codesys_lad_generate_recipe_plan",
+  "permission": "ReadOnly",
+  "required": [
+   "recipe"
+  ],
+  "params": [
+   "instruction",
+   "name",
+   "networks",
+   "recipe"
+  ],
+  "desc_len": 307,
+  "hash": "d1b91e7ef0927de3690ab74689ca96e4b4e8b97894eb4e93703540f3f80722d2"
+ },
+ {
+  "name": "codesys_lad_native_generate_instruction",
+  "permission": "DangerFullAccess",
+  "required": [
+   "instruction",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction"
+  ],
+  "desc_len": 218,
+  "hash": "dc7dcbb44aeec9d9dcb7d591e1e5a1995bf8e38392748c795cdc0a117ccfe185"
+ },
+ {
+  "name": "codesys_lad_native_generate_instruction_batch",
+  "permission": "DangerFullAccess",
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "pouName",
+   "symbolTypes",
+   "variables"
+  ],
+  "desc_len": 624,
+  "hash": "1bd0bc7e25432febf0e45a791d71aaf9c824f2f38efe48c3cfc554a3901de087"
+ },
+ {
+  "name": "inoproshop_lad_generate_add",
+  "permission": "DangerFullAccess",
+  "required": [
+   "name",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "name"
+  ],
+  "desc_len": 66,
+  "hash": "ee41dea9bf8b66319f1b329730ced3a4f1b3f274085898e47df4102c8d5cd5b5"
+ },
+ {
+  "name": "inoproshop_lad_generate_block",
+  "permission": "DangerFullAccess",
+  "required": [
+   "plan",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "plan"
+  ],
+  "desc_len": 900,
+  "hash": "16d38b19d87af0329fe143a4ceadf772207b878c9dfa2aa7eb1f2576fc2493af"
+ },
+ {
+  "name": "inoproshop_lad_generate_contact_block",
+  "permission": "DangerFullAccess",
+  "required": [
+   "plan",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "plan",
+   "task"
+  ],
+  "desc_len": 112,
+  "hash": "0fb957e15694c3c2a45ddbc66d51e0fc276092f17e94f18f96dfbc21a19e6e54"
+ },
+ {
+  "name": "inoproshop_lad_generate_instruction",
+  "permission": "DangerFullAccess",
+  "required": [
+   "instruction",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction"
+  ],
+  "desc_len": 83,
+  "hash": "9fb1ca4b6dd39014be0f1a79a3827353d8f5e77b6cbc23d4da3afa5e3e61e5ea"
+ },
+ {
+  "name": "inoproshop_lad_native_generate_instruction",
+  "permission": "DangerFullAccess",
+  "required": [
+   "instruction",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "instruction"
+  ],
+  "desc_len": 199,
+  "hash": "a278f190ebc198402c94991b6f00734fa1e33f4c17e2e51a5cd7d3e630d35ef2"
+ },
+ {
+  "name": "inoproshop_lad_native_generate_instruction_batch",
+  "permission": "DangerFullAccess",
+  "required": [
+   "name",
+   "networks",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "disposable",
+   "name",
+   "networks",
+   "parent",
+   "pouName",
+   "symbolTypes",
+   "variables"
+  ],
+  "desc_len": 624,
+  "hash": "d4772617fe38112ef0d049c0ad631d666e64976d0c01780b9b34294c971973e8"
+ },
+ {
+  "name": "inoproshop_object_regenerate",
+  "permission": "DangerFullAccess",
+  "required": [
+   "target",
+   "kind",
+   "confirm",
+   "disposable"
+  ],
+  "params": [
+   "confirm",
+   "declaration",
+   "disposable",
+   "kind",
+   "name",
+   "networks",
+   "symbolTypes",
+   "target"
+  ],
+  "desc_len": 748,
+  "hash": "4c5aa70f6d797e06d0c0d2ba505911d489e3b8deb476dc99cf9679cd1c999506"
+ },
+ {
+  "name": "mitsubishi_csv_generate",
+  "permission": "ReadOnly",
+  "required": [
+   "family",
+   "rungs"
+  ],
+  "params": [
+   "family",
+   "project_name",
+   "rungs"
+  ],
+  "desc_len": 1016,
+  "hash": "78db979e0bf90288fa05b208fbd073801b900f2a2bcd47e8fdb7f2d091847b52"
+ },
+ {
+  "name": "mitsubishi_label_csv_generate",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "path",
+   "labels"
+  ],
+  "params": [
+   "labels",
+   "path",
+   "project_name",
+   "title"
+  ],
+  "desc_len": 648,
+  "hash": "cec9adc5dd6c79090e46fa64571e879777bb890057c41a49a5d716f8b75bce2c"
+ },
+ {
+  "name": "tia_hmi_generate_list_xml",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "plan"
+  ],
+  "params": [
+   "output_path",
+   "plan"
+  ],
+  "desc_len": 1901,
+  "hash": "bd56563ef230775f2f6b5866dcb09af1f78ca38016401d7cd7b48927e7d0d4aa"
+ },
+ {
+  "name": "tia_hmi_generate_screen_xml",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "plan"
+  ],
+  "params": [
+   "output_path",
+   "plan"
+  ],
+  "desc_len": 2808,
+  "hash": "5de4abc3305f27d48655b24da7717fae5df5c3c6753a1d68100de3c01cdff844"
+ },
+ {
+  "name": "tia_lad_generate_block_xml",
+  "permission": "WorkspaceWrite",
+  "required": [],
+  "params": [
+   "block_number",
+   "output_directory",
+   "output_path",
+   "plan",
+   "plan_json",
+   "schema_version",
+   "target_family",
+   "tia_version"
+  ],
+  "desc_len": 555,
+  "hash": "0e273628c96e0d5b04bb7a0e14a06b8530a74c30d590616a904cdfaf41ce5fa9"
+ },
+ {
+  "name": "tia_lad_generate_recipe_plan",
+  "permission": "ReadOnly",
+  "required": [
+   "recipe_id",
+   "block_name"
+  ],
+  "params": [
+   "block_name",
+   "block_type",
+   "recipe_id",
+   "schema_version",
+   "signals"
+  ],
+  "desc_len": 372,
+  "hash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1"
+ },
+ {
+  "name": "tia_openness_generate_graph_block",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "plan"
+  ],
+  "params": [
+   "output_path",
+   "plan",
+   "plan_json"
+  ],
+  "desc_len": 2744,
+  "hash": "3a8a67a7787d9759a4e028447e9f4153b4a7c5eeb22dc64f0a169c86c3b31d93"
+ },
+ {
+  "name": "tia_openness_generate_loadable_file",
+  "permission": "DangerFullAccess",
+  "required": [
+   "device_name",
+   "output_path",
+   "confirm"
+  ],
+  "params": [
+   "block_paths",
+   "confirm",
+   "device_name",
+   "output_path",
+   "project_match",
+   "save_project",
+   "target_option",
+   "tia_version",
+   "unit_names"
+  ],
+  "desc_len": 414,
+  "hash": "9d44985b9abf21806eb70b8be00749e3a69ea608055c61d7bff240030d8c0297"
+ },
+ {
+  "name": "tia_openness_generate_source_from_blocks",
+  "permission": "DangerFullAccess",
+  "required": [
+   "output_path",
+   "confirm"
+  ],
+  "params": [
+   "block_paths",
+   "confirm",
+   "device_name",
+   "output_path",
+   "project_match",
+   "save_project",
+   "tia_version",
+   "with_dependencies"
+  ],
+  "desc_len": 561,
+  "hash": "3edc684ee0fd5fb223e0d45d0ae42f4cd39a3f71d61d08ea721cd44e54479359"
+ },
+ {
+  "name": "tia_openness_generate_web_pages_blocks",
+  "permission": "DangerFullAccess",
+  "required": [
+   "html_directory",
+   "default_page",
+   "confirm"
+  ],
+  "params": [
+   "application_name",
+   "confirm",
+   "default_page",
+   "device_name",
+   "html_directory",
+   "override",
+   "project_match",
+   "save_project",
+   "tia_version"
+  ],
+  "desc_len": 568,
+  "hash": "ffd4a901ea250f844c58e055a7ce1cef892205641a08793a2817ee11253f8dba"
+ },
+ {
+  "name": "tia_sd_generate_block",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "plan"
+  ],
+  "params": [
+   "output_directory",
+   "plan",
+   "plan_json"
+  ],
+  "desc_len": 315,
+  "hash": "b97ddb65d4ea1a18dba597e01828476209bf4481e281fbb4121d55528d7de0b9"
+ },
+ {
+  "name": "tia_watch_generate_table_xml",
+  "permission": "WorkspaceWrite",
+  "required": [
+   "plan"
+  ],
+  "params": [
+   "output_path",
+   "plan",
+   "plan_json"
+  ],
+  "desc_len": 458,
+  "hash": "132e7a1430aa2765cfbc28c523d863eb285a1edc707e4711b91e675f8bc39f9f"
+ }
+]

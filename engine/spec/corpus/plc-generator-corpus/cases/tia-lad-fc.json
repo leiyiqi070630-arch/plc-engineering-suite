@@ -1,0 +1,99 @@
+{
+  "id": "tia-lad-fc",
+  "tool": "tia_lad_generate_block_xml",
+  "route": "tia",
+  "title": "无静态实例的 LAD FC",
+  "covers": [
+    "FC"
+  ],
+  "language": "LAD",
+  "versions": [
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "contact_coil",
+    "series",
+    "negation",
+    "串联与取反：A",
+    "且非",
+    "B",
+    "tia",
+    "LAD",
+    "生成器",
+    "generator",
+    "FC"
+  ],
+  "requirements": [
+    "创建没有静态状态的 Bool 组合逻辑 FC。"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FC_Example",
+      "block_type": "FC",
+      "target_family": "S7-1500",
+      "interface": {
+        "input": [
+          {
+            "name": "A",
+            "datatype": "Bool"
+          },
+          {
+            "name": "B",
+            "datatype": "Bool"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "Bool"
+          }
+        ],
+        "static_members": []
+      },
+      "networks": [
+        {
+          "type": "contact_coil",
+          "contacts": [
+            {
+              "operand": {
+                "name": "A"
+              }
+            },
+            {
+              "operand": {
+                "name": "B"
+              },
+              "negated": true
+            }
+          ],
+          "coil": {
+            "operand": {
+              "name": "Q"
+            },
+            "kind": "Coil"
+          }
+        }
+      ]
+    }
+  },
+  "expected": [
+    "A AND NOT B 返回到输出 Q；不创建 FB 实例 DB。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-lad-fc.offline-generation.json",
+      "sha256": "bfc88b6e2ddb00d2db85c22dadf1ed730a894576348a26fff6c477814e63620b"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-lad-ctu",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "62ca43cac1aa878e899daf6926c8460052281dab15d427a8bff62098f789f4e4",
+  "specificationHash": "fa3bd33db38d9feaea539db6f3b1a2d0a3c08087bbe1329a69fc18e1f925cd3d",
+  "contractHash": "0e273628c96e0d5b04bb7a0e14a06b8530a74c30d590616a904cdfaf41ce5fa9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:38.311625+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-lad-ctu.xml",
+      "sha256": "c422ead0a1f494f33f9260131a296da91405c6156fc66021636a7ae585e3540f"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

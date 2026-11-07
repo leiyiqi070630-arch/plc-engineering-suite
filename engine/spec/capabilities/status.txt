@@ -1,0 +1,49 @@
+[knowledge] source=embedded files=771 bytes=15710204
+Status
+  Model            claude-opus-4-6
+  Model source     default
+  Permission mode  danger-full-access
+  Messages         0
+  Turns            0
+  Estimated tokens 0
+
+Usage
+  Latest total     0
+  Cumulative input 0
+  Cumulative output 0
+  Cache create     0
+  Cache read       0
+  Cumulative total 0
+  Estimated cost   $0.0000
+
+Workspace
+  Cwd              D:\codex工作目录
+  Project root     unknown
+  Git branch       unknown
+  Git state        clean
+  Changed files    0
+  Staged           0
+  Unstaged         0
+  Untracked        0
+  Session          live-repl
+  Lifecycle        saved only
+  Branch fresh     no upstream
+  Boot preflight   repo=false worktree=false branch=no upstream trust=not allowlisted mcp=true plugins=true last_failed=none
+  Config files     loaded 0/5
+  Memory files     2
+  Suggested flow   /status → /diff → /commit
+
+Sandbox
+  Enabled           true
+  Active            false
+  Supported         false
+  In container      false
+  Requested ns      true
+  Active ns         false
+  Requested net     false
+  Active net        false
+  Filesystem mode   workspace-only
+  Filesystem active true
+  Allowed mounts    <none>
+  Markers           <none>
+  Fallback reason   namespace isolation unavailable (requires Linux with `unshare`)

@@ -1,0 +1,79 @@
+{
+  "block_name": "FB_Recipe_motor_start_stop_seal_in",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "StartPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "StopPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultActive"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "MotorRun"
+      }
+    ],
+    "static_members": []
+  },
+  "networks": [
+    {
+      "branches": [
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "StartPB",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "MotorRun",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "MotorRun",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "StopPB",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Motor seal-in with stop and fault permissives",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

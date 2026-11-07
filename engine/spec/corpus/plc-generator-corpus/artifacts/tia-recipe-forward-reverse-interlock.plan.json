@@ -1,0 +1,230 @@
+{
+  "block_name": "FB_Recipe_forward_reverse_interlock",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "ForwardStart"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ForwardStop"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ReverseStart"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ReverseStop"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultCondition"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultReset"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "ForwardRun"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ReverseRun"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DriveReady"
+      }
+    ],
+    "static_members": [
+      {
+        "datatype": "Bool",
+        "name": "FaultLatched"
+      }
+    ]
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "set_coil",
+        "operand": {
+          "name": "FaultLatched",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "FaultCondition",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Fault latch",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "FaultLatched",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "FaultReset",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultCondition",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Fault reset",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "DriveReady",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultLatched",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Drive ready",
+      "type": "contact_coil"
+    },
+    {
+      "branches": [
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "ForwardStart",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "ForwardRun",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "ForwardRun",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "ForwardStop",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "ReverseRun",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "DriveReady",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Forward seal-in and reverse interlock",
+      "type": "contact_coil"
+    },
+    {
+      "branches": [
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "ReverseStart",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "ReverseRun",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "ReverseRun",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "ReverseStop",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "ForwardRun",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "DriveReady",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Reverse seal-in and forward interlock",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

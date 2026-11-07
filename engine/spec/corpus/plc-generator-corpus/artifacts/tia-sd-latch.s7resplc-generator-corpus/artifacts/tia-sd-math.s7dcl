@@ -1,0 +1,28 @@
+{
+    S7_Optimized := "TRUE";
+    S7_Language := "LAD";
+}
+FUNCTION_BLOCK "FB_SD_math"
+    VAR_INPUT
+        A : Int;
+        B : Int;
+    END_VAR
+    VAR_OUTPUT
+        Value : Int;
+    END_VAR
+
+    { S7_Language := "LAD" }
+    NETWORK
+        RUNG wire#powerrail
+            Add{
+                Card := 2; 
+                SrcType := Int; 
+                DisableENO := FALSE
+            }(
+                IN1 := #A,
+                IN2 := #B,
+                OUT => #Value
+            )
+        END_RUNG
+    END_NETWORK
+END_FUNCTION_BLOCK

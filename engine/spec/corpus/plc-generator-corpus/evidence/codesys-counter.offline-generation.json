@@ -1,0 +1,34 @@
+{
+  "caseId": "codesys-counter",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "b1c87847d8c9a291cb10333d8b63b1fbfacce1613c7b59bf1c35d064f7f47e25",
+  "specificationHash": "ee2b610e3407230ec937ae21133691a061a36648a4ca5e9b9eb75493308e1b07",
+  "contractHash": "ce012c8130ec0436aa04b6620999141b4e5d6cf3dd7a49e990a4917cbe196c19",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "bridgeSourceHashes": {
+      "contact_lad_compiler.py": "b6755127695bab960413453c1b02b2c83adc77577689c3e333ddfc6249405b2e",
+      "lad_generator.py": "1c1124b1026a0b0f83d483677f7f5cfbcbc759b103d547806caf1165be606c92",
+      "persistent_bridge.py": "45ef88ef99eaf316d24287cf08b036502caffbf1315c566ced0544c81ac73293"
+    },
+    "signatureResolution": "Source built-ins and fixed standard fixtures; no live catalog",
+    "targetFormat": "Vanilla current route: PLCopen TC6 import; IDE readback would be ModelJson"
+  },
+  "checkedAt": "2026-09-20T11:54:36.155138+00:00",
+  "checks": [
+    "Original source normalizer and current PLCopen emitter executed",
+    "Generated XML parses and contains LD body; no IDE import"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/codesys-counter.xml",
+      "sha256": "f5f8af75b1d5e91c4aa3803d8e00b51a307c38f291dad51ebe1d02a13920c6b2"
+    },
+    {
+      "path": "artifacts/codesys-counter.normalized.json",
+      "sha256": "9b71b9f4b9911808c39fcbf85c9764bc3a6917e6e100cb86f72ad7e53a4c26f0"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

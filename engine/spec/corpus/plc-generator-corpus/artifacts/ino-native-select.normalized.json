@@ -1,0 +1,41 @@
+[
+  {
+    "ok": true,
+    "errors": [],
+    "normalized": {
+      "instruction": "SEL",
+      "operatorEnum": "Sel",
+      "dataType": "INT",
+      "inputs": [
+        {
+          "index": 0,
+          "name": "G",
+          "type": "BOOL",
+          "value": "ChooseB"
+        },
+        {
+          "index": 1,
+          "name": "IN0",
+          "type": "INT",
+          "value": "A"
+        },
+        {
+          "index": 2,
+          "name": "IN1",
+          "type": "INT",
+          "value": "B"
+        }
+      ],
+      "inouts": [],
+      "outputs": [
+        {
+          "index": 0,
+          "name": "OUT",
+          "type": "INT",
+          "value": "Value"
+        }
+      ],
+      "instance": null
+    }
+  }
+]

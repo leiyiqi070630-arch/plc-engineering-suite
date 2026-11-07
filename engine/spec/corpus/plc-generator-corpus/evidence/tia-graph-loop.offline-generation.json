@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-graph-loop",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "980c7327b7d0a6d18e53c09c092162cca88c2141c43f9995960f1d5a2ea40af9",
+  "specificationHash": "c78f9554b4fd42ebd1cc533e3d22f992fe2ebfe4e9aa9ecf8c0206e50b59d0c2",
+  "contractHash": "3a8a67a7787d9759a4e028447e9f4153b4a7c5eeb22dc64f0a169c86c3b31d93",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:37.808120+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-graph-loop.xml",
+      "sha256": "dd89ee7154540912df3cf98913a2e8fbdd021ee59dbbe066075bd6ea99ca356d"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

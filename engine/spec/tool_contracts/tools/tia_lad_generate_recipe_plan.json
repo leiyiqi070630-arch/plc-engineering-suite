@@ -1,0 +1,84 @@
+{
+ "contract": {
+  "description": "Generate an already locally validated structured LAD plan from a recipe_id (e.g. motor_start_stop_seal_in, forward_reverse_interlock, fault_latch_acknowledge, valve_open_close_interlock, pump_duty_standby_basic). Pass the returned plan directly to tia_lad_generate_block_xml; a separate plan/XML validation call is unnecessary unless generation or import reports an error.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "block_name": {
+     "description": "Target FB block name.",
+     "type": "string"
+    },
+    "block_type": {
+     "description": "Currently FB only.",
+     "type": "string"
+    },
+    "recipe_id": {
+     "description": "Recipe id from tia_lad_list_program_recipes.",
+     "type": "string"
+    },
+    "schema_version": {
+     "description": "TIA schema version V16-V21 (V19-V21 are served through V18-format documents via TIA's official cross-version import; V15 unsupported). Omitted defaults to the project's openness_version (plc-code.project.json), falling back to V18 only if unknown; a V18 document will not import into a V16/V17 portal, so V16/V17 must pass the portal version.",
+     "type": "string"
+    },
+    "signals": {
+     "additionalProperties": {
+      "type": "string"
+     },
+     "description": "Optional recipe overrides: signal names or recipe-supported literal strings. step_sequencer additionally accepts steps[] below; other omitted fields use recipe defaults. Check signal polarity and scan order against the task.",
+     "properties": {
+      "steps": {
+       "description": "step_sequencer only: ordered steps, numbered from 1. outputs are energized while active; transition contacts are ANDed; empty transition advances unconditionally. next defaults to the following step, last to 1.",
+       "items": {
+        "additionalProperties": false,
+        "properties": {
+         "next": {
+          "minimum": 1,
+          "type": "integer"
+         },
+         "outputs": {
+          "items": {
+           "type": "string"
+          },
+          "type": "array"
+         },
+         "transition": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "name": {
+             "type": "string"
+            },
+            "negated": {
+             "type": "boolean"
+            }
+           },
+           "required": [
+            "name"
+           ],
+           "type": "object"
+          },
+          "type": "array"
+         }
+        },
+        "type": "object"
+       },
+       "minItems": 1,
+       "type": "array"
+      }
+     },
+     "type": "object"
+    }
+   },
+   "required": [
+    "recipe_id",
+    "block_name"
+   ],
+   "type": "object"
+  },
+  "name": "tia_lad_generate_recipe_plan",
+  "permission": "ReadOnly"
+ },
+ "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+ "name": "tia_lad_generate_recipe_plan",
+ "schemaHash": "edc93dd059fc7cf52de6cdcfd95eb58f419f81c9f5c6e205d37866f3677c0da5"
+}

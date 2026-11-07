@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-forward-reverse-interlock",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "95dedef57993e31615ae88645f9b5169c004c49f6fd4897e6b6938c88b47e394",
+  "specificationHash": "c32d1cfe8497511839307d8f868aabdb35e93afd7ad515807a1cefdd1277b5d4",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:40.314874+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-forward-reverse-interlock.plan.json",
+      "sha256": "2ad3115070305565a044a54c383b3e825072f36744915e4182665c19f20730f2"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

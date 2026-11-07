@@ -1,0 +1,30 @@
+{
+  "caseId": "tia-sd-math",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "4c9855d3abe8bfe1f2c2386388fae6efe40ba1c428f9fa09503b4e35483570d3",
+  "specificationHash": "74c4530a2d3e30668e613f709813815f9e89f618b14de5cbfd6ec5a821e19b0b",
+  "contractHash": "b97ddb65d4ea1a18dba597e01828476209bf4481e281fbb4121d55528d7de0b9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V20",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:42.532934+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "SD text and resource document both present; CRLF checked"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-sd-math.s7dcl",
+      "sha256": "b5d780acfe1d611334efbaf7966d7da449f36ce5d2446335aefa9d6054a1e45b"
+    },
+    {
+      "path": "artifacts/tia-sd-math.s7res",
+      "sha256": "f0de2b7b5e3cc766fd54c97a9b14843273a0066f2434b6919bf7ff0fb20c48d0"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-lad-parallel",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "e2186ff3d54ab83960ee145b6af989df8d9aaceaf75fd641664f7cf3ae401367",
+  "specificationHash": "c25f23c766a21ab3ec83ea1c34c560e9202fc5b241bdabc2dc6db97dee0b6568",
+  "contractHash": "0e273628c96e0d5b04bb7a0e14a06b8530a74c30d590616a904cdfaf41ce5fa9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:38.710963+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-lad-parallel.xml",
+      "sha256": "55236688d13aad8753ad1963ecdefc6172ca40f4deb33ac41dd24094589a9bb9"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

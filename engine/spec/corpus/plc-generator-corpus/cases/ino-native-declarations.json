@@ -1,0 +1,87 @@
+{
+  "id": "ino-native-declarations",
+  "tool": "codesys_lad_generate_native",
+  "route": "inoproshop",
+  "title": "汇川原生声明和端口类型",
+  "covers": [
+    "variables",
+    "sections",
+    "native-compare"
+  ],
+  "language": "LAD",
+  "versions": [],
+  "keywords": [
+    "native-compare",
+    "汇川原生指令",
+    "GT",
+    "inoproshop",
+    "LAD",
+    "生成器",
+    "generator",
+    "声明",
+    "variables",
+    "input",
+    "output"
+  ],
+  "requirements": [
+    "比较两个 INT 输入并明确声明 BOOL 输出。"
+  ],
+  "input": {
+    "name": "Example_Declared",
+    "networks": [
+      {
+        "title": "GT example",
+        "instructions": [
+          {
+            "instruction": "GT",
+            "inputs": {
+              "IN1": "A",
+              "IN2": "B"
+            },
+            "outputs": {
+              "OUT": "Greater"
+            },
+            "dataType": "INT"
+          }
+        ]
+      }
+    ],
+    "confirm": "generate_native_lad_instruction_batch",
+    "disposable": true,
+    "variables": [
+      {
+        "name": "A",
+        "type": "INT",
+        "section": "input"
+      },
+      {
+        "name": "B",
+        "type": "INT",
+        "section": "input"
+      },
+      {
+        "name": "Greater",
+        "type": "BOOL",
+        "section": "output"
+      }
+    ]
+  },
+  "expected": [
+    "A/B 声明为 INT 输入，Greater 声明为 BOOL 输出；运算符的 dataType=INT 不代表比较结果也为 INT。"
+  ],
+  "preconditions": [
+    "未提供 namespace 时允许桥接按真实签名解析；若已知目标签名歧义，应先一次性定向查 instruction_spec。",
+    "这是指定线路的示例；不得跨用标准 CODESYS 与 InoProShop 的原生输入。",
+    "写入入口仅在已授权的实验工程/副本使用；确认对象放置、现有任务和输出接线。示例 confirm/disposable 不替用户授权。"
+  ],
+  "pitfalls": [
+    "不要把普通 ADD 写成宽整数库指令 ADD64_64；它们是不同签名。"
+  ],
+  "evidence": [
+    {
+      "stage": "offline-normalization",
+      "path": "evidence/ino-native-declarations.offline-normalization.json",
+      "sha256": "f77deb839376167503a298a51be1d38a6a27d0e1a7601c828630c84d16583cb8"
+    }
+  ]
+}

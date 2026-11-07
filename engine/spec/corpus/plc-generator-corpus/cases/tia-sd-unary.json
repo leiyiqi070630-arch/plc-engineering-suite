@@ -1,0 +1,85 @@
+{
+  "id": "tia-sd-unary",
+  "tool": "tia_sd_generate_block",
+  "route": "tia",
+  "title": "SD 单输入数学",
+  "covers": [
+    "unary_math"
+  ],
+  "language": "SD",
+  "versions": [
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "unary_math",
+    "SD",
+    "单输入数学",
+    "tia",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "SD 单输入数学"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "FB_SD_unary",
+      "block_type": "FB",
+      "interface": {
+        "input": [
+          {
+            "name": "A",
+            "datatype": "Real"
+          }
+        ],
+        "output": [
+          {
+            "name": "Value",
+            "datatype": "Real"
+          }
+        ],
+        "var": [],
+        "var_retain": []
+      },
+      "networks": [
+        {
+          "rungs": [
+            {
+              "wire_in": "powerrail",
+              "elements": [
+                {
+                  "op": "unary_math",
+                  "kind": "Abs",
+                  "in": {
+                    "name": "A"
+                  },
+                  "out": {
+                    "name": "Value"
+                  },
+                  "src_type": "Real"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expected": [
+    "SD 单输入数学：生成 S7DCL 文本并保留声明与端口方向。",
+    "SD 仅适用 V20/V21；编译与行为检查另行执行。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-sd-unary.offline-generation.json",
+      "sha256": "d1a4906ba35ee6934d0d8e614e592f06d260488bc69a6d9491fb533faba046d2"
+    }
+  ]
+}

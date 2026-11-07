@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-conveyor-zone-interlock",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "1e700424da06bb0c3e00ac87cdc67616091d9a25690c568f0fc2faf182a3025d",
+  "specificationHash": "1ef1e7c4e7a9e9e85c7ccaca585312e0b24d21db157483bf9f7d6c7d4fe80560",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:39.576506+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-conveyor-zone-interlock.plan.json",
+      "sha256": "e70f200c0860006b3bc9435caa51451abb5c0bf7057b64ac7243309075809108"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

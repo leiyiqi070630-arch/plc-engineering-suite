@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-vent-after-run-tof",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "409a7e819c3c7039644c91d500243869948b7ca7309a374fd51f1bf014ccc309",
+  "specificationHash": "cf804c84867202c6817c4c9769b7d450d0d3957ff09ca837b6527460e0bcb66b",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:42.081319+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-vent-after-run-tof.plan.json",
+      "sha256": "ff43db80ebd76275d96403a343daddf05c2ed69701f3be2f555361092f86d613"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

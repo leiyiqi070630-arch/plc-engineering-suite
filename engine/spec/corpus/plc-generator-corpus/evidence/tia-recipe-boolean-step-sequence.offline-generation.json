@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-boolean-step-sequence",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "fbd5a6a94c969f5b75803e7b568fe027e4fc7d69a7c530e353a1945282099bab",
+  "specificationHash": "4b970280494197dcad1dc194ec1f4159ad4e31ebd0537c8dc04640b451e53662",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:39.308572+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-boolean-step-sequence.plan.json",
+      "sha256": "f048cc748cba2be10b9a7881c20cce939bd08cfe8b527c07edd487891299fd22"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

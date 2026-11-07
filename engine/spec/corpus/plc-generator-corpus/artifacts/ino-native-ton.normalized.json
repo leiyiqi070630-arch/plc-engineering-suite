@@ -1,0 +1,40 @@
+[
+  {
+    "fixedPortFixture": {
+      "name": "TON",
+      "pouType": "FunctionBlock",
+      "inputs": [
+        {
+          "name": "IN",
+          "type": "BOOL"
+        },
+        {
+          "name": "PT",
+          "type": "TIME"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Q",
+          "type": "BOOL"
+        },
+        {
+          "name": "ET",
+          "type": "TIME"
+        }
+      ]
+    },
+    "input": {
+      "instruction": "TON",
+      "inputs": {
+        "IN": "Enable",
+        "PT": "T#2s"
+      },
+      "outputs": {
+        "Q": "Done"
+      },
+      "instance": "Delay"
+    },
+    "liveIdentityVerified": false
+  }
+]

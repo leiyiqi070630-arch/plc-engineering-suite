@@ -1,0 +1,26 @@
+{
+  "caseId": "mitsubishi-multioperand",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "cb4ca8203901a92612eeebc30ae8cf481b1e1b997e3f249336dcc546fb3fa7c8",
+  "specificationHash": "f56b0dd24ffb1834d306675960a439d32aeaac0f9f43267a7820d38073ec94b9",
+  "contractHash": "78db979e0bf90288fa05b208fbd073801b900f2a2bcd47e8fdb7f2d091847b52",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": null,
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:37.386928+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Program CSV has tab columns and END instruction"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/mitsubishi-multioperand.csv.txt",
+      "sha256": "dad138cb1e847d2e36b52aa311f4bf9e459a7b7a0e6e9ca8f97ca80fd7c1384f"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

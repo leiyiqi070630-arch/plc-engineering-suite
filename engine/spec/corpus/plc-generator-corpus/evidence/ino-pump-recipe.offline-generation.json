@@ -1,0 +1,31 @@
+{
+  "caseId": "ino-pump-recipe",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "b0c4618316bb01d9002a815b9d5c3f1c179dd816eb726c4257fe0ea294db4811",
+  "specificationHash": "dedd1a4a5c92d00f02044bd90f93a2b29ebeb8a7011152e1f127c66e6d5c1025",
+  "contractHash": "55e40e7698d01df5cba8530685db20eca5d9944ec588eb2a2d2b8442a6577c68",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": null,
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:36.954779+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned request validates against current consumer schema; no IDE write",
+    "Recipe contact plan compiled by source native compiler offline"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/ino-pump-recipe.request.json",
+      "sha256": "525cbf9cde8cd2dec72bfe887b0c3dac94afc837b8ddf5b3c0cf6f1464b87e62"
+    },
+    {
+      "path": "artifacts/ino-pump-recipe.xml",
+      "sha256": "0efa1993411ef759ff801cf8b832f03105e6e800cd59db2489184eba11f8ccec"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

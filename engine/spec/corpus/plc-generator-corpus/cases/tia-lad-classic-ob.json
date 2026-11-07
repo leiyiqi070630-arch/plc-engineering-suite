@@ -1,0 +1,92 @@
+{
+  "id": "tia-lad-classic-ob",
+  "tool": "tia_lad_generate_block_xml",
+  "route": "tia",
+  "title": "S7-300 循环 OB 与全局信号",
+  "covers": [
+    "OB",
+    "ProgramCycle",
+    "classic-ob"
+  ],
+  "language": "LAD",
+  "versions": [
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21"
+  ],
+  "keywords": [
+    "contact_coil",
+    "series",
+    "negation",
+    "串联与取反：A",
+    "且非",
+    "B",
+    "tia",
+    "LAD",
+    "生成器",
+    "generator",
+    "OB",
+    "循环",
+    "经典"
+  ],
+  "requirements": [
+    "生成 S7-300 的循环 OB；通过全局符号连接输入输出。"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "MainExample",
+      "block_type": "OB",
+      "target_family": "S7-300",
+      "interface": {
+        "temp": []
+      },
+      "networks": [
+        {
+          "type": "contact_coil",
+          "contacts": [
+            {
+              "operand": {
+                "name": "A",
+                "scope": "GlobalVariable"
+              }
+            },
+            {
+              "operand": {
+                "name": "B",
+                "scope": "GlobalVariable"
+              },
+              "negated": true
+            }
+          ],
+          "coil": {
+            "operand": {
+              "name": "Q",
+              "scope": "GlobalVariable"
+            },
+            "kind": "Coil"
+          }
+        }
+      ],
+      "block_number": 1
+    }
+  },
+  "expected": [
+    "生成 ProgramCycle 类型 OB；不把 FC/FB 的输入输出接口带入 OB。"
+  ],
+  "preconditions": [
+    "先绑定实际 TIA 版本；示例省略 schema_version 时由工具采用工程/已探测版本。确认 CPU、块号及工程编辑语言匹配。",
+    "调用示例中的外部块、DB、PLC/HMI 标签必须在真实工程存在且类型一致。先生成文件，导入/覆盖/编译/保存按真实任务执行。",
+    "此例块号为 1；替换既有 OB1 前先完整备份目标对象并确认入口逻辑。跨语言替换先删除再重建，不能跳过受保护删除条件。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/tia-lad-classic-ob.offline-generation.json",
+      "sha256": "c230b434f02d132e7e47549f100737c70fdda722f8e3a5a32e8748ceb347b015"
+    }
+  ]
+}

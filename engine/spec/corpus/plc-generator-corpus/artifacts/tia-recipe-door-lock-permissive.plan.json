@@ -1,0 +1,152 @@
+{
+  "block_name": "FB_Recipe_door_lock_permissive",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "CloseRequest"
+      },
+      {
+        "datatype": "Bool",
+        "name": "DoorClosed"
+      },
+      {
+        "datatype": "Bool",
+        "name": "GuardOk"
+      },
+      {
+        "datatype": "Bool",
+        "name": "UnlockRequest"
+      },
+      {
+        "datatype": "Bool",
+        "name": "MotionStopped"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "DoorLock"
+      },
+      {
+        "datatype": "Bool",
+        "name": "MachinePermissive"
+      }
+    ],
+    "static_members": []
+  },
+  "networks": [
+    {
+      "branches": [
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "CloseRequest",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "DoorLock",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "DoorLock",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "DoorClosed",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "GuardOk",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "UnlockRequest",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Door lock seal-in",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "MachinePermissive",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "DoorLock",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "DoorClosed",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "GuardOk",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Machine permissive",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "reset_coil",
+        "operand": {
+          "name": "DoorLock",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "UnlockRequest",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "MotionStopped",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Unlock only when stopped",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

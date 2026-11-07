@@ -1,0 +1,28 @@
+{
+  "caseId": "ino-native-qualified",
+  "stage": "offline-normalization",
+  "passed": true,
+  "inputHash": "9fe86b45b0f0a0ffb1d01d246977ce0d9ebe8a0f437f1653722f985c4b17d0e7",
+  "specificationHash": "82f25f85f2d91505643899adb6ad94726f9d9403267e69958758caa2296e4c08",
+  "contractHash": "2691f8fb7d89cc1dfeb0507803bee85c5906aa1e9aaf14dfc5e4028aa0f88e24",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "bridgeSourceHashes": {
+      "contact_lad_compiler.py": "b6755127695bab960413453c1b02b2c83adc77577689c3e333ddfc6249405b2e",
+      "lad_generator.py": "1c1124b1026a0b0f83d483677f7f5cfbcbc759b103d547806caf1165be606c92",
+      "persistent_bridge.py": "45ef88ef99eaf316d24287cf08b036502caffbf1315c566ced0544c81ac73293"
+    },
+    "signatureResolution": "Source operator validator or fixed standard port fixture; not live IDE"
+  },
+  "checkedAt": "2026-09-20T11:54:36.193642+00:00",
+  "checks": [
+    "Native operator validation / fixed standard port check passed; no emission/import/behavior claim"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/ino-native-qualified.normalized.json",
+      "sha256": "7f674d72c02e9f7a050ecdb120c06227dd9885fe4d4405f4d5cbfd3d908c1e59"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

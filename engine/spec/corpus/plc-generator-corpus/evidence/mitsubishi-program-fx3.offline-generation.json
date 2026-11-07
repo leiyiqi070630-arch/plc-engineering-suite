@@ -1,0 +1,26 @@
+{
+  "caseId": "mitsubishi-program-fx3",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "521d5e70687e67ba97a4247217707eece5e3117c3afec313c2100f407aa3a991",
+  "specificationHash": "5171268bbeb9ba595512b2ed9bc6e2b1edc9fd9fe36c3a097f0b3743061f5891",
+  "contractHash": "78db979e0bf90288fa05b208fbd073801b900f2a2bcd47e8fdb7f2d091847b52",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": null,
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:37.613974+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Program CSV has tab columns and END instruction"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/mitsubishi-program-fx3.csv.txt",
+      "sha256": "80bbde9274aca6645554a3de98efa763881ba360ffb82016761108f082c657bf"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

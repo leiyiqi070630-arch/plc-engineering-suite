@@ -1,0 +1,263 @@
+{
+  "block_name": "FB_Recipe_step_sequencer",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "FirstScan"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Full"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Empty"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "Fill"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Drain"
+      }
+    ],
+    "static_members": [
+      {
+        "datatype": "Int",
+        "name": "StepNumber"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Step1_Active"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Step2_Active"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Step1_Done"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Step2_Done"
+      }
+    ]
+  },
+  "networks": [
+    {
+      "enable": {
+        "name": "FirstScan",
+        "scope": "LocalVariable"
+      },
+      "input": {
+        "constant_value": "1",
+        "datatype": "Int",
+        "name": "1",
+        "scope": "LiteralConstant"
+      },
+      "outputs": [
+        {
+          "name": "StepNumber",
+          "scope": "LocalVariable"
+        }
+      ],
+      "title": "Initialize sequencer to step 1",
+      "type": "move"
+    },
+    {
+      "box_inputs": [
+        {
+          "operand": {
+            "name": "StepNumber",
+            "scope": "LocalVariable"
+          },
+          "port": "in1"
+        },
+        {
+          "operand": {
+            "constant_value": "1",
+            "datatype": "Int",
+            "name": "1",
+            "scope": "LiteralConstant"
+          },
+          "port": "in2"
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Step1_Active",
+          "scope": "LocalVariable"
+        }
+      },
+      "part_name": "Eq",
+      "title": "Step 1 active when StepNumber == 1",
+      "type": "instruction_box"
+    },
+    {
+      "box_inputs": [
+        {
+          "operand": {
+            "name": "StepNumber",
+            "scope": "LocalVariable"
+          },
+          "port": "in1"
+        },
+        {
+          "operand": {
+            "constant_value": "2",
+            "datatype": "Int",
+            "name": "2",
+            "scope": "LiteralConstant"
+          },
+          "port": "in2"
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Step2_Active",
+          "scope": "LocalVariable"
+        }
+      },
+      "part_name": "Eq",
+      "title": "Step 2 active when StepNumber == 2",
+      "type": "instruction_box"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Fill",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step1_Active",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Step 1: drive Fill",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Step1_Done",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step1_Active",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "Full",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Step 1: transition to step 2",
+      "type": "contact_coil"
+    },
+    {
+      "enable": {
+        "name": "Step1_Done",
+        "scope": "LocalVariable"
+      },
+      "input": {
+        "constant_value": "2",
+        "datatype": "Int",
+        "name": "2",
+        "scope": "LiteralConstant"
+      },
+      "outputs": [
+        {
+          "name": "StepNumber",
+          "scope": "LocalVariable"
+        }
+      ],
+      "title": "Step 1: advance to step 2",
+      "type": "move"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Drain",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step2_Active",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Step 2: drive Drain",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Step2_Done",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "Step2_Active",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "Empty",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Step 2: transition to step 1",
+      "type": "contact_coil"
+    },
+    {
+      "enable": {
+        "name": "Step2_Done",
+        "scope": "LocalVariable"
+      },
+      "input": {
+        "constant_value": "1",
+        "datatype": "Int",
+        "name": "1",
+        "scope": "LiteralConstant"
+      },
+      "outputs": [
+        {
+          "name": "StepNumber",
+          "scope": "LocalVariable"
+        }
+      ],
+      "title": "Step 2: advance to step 1",
+      "type": "move"
+    }
+  ],
+  "schema_version": "V18"
+}

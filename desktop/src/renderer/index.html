@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: https: http:; media-src 'self' https: http:"
+    />
+    <!-- 17-user-feedback.md C2 — `img-src` needed its own directive (was
+         inheriting `default-src 'self'`, which does NOT include `data:`):
+         pasted/dropped image attachments and any assistant-markdown image
+         are rendered as `data:image/...;base64,...` <img src> values (see
+         lib/attachments.ts's readFileAsDataUrl), which a bare `default-src
+         'self'` silently fails to load — no console error beyond a CSP
+         violation notice, easy to miss without a real-machine screenshot.
+         Scoped to images only; script-src/style-src are untouched. -->
+    <title>PLC Code</title>
+    <link rel="preload" href="./assets/NotoSerifSC-B28r8lj8.ttf" as="font" type="font/ttf" crossorigin />
+    <script type="module" crossorigin src="./assets/index-CXb3UsfP.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-pqC5qFDs.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

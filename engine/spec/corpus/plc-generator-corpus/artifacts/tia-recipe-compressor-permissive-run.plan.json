@@ -1,0 +1,139 @@
+{
+  "block_name": "FB_Recipe_compressor_permissive_run",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "StartPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "StopPB"
+      },
+      {
+        "datatype": "Bool",
+        "name": "PressureLow"
+      },
+      {
+        "datatype": "Bool",
+        "name": "PressureHigh"
+      },
+      {
+        "datatype": "Bool",
+        "name": "OilPressureOk"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultActive"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "CompressorRun"
+      },
+      {
+        "datatype": "Bool",
+        "name": "UnloadValve"
+      }
+    ],
+    "static_members": []
+  },
+  "networks": [
+    {
+      "branches": [
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "StartPB",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        },
+        {
+          "contacts": [
+            {
+              "operand": {
+                "name": "CompressorRun",
+                "scope": "LocalVariable"
+              }
+            }
+          ]
+        }
+      ],
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "CompressorRun",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "StopPB",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "PressureLow",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "PressureHigh",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "OilPressureOk",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Compressor run seal-in",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "UnloadValve",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "CompressorRun",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "PressureHigh",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Unload valve on high pressure",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-recipe-station-auto-cycle-gates",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "01ce77cbcf61858b7389e7d858b5ff908ef40f813c924a4431935f9908e18776",
+  "specificationHash": "f3de4374f61bfd7c454e88e2116e837fdafcb14af8a0709834b82ec5054f8d7b",
+  "contractHash": "8cb0c03ac724f72156514b88db48368e4d5936a9ee5637d4528dc08c0942c6f1",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:41.505485+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Returned plan consumed by actual LAD XML generator and XML parsed"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-recipe-station-auto-cycle-gates.plan.json",
+      "sha256": "502a73667637094ee1f8f852f00d941bc62b0cfc31205c83cf8b1e4ea0274a1c"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

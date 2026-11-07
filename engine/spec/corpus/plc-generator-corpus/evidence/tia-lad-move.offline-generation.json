@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-lad-move",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "975cd7e2e58504e9b52006e4ecc1c5d192bfccb6f17c54420a527339e8f118a7",
+  "specificationHash": "c22d9aecbe8dc38502b90f07ff86623be67e10ee7eef5b6f4cdb008f95ea5f36",
+  "contractHash": "0e273628c96e0d5b04bb7a0e14a06b8530a74c30d590616a904cdfaf41ce5fa9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:38.569554+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-lad-move.xml",
+      "sha256": "8177cbf66d1d065b8aae3079fd64e82a21b07e3654273dc984e92b2cd47219a7"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

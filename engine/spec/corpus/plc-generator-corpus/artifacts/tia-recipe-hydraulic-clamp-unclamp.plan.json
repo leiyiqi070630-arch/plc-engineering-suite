@@ -1,0 +1,161 @@
+{
+  "block_name": "FB_Recipe_hydraulic_clamp_unclamp",
+  "block_type": "FB",
+  "interface": {
+    "input": [
+      {
+        "datatype": "Bool",
+        "name": "ClampCmd"
+      },
+      {
+        "datatype": "Bool",
+        "name": "UnclampCmd"
+      },
+      {
+        "datatype": "Bool",
+        "name": "ClampLimit"
+      },
+      {
+        "datatype": "Bool",
+        "name": "UnclampLimit"
+      },
+      {
+        "datatype": "Bool",
+        "name": "PressureOk"
+      },
+      {
+        "datatype": "Bool",
+        "name": "FaultActive"
+      }
+    ],
+    "output": [
+      {
+        "datatype": "Bool",
+        "name": "ClampValve"
+      },
+      {
+        "datatype": "Bool",
+        "name": "UnclampValve"
+      },
+      {
+        "datatype": "Bool",
+        "name": "Clamped"
+      }
+    ],
+    "static_members": []
+  },
+  "networks": [
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "ClampValve",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ClampCmd",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "ClampLimit",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "UnclampValve",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "PressureOk",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Clamp valve interlock",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "UnclampValve",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "UnclampCmd",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "UnclampLimit",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "ClampValve",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "operand": {
+            "name": "PressureOk",
+            "scope": "LocalVariable"
+          }
+        },
+        {
+          "kind": "nc_contact",
+          "operand": {
+            "name": "FaultActive",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Unclamp valve interlock",
+      "type": "contact_coil"
+    },
+    {
+      "coil": {
+        "kind": "coil",
+        "operand": {
+          "name": "Clamped",
+          "scope": "LocalVariable"
+        }
+      },
+      "contacts": [
+        {
+          "operand": {
+            "name": "ClampLimit",
+            "scope": "LocalVariable"
+          }
+        }
+      ],
+      "title": "Clamped status",
+      "type": "contact_coil"
+    }
+  ],
+  "schema_version": "V18"
+}

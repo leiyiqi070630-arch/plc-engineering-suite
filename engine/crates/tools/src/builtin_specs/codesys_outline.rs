@@ -1,0 +1,21 @@
+//! 模块骨架
+//! 模块路径: crates\tools\src\builtin_specs\codesys_outline.rs
+//!
+//! 说明: 本模块对外契约由接口证据整理，函数体以实现为准。
+//! 以下为对外契约线索，补实现时以此为准。
+//!
+//! 关联工具: character, definition, diagnostics, headersbody, references, symbols
+//!
+//! 契约线索（截断）:
+//!   evidence_refExact opaque reference from remote find/read; cannot be guessed or exchanged across accounts.
+//!   max_charsRemote evidence: default 1600, max 5000 chars, also bounded by the complete response budget. Bundled references: default 8000, max 10000. Read only an omitted condition ne
+//!   Character offset to continue a window; remote evidence uses next_offset, bundled references use nextOffset.
+//!   oneOfrequired
+//!   plc_corpus_readRead a returned knowledge reference. For remote Siemens evidence, supply evidence_ref and optionally offset from next_offset to inspect omitted conditions/table rows
+//!   LSPQuery Language Server Protocol for code intelligence (symbols, references, diagnostics).
+//!   urlmethodGET
+//!   RemoteTriggerTrigger a remote action or webhook endpoint.crates\tools\src\builtin_specs\codesys_outline.rs
+//!   targetminLengthtargetsarray
+//!   minItemsmaxItems 
+
+// TODO: 依上列契约实现 `codesys_outline` 模块。

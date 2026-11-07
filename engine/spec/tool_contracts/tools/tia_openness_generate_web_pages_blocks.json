@@ -1,0 +1,52 @@
+{
+ "contract": {
+  "description": "Generate the user-defined web page DB blocks (WebserverUserDefinedPages.GenerateBlocks — the WWW route) from a local HTML directory into the active TIA project. Mutating; requires confirm=true. html_directory must exist on THIS machine's disk; default_page is the entry page inside it (a relative file name or an absolute path). override defaults to true (regenerate over existing web DBs); pass false to fail instead of overwriting. The generated DBs still need a compile plus the WWW system-function call in the user program before the CPU actually serves the pages.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "application_name": {
+     "description": "Optional web application name (bridge default: WebApp).",
+     "type": "string"
+    },
+    "confirm": {
+     "type": "boolean"
+    },
+    "default_page": {
+     "type": "string"
+    },
+    "device_name": {
+     "type": "string"
+    },
+    "html_directory": {
+     "type": "string"
+    },
+    "override": {
+     "description": "Default true: regenerate over existing web DBs. false fails instead of overwriting.",
+     "type": "boolean"
+    },
+    "project_match": {
+     "type": "string"
+    },
+    "save_project": {
+     "description": "Persist the project to disk after this mutation. Default false: the change lives only in the running TIA Portal and is LOST if the Portal exits/crashes before a later save. Pass true at milestones (cheap) instead of batching everything to one final save.",
+     "type": "boolean"
+    },
+    "tia_version": {
+     "description": "Target TIA Portal version, V16-V21 (e.g. \"V20\"; bare \"20\" also accepted). Omitted: the bridge attaches to the running portal if one is open, else the highest installed version.",
+     "type": "string"
+    }
+   },
+   "required": [
+    "html_directory",
+    "default_page",
+    "confirm"
+   ],
+   "type": "object"
+  },
+  "name": "tia_openness_generate_web_pages_blocks",
+  "permission": "DangerFullAccess"
+ },
+ "contractHash": "ffd4a901ea250f844c58e055a7ce1cef892205641a08793a2817ee11253f8dba",
+ "name": "tia_openness_generate_web_pages_blocks",
+ "schemaHash": "fa84450bda6e534b31d02fc2acb032f19dfa8097edb96619f9b0563eedaa0901"
+}

@@ -1,0 +1,9 @@
+{
+  "generator": "codesys_lad_generate_native_template",
+  "request": {
+    "confirm": "generate_native_lad_instruction",
+    "disposable": true,
+    "instruction": "TON",
+    "name": "Example_Recipe"
+  }
+}

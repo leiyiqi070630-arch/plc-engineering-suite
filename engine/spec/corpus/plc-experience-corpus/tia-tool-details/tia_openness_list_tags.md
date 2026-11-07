@@ -1,0 +1,5 @@
+# tia_openness_list_tags — extended contract
+
+Reference data moved from the resident card on 2026-09-18. Current schema, diagnostic receipts, user scope and target version take precedence; historical measurements are scoped observations. Read only for an unresolved detail.
+
+List PLC tag tables, tags and user constants from the active TIA Portal project. include_system_constants=true also reads each table's separate systemConstants (name/dataType/value), including numeric hardware HW_ID values. Omitted constants are null with systemConstantsIncluded=false, not empty. device_name must name a device that EXISTS and HAS PlcSoftware: a wrong name, a PC/HMI station or a device without PLC software is refused with TIA_TARGET_PLC_NOT_FOUND (details.targetProblem) instead of returning an empty list, so tagTables=[] always means a CONFIRMED PLC really has no tag table — never read it as "the tags were not created". A receipt too large for the runtime's per-result budget reaches the model as a SAMPLE (verified=false + resultComplete=false + truncated=true + verificationScope="transport_and_route_only", per table too); the payload still carries every table and tag.

@@ -1,0 +1,205 @@
+{
+ "contract": {
+  "description": "Generate a real GRAPH (sequential function chart) FB as TIA Openness SimaticML XML from a plan of named steps. V16-V21 (machine-verified per-version stamp table): by default each step gets one following transition (Trans{k} unless overridden) and the linear Connections graph S_k -> T_k -> S_{k+1} -> ... -> EndConnection. A step's next jumps its following transition to ANY defined step (self-loop / loop-back / forward jump; a fully-looped block has no EndConnection), and a step's alternatives declares an alternative branch (>=2 competing transitions, each {transition?, condition?, next}) — the Direct/Jump LinkType is derived automatically from the import-verified rule. A step may give a condition (the following transition's condition), an interlock, and/or a supervision — each a series (AND) chain of normally-open contacts; omitted/[] leaves an empty skeleton. A step may also give actions (each a qualifier-tagged target := value assignment), and the plan may declare variables[] (block Static members) so those actions have writable targets and the block compiles clean. The fixed envelope (block AttributeList, GRAPH_BASE interface + standard GRAPH I/O parameters, PreOperations/PostOperations, AlarmsSettings, version stamps) is the import-verified golden verbatim. Writes the .xml when output_path is given (mutating); omit it to get the XML back in the result. Versions other than V16-V21 are rejected with a structured ok:false. The TIA compiler auto-generates the GRAPH runtime block on import; do not hand-write it. Condition/interlock/supervision contacts default to scope GlobalVariable: each such PLC tag must pre-exist as Bool with a bit address (create via tia_openness_create_tags first, or switch to variables[] + scope LocalVariable); the result's requiredGlobalTags field lists them. Local ok:true is shape correctness, not a TIA compile — confirm via tia_openness_import_block_xml + tia_openness_compile. Minimal plan with an action + a loop-back: {\"block_name\":\"FB_Seq\",\"variables\":[{\"name\":\"MyOut\",\"datatype\":\"Bool\"}],\"steps\":[{\"name\":\"Idle\",\"init\":true,\"actions\":[{\"qualifier\":\"N\",\"target\":\"MyOut\",\"value\":\"TRUE\"}]},{\"name\":\"Run\",\"condition\":[{\"operand\":\"INIT_SQ\",\"scope\":\"LocalVariable\"}]},{\"name\":\"Done\",\"next\":\"Idle\"}]}. Alternative-branch plan (2 competing transitions after Idle; each path loops back, so no EndConnection): {\"block_name\":\"FB_Branch\",\"variables\":[{\"name\":\"StartA\",\"datatype\":\"Bool\"},{\"name\":\"StartB\",\"datatype\":\"Bool\"}],\"steps\":[{\"name\":\"Idle\",\"init\":true,\"alternatives\":[{\"condition\":[{\"operand\":\"StartA\",\"scope\":\"LocalVariable\"}],\"next\":\"PathA\"},{\"condition\":[{\"operand\":\"StartB\",\"scope\":\"LocalVariable\"}],\"next\":\"PathB\"}]},{\"name\":\"PathA\",\"next\":\"Idle\"},{\"name\":\"PathB\",\"next\":\"Idle\"}]}.",
+  "inputSchema": {
+   "$defs": {
+    "action": {
+     "additionalProperties": false,
+     "description": "One step action. The qualifier decides the form (both import-verified): N is an assignment '#target := value' (value REQUIRED); S and R are set/reset coils '#target' (value FORBIDDEN — GRAPH rejects 'S #target := value'). Only N, S, R are supported in Phase 2b; other qualifiers (L/D/CU/CD/ON/OFF/TL/TD/TF/TR/CS/CR) are rejected until their form is machine-verified. target is an identifier (letters/digits/underscore, not starting with a digit). scope is the string LocalVariable (a block Static/interface member such as a declared variable; the default when omitted, rendered as #target) or GlobalVariable (a PLC tag, rendered as \"target\"). A NON-ASCII target (e.g. 夹紧阀) is accepted only with scope GlobalVariable, because that form is already quoted; the bare LocalVariable form '#夹紧阀' would need a '#\"…\"' spelling that is not import-verified, so it is refused rather than guessed — either make it a PLC tag with GlobalVariable scope, or give the Static member an ASCII name. value (N only) is a boolean literal (TRUE/FALSE) or an integer literal — an identifier value (assigning another member/tag) needs a scoped form not yet import-verified, so it is rejected. The target must be WRITABLE — declare it in variables[]; the read-only GRAPH inputs and reserved system parameters (OFF_SQ, S_NO, etc.) are not valid variable names.",
+     "properties": {
+      "qualifier": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      },
+      "target": {
+       "type": "string"
+      },
+      "value": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "qualifier",
+      "target"
+     ],
+     "type": "object"
+    },
+    "alternative": {
+     "additionalProperties": false,
+     "description": "One competing transition of an alternative branch. transition (optional) overrides the transition name; the default is Trans{k} (k = global 1-based transition index). condition (optional) is this path's firing condition — a series (AND) chain of NO contacts; omit or [] for unconditional. next (required) is the target step NAME; the generator derives the LinkType (the target's first feed on the start-reachable flow is Direct, merges/loop-backs and any edge into the first step are Jump — both import-verified).",
+     "properties": {
+      "condition": {
+       "description": "This alternative's firing condition: a series (AND) chain of NO contacts. Omit or [] for unconditional.",
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      },
+      "next": {
+       "type": "string"
+      },
+      "transition": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "next"
+     ],
+     "type": "object"
+    },
+    "contact": {
+     "additionalProperties": false,
+     "description": "One normally-open (NO) series contact in a condition. operand is a simple identifier: the tag or interface-member name (letters/digits/underscore only; no dots, quotes, or brackets in Phase 2a). scope is the string GlobalVariable (a PLC global tag; the default when omitted) or LocalVariable (a block interface member such as INIT_SQ). A GlobalVariable operand MUST already exist in a PLC tag table as data type Bool WITH a bit address (e.g. %M10.0) before import — otherwise compile fails with 'Tag not defined', and a name-only tag (no address) still fails with 'The entered address does not match the data type Bool'. Either pre-create it via tia_openness_create_tags (data_type Bool + logical_address) or declare the signal in variables[] and use scope LocalVariable instead (self-contained, compiles clean); the generate result's requiredGlobalTags field lists every tag that must exist.",
+     "properties": {
+      "operand": {
+       "type": "string"
+      },
+      "scope": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "operand"
+     ],
+     "type": "object"
+    },
+    "step": {
+     "additionalProperties": false,
+     "description": "One sequence step. name is the step identifier (must be unique). init (optional bool) marks the initial step; when omitted it defaults to true for the FIRST step only and false for the rest. transition (optional) overrides the name of the transition that FOLLOWS this step; the default is Trans{k} (k = global 1-based transition index). condition (optional) is the condition of the transition that FOLLOWS this step; interlock/supervision (optional) are this step's interlock/supervision conditions, each a series (AND) chain of contacts; omit or use [] for an empty (unconditional) skeleton. actions (optional) are this step's actions; omit or [] for none. next (optional) jumps the following transition to a named step. alternatives (optional) replaces the single following transition with >=2 competing ones and is therefore mutually exclusive with transition/condition/next (interlock/supervision/actions still apply to the step itself).",
+     "properties": {
+      "actions": {
+       "description": "This step's actions. Omit or [] for none. Phase 2b supports the import-verified N/S/R qualifiers only: N is an assignment (target := value, value required), S/R are set/reset coils (target only, value forbidden). No ST expressions, function calls, events, or action interlocks.",
+       "items": {
+        "$ref": "#/$defs/action"
+       },
+       "type": "array"
+      },
+      "alternatives": {
+       "description": "Optional alternative branch (Type AltBegin): two or more COMPETING transitions after this step — at runtime the leftmost transition whose condition fires wins. Each entry is {transition?, condition?, next} with next required. Requires at least 2 entries (a single following transition is the plain transition/condition/next form). Mutually exclusive with this step's transition/condition/next fields. Parallel (simultaneous) branches are not supported (not yet machine-verified).",
+       "items": {
+        "$ref": "#/$defs/alternative"
+       },
+       "type": "array"
+      },
+      "condition": {
+       "description": "Condition for the transition that FOLLOWS this step: a series (AND) chain of normally-open (NO) contacts. Every contact must be true to fire the transition. Omit or [] for an unconditional transition. Phase 2a supports series NO contacts only (no negated/NC contacts, no parallel/OR). Each operand is one plain tag/member name; non-ASCII names (e.g. 夹紧到位) are allowed, dotted paths (\"DB\".Member) are not. There is no step-time condition — GRAPH's 'wait 2 s' (Step.T >= T#2s) is NOT expressible here, so drive a Bool from a TON in another block and reference that Bool.",
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      },
+      "init": {
+       "type": "boolean"
+      },
+      "interlock": {
+       "description": "This step's interlock condition (IlCoil): a series (AND) chain of NO contacts. Omit or [] for none.",
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      },
+      "name": {
+       "description": "Step identifier, unique in the block. Step names, transition names and variables[] names all share the GRAPH block's symbol namespace with the sequencer's reserved system parameters, so these names are rejected up front (case-insensitive): OFF_SQ, INIT_SQ, ACK_EF, S_PREV, S_NEXT, SW_AUTO, SW_TAP, SW_TOP, SW_MAN, S_SEL, S_ON, S_OFF, T_PUSH, S_NO, S_MORE, S_ACTIVE, ERR_FLT, AUTO_ON, TAP_ON, TOP_ON, MAN_ON, OFF_SQ_BASE, FAULT, ERROR, T_PREV, T_NEXT, HALT_SQ, HALT_TM, ZERO_OP, EN_IL, EN_SV, EN_ACKREQ, EN_SSKIP, DISP_SACT, G7T. The industry-standard fault-step names \"Fault\"/\"Error\" hit this — use e.g. \"FaultStep\"/\"ErrorStep\".",
+       "type": "string"
+      },
+      "next": {
+       "description": "Optional target step NAME for the transition that FOLLOWS this step — any defined step: this step itself (self-loop), an earlier step (loop-back), or a later step (forward jump). Omitted keeps the linear flow (next defined step, or EndConnection on the last step). The connection LinkType is derived automatically from the import-verified rule (each step's first feed on the flow reachable from the first step is Direct; merges, loop-backs, and any edge into the first step are Jump) — it is never specified in the plan. Every step except the first must end up reachable from the first step's flow, or generation is rejected.",
+       "type": "string"
+      },
+      "supervision": {
+       "description": "This step's supervision condition (SvCoil): a series (AND) chain of NO contacts. Omit or [] for none.",
+       "items": {
+        "$ref": "#/$defs/contact"
+       },
+       "type": "array"
+      },
+      "transition": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name"
+     ],
+     "type": "object"
+    },
+    "variable": {
+     "additionalProperties": false,
+     "description": "One block Static member. name is an identifier (letters/digits/underscore, not starting with a digit; unique) — non-ASCII letters are allowed, so a zh-CN project can declare 夹紧阀 directly. datatype is a SimaticML datatype string such as Bool, Int, Real, Word, Time (non-empty).",
+     "properties": {
+      "datatype": {
+       "type": "string"
+      },
+      "name": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "datatype"
+     ],
+     "type": "object"
+    }
+   },
+   "additionalProperties": false,
+   "properties": {
+    "output_path": {
+     "type": "string"
+    },
+    "plan": {
+     "additionalProperties": false,
+     "properties": {
+      "block_name": {
+       "description": "Target GRAPH FB name, for example FB_Sequence. GRAPH blocks are always FBs.",
+       "type": "string"
+      },
+      "block_number": {
+       "description": "Optional block number. Defaults to 1 (AutoNumber stays on).",
+       "type": "integer"
+      },
+      "culture": {
+       "description": "Project editing language for every MultilingualText/Culture stamp in the generated document, e.g. zh-CN (default) or en-US. MUST match a language that exists in the target project or TIA rejects the import ('culture does not exist within the current project'). Omit for a zh-CN project.",
+       "type": "string"
+      },
+      "schema_version": {
+       "description": "TIA schema version: V16-V21 (all machine-verified; the per-version stamp table handles the real deltas — V16 uses Interface/v4, and V16/V17 omit the block Namespace element). Any other version is rejected with a structured ok:false (never downgraded). Omitted defaults to the project's openness_version (plc-code.project.json), else V20.",
+       "type": "string"
+      },
+      "steps": {
+       "description": "The sequence of named steps (at least one), defined in flow order. Default topology is linear: ONE derived transition after each step, S_k -> T_k -> S_{k+1}, and T_n -> the sequence end (EndConnection). A step's next field jumps its following transition to ANY defined step instead (self-loop / loop-back / forward jump; an explicit next on the last step removes the EndConnection, so a fully-looped block has none — import-verified). A step's alternatives field declares an alternative branch: >=2 competing transitions, each with its own target. Transitions/interlocks/supervisions are empty skeletons unless a step supplies a condition/interlock/supervision; step actions are empty unless a step supplies actions. The TIA compiler auto-generates the GRAPH runtime block on import (do not hand-write it). A bare string \"StepName\" is also accepted as shorthand for { name: \"StepName\" }.",
+       "items": {
+        "$ref": "#/$defs/step"
+       },
+       "type": "array"
+      },
+      "variables": {
+       "description": "Optional block Static members (name + datatype). Rendered into the FB's Static interface section so step actions have WRITABLE targets — the recommended, compile-safe shape is to declare a variable here and drive it from a LocalVariable action. Omit or [] to leave the Static section empty. The read-only standard GRAPH inputs (OFF_SQ, INIT_SQ, ...) are NOT writable; declare your own Static variable instead.",
+       "items": {
+        "$ref": "#/$defs/variable"
+       },
+       "type": "array"
+      }
+     },
+     "required": [
+      "block_name",
+      "steps"
+     ],
+     "type": "object"
+    },
+    "plan_json": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "plan"
+   ],
+   "type": "object"
+  },
+  "name": "tia_openness_generate_graph_block",
+  "permission": "WorkspaceWrite"
+ },
+ "contractHash": "3a8a67a7787d9759a4e028447e9f4153b4a7c5eeb22dc64f0a169c86c3b31d93",
+ "name": "tia_openness_generate_graph_block",
+ "schemaHash": "54dcec865d0708045879b06d4b6a5f9fb905637ece20a364de60c29f413acbd6"
+}

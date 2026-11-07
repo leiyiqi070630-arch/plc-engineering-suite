@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-hmi-indicators",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "343f7bd67fd74277a052a34a777e84bc2408c9d7304bc17cca8385743e6e7770",
+  "specificationHash": "d29789dc68ce4606e49679ae3220a1daea87eaa72c1feabbc51ffb79d6fe5735",
+  "contractHash": "5de4abc3305f27d48655b24da7717fae5df5c3c6753a1d68100de3c01cdff844",
+  "runnerHash": "bf5c4ce44a116ce630618f7fc2b0bba1254986f48f1107104b42bf55b707656c",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-10-04T15:51:49.264058+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-hmi-indicators.xml",
+      "sha256": "6b3de37d99a0a01647fa932c476c9923924fb6239005895b2e8c9f20912213b6"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

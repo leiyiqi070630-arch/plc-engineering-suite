@@ -1,0 +1,91 @@
+{
+  "id": "ino-contact-series",
+  "tool": "codesys_lad_generate_contact_block",
+  "route": "inoproshop",
+  "title": "汇川串联接点",
+  "covers": [
+    "contact_coil",
+    "series",
+    "negation"
+  ],
+  "language": "LAD",
+  "versions": [],
+  "keywords": [
+    "contact_coil",
+    "series",
+    "negation",
+    "汇川串联接点",
+    "inoproshop",
+    "LAD",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "汇川串联接点"
+  ],
+  "input": {
+    "plan": {
+      "block_name": "Example_series",
+      "interface": {
+        "input": [
+          {
+            "name": "Start",
+            "datatype": "BOOL"
+          },
+          {
+            "name": "Stop",
+            "datatype": "BOOL"
+          },
+          {
+            "name": "Permit",
+            "datatype": "BOOL"
+          }
+        ],
+        "output": [
+          {
+            "name": "Q",
+            "datatype": "BOOL"
+          }
+        ],
+        "static_members": []
+      },
+      "networks": [
+        {
+          "type": "contact_coil",
+          "contacts": [
+            {
+              "name": "Start"
+            },
+            {
+              "name": "Stop",
+              "negated": true
+            }
+          ],
+          "coil": {
+            "name": "Q"
+          }
+        }
+      ]
+    },
+    "confirm": "generate_contact_block",
+    "disposable": true
+  },
+  "expected": [
+    "声明由 interface 数组提供，网络按接点计划写入 LAD。"
+  ],
+  "preconditions": [
+    "这是指定线路的示例；不得跨用标准 CODESYS 与 InoProShop 的原生输入。",
+    "写入入口仅在已授权的实验工程/副本使用；确认对象放置、现有任务和输出接线。示例 confirm/disposable 不替用户授权。"
+  ],
+  "pitfalls": [
+    "支路的 contacts 当前仅支持一个接点；复杂条件先算为命名 BOOL，不要套用 TIA 的递归 branches。",
+    "接点生成器不接受 GVL 点号操作数；需要外部符号时用原生指令入口并给出类型。"
+  ],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/ino-contact-series.offline-generation.json",
+      "sha256": "b3094cebb24b8859152962d7debaf6705756ffd3fa46b28d4a33b9d25bb2004f"
+    }
+  ]
+}

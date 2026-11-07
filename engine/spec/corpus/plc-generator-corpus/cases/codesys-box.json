@@ -1,0 +1,75 @@
+{
+  "id": "codesys-box",
+  "tool": "codesys_lad_generate_project_pou",
+  "route": "codesys",
+  "title": "标准 CODESYS box",
+  "covers": [
+    "box"
+  ],
+  "language": "LAD",
+  "versions": [],
+  "keywords": [
+    "box",
+    "标准",
+    "CODESYS",
+    "codesys",
+    "LAD",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "标准 CODESYS box"
+  ],
+  "input": {
+    "name": "Example_box",
+    "networks": [
+      {
+        "type": "box",
+        "instruction": "ADD",
+        "inputs": {
+          "IN1": "A",
+          "IN2": "B"
+        },
+        "outputs": {
+          "ADD": "Value"
+        }
+      }
+    ],
+    "variables": [
+      {
+        "name": "A",
+        "type": "INT"
+      },
+      {
+        "name": "B",
+        "type": "INT"
+      },
+      {
+        "name": "Value",
+        "type": "INT"
+      }
+    ],
+    "confirm": "generate_project_pou",
+    "disposable": true
+  },
+  "expected": [
+    "在当前 Application 下创建/生成 POU；parent 省略时由桥接定位 Application。",
+    "使用实际工具回执判断支持范围；ladderBodyVerified 仅表示存在图形节点。"
+  ],
+  "preconditions": [
+    "这是指定线路的示例；不得跨用标准 CODESYS 与 InoProShop 的原生输入。",
+    "写入入口仅在已授权的实验工程/副本使用；确认对象放置、现有任务和输出接线。示例 confirm/disposable 不替用户授权。",
+    "本例采用桥接 IEC 内建 ADD 签名，其返回端口名为 ADD；若真实库签名不同，以读取到的精确端口为准。"
+  ],
+  "pitfalls": [
+    "此路线的 timer/counter/generic FB 当前只接首个输出；本例只用 Q/Q1，不把 ET/CV 当作已连线。",
+    "box 不支持末尾 coil；要输出 BOOL 时在 outputs 绑定变量。"
+  ],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/codesys-box.offline-generation.json",
+      "sha256": "c519b36f3b6e43b414b8df7cc7e528ff9251f31dfa1dfdf55dbfbffee58a546f"
+    }
+  ]
+}

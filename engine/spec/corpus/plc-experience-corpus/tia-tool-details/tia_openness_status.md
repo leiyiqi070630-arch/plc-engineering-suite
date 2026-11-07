@@ -1,0 +1,5 @@
+# tia_openness_status — extended contract
+
+Reference data moved from the resident card on 2026-09-18. Current schema, diagnostic receipts, user scope and target version take precedence; historical measurements are scoped observations. Read only for an unresolved detail.
+
+Probe the local Siemens TIA Portal Openness environment: installed Portal versions, Openness availability, group membership, command availability, running Siemens processes. In selectedRoute, runningTiaProcessCount counts EVERY Siemens Automation process including background services (help viewer, web API hosts) — read portalGuiRunning and attachablePortalInstanceCount for the can-I-attach question instead. When include_processes=false, processProbeState=skipped and all three process-derived fields are null, not false/zero. Read-only; does not open, save, import, export, compile, or modify any project. Use only for an environment/version question or after a project-scoped tool reports an environment-level blocker; do not make this comparatively heavy probe a routine prerequisite. To identify an already-open project, call tia_openness_get_project_status or tia_openness_list_devices directly.

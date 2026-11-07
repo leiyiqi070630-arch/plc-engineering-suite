@@ -1,0 +1,420 @@
+[
+  {
+    "name": "mitsubishi_csv_generate",
+    "kind": "generator",
+    "routes": [
+      "mitsubishi"
+    ],
+    "capabilities": [
+      "comments",
+      "fx2",
+      "fx3",
+      "instruction-list",
+      "multi-operand"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "mitsubishi_label_csv_generate",
+    "kind": "generator",
+    "routes": [
+      "mitsubishi"
+    ],
+    "capabilities": [
+      "constants",
+      "encoding",
+      "labels"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "tia_openness_generate_web_pages_blocks",
+    "kind": "ide-command",
+    "note": "这是厂商 IDE 的生成/编译命令，不是本产品 plan 到程序结构的私有生成器；依照该工具当前契约使用。"
+  },
+  {
+    "name": "tia_lad_generate_recipe_plan",
+    "kind": "generator",
+    "routes": [
+      "tia"
+    ],
+    "capabilities": [
+      "alarm_horn_silence",
+      "analog_scale_chain",
+      "boolean_step_sequence",
+      "compound_interlock",
+      "compressor_permissive_run",
+      "conveyor_zone_interlock",
+      "device_three_state_monitor",
+      "discrete_tank_level",
+      "diverter_gate_interlock",
+      "door_lock_permissive",
+      "edge_triggered_impulse",
+      "fault_latch_acknowledge",
+      "forward_reverse_interlock",
+      "forward_reverse_interlock_timed",
+      "hoist_up_down_interlock",
+      "hydraulic_clamp_unclamp",
+      "material_feeder_interlock",
+      "mixer_agitator_permissive",
+      "mode_auto_manual_jog",
+      "motor_start_stop_seal_in",
+      "permissive_chain_enable",
+      "pump_duty_standby_alternating",
+      "pump_duty_standby_basic",
+      "runtime_accumulator_tonr",
+      "star_delta_basic_interlock",
+      "star_delta_timed",
+      "station_auto_cycle_gates",
+      "step_sequencer",
+      "tp_pulse_output",
+      "traffic_light_sequence",
+      "valve_open_close_interlock",
+      "valve_priority_control",
+      "vent_after_run_tof"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "tia_lad_generate_block_xml",
+    "kind": "generator",
+    "routes": [
+      "tia"
+    ],
+    "capabilities": [
+      "Calc",
+      "FC",
+      "OB",
+      "ProgramCycle",
+      "TOF",
+      "TON",
+      "TONR",
+      "TP",
+      "callee-interface",
+      "chain",
+      "classic-ob",
+      "constant",
+      "contact_coil",
+      "counter",
+      "fanout",
+      "fb_call",
+      "inout",
+      "instruction_box",
+      "jog",
+      "move",
+      "named-ports",
+      "negation",
+      "nested-branches",
+      "optimized-ob",
+      "parallel",
+      "reset-coil",
+      "seal-in",
+      "series",
+      "series-boxes",
+      "set-coil",
+      "stop-priority",
+      "three-branches",
+      "timer"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "tia_openness_generate_graph_block",
+    "kind": "generator",
+    "routes": [
+      "tia"
+    ],
+    "capabilities": [
+      "actions-N-S-R",
+      "alternatives",
+      "conditions",
+      "interlock",
+      "linear",
+      "loop",
+      "merge",
+      "next",
+      "supervision"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "tia_sd_generate_block",
+    "kind": "generator",
+    "routes": [
+      "tia"
+    ],
+    "capabilities": [
+      "FC",
+      "OB",
+      "box",
+      "call",
+      "coil",
+      "compare",
+      "contact",
+      "counter",
+      "edge_contact",
+      "i_contact",
+      "instr",
+      "math",
+      "move",
+      "parallel",
+      "r_coil",
+      "range",
+      "s_coil",
+      "timer",
+      "unary_math",
+      "wire"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "tia_watch_generate_table_xml",
+    "kind": "generator",
+    "routes": [
+      "tia"
+    ],
+    "capabilities": [
+      "absolute",
+      "format",
+      "symbolic",
+      "trigger"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "tia_hmi_generate_screen_xml",
+    "kind": "generator",
+    "routes": [
+      "tia"
+    ],
+    "capabilities": [
+      "bar",
+      "button",
+      "date_time_field",
+      "ellipse",
+      "graphic_io_field",
+      "graphic_view",
+      "io_field",
+      "lamp_circle",
+      "lamp_rect",
+      "line",
+      "rectangle",
+      "switch",
+      "symbolic_io_field",
+      "text_field",
+      "user_view"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "codesys_lad_generate_contact_block",
+    "kind": "generator",
+    "routes": [
+      "inoproshop"
+    ],
+    "capabilities": [
+      "TOF",
+      "TP",
+      "contact_coil",
+      "negation",
+      "seal-in",
+      "series",
+      "single-contact-branches",
+      "timer",
+      "timer-instance-type-rejection"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "codesys_lad_generate_block",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "codesys_lad_generate_native",
+    "kind": "generator",
+    "routes": [
+      "inoproshop"
+    ],
+    "capabilities": [
+      "blink",
+      "counters",
+      "edges",
+      "latches",
+      "native-compare",
+      "native-conversion",
+      "native-logic",
+      "native-math",
+      "native-select",
+      "native-shift",
+      "qualified-symbols",
+      "sections",
+      "timers",
+      "variables"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "codesys_lad_generate_native_template",
+    "kind": "generator",
+    "routes": [
+      "inoproshop"
+    ],
+    "capabilities": [
+      "single-instruction-template"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "codesys_generate_st_plan",
+    "kind": "generator",
+    "routes": [
+      "inoproshop"
+    ],
+    "capabilities": [
+      "st-write"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "inoproshop_object_regenerate",
+    "kind": "generator",
+    "routes": [
+      "inoproshop"
+    ],
+    "capabilities": [
+      "regenerate-gvl",
+      "regenerate-lad"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "codesys_lad_generate_project_pou",
+    "kind": "generator",
+    "routes": [
+      "codesys"
+    ],
+    "capabilities": [
+      "box",
+      "contact_coil",
+      "counter",
+      "fb",
+      "parallel",
+      "pure-or",
+      "series",
+      "timer"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "codesys_lad_generate_recipe_plan",
+    "kind": "generator",
+    "routes": [
+      "inoproshop"
+    ],
+    "capabilities": [
+      "native_instruction_batch",
+      "single_native_instruction"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "codesys_lad_generate_control_recipe",
+    "kind": "generator",
+    "routes": [
+      "inoproshop"
+    ],
+    "capabilities": [
+      "pump_station_control"
+    ],
+    "note": "用例涵盖当前输入形状；已验证阶段在每例 evidence 中，未验证部分不得报告为通过。"
+  },
+  {
+    "name": "codesys_lad_generate_add",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native_template",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native_template；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "codesys_lad_generate_instruction",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native_template",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native_template；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "codesys_lad_native_generate_instruction",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native_template",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native_template；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "inoproshop_lad_generate_block",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_contact_block",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_contact_block；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "inoproshop_lad_generate_contact_block",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_contact_block",
+    "note": "与 codesys_lad_generate_contact_block 共享同一输入 schema、校验和原生生成入口；plan、task、confirm、disposable 可原样复用。"
+  },
+  {
+    "name": "codesys_lad_native_generate_instruction_batch",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "inoproshop_lad_generate_add",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native_template",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native_template；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "inoproshop_lad_generate_instruction",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native_template",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native_template；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "inoproshop_lad_native_generate_instruction",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native_template",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native_template；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "inoproshop_lad_native_generate_instruction_batch",
+    "kind": "alias",
+    "canonical": "codesys_lad_generate_native",
+    "note": "兼容/专用入口，优先参照 codesys_lad_generate_native；迁移时按主入口完整 schema 重构请求，name、confirm 及 plan/networks 不保证同形。"
+  },
+  {
+    "name": "codesys_build_generate_code",
+    "kind": "ide-command",
+    "note": "这是厂商 IDE 的生成/编译命令，不是本产品 plan 到程序结构的私有生成器；依照该工具当前契约使用。"
+  },
+  {
+    "name": "tia_openness_generate_loadable_file",
+    "kind": "ide-command",
+    "note": "Live Openness LoadableProvider export; requires an active project and confirm=true. Not an offline plan generator or a device download."
+  },
+  {
+    "name": "tia_openness_generate_source_from_blocks",
+    "kind": "ide-command",
+    "note": "Live Openness GenerateSource from existing blocks; requires project and confirm=true. Produces an external source, not an offline plan generator."
+  },
+  {
+    "name": "tia_hmi_generate_list_xml",
+    "kind": "generator",
+    "routes": [
+      "tia"
+    ],
+    "capabilities": [
+      "text-list",
+      "graphic-list"
+    ],
+    "note": "Classic HMI lists; offline XML generation only in these cases. Pictures are not bound; IDE import/readback and runtime need separate evidence."
+  }
+]

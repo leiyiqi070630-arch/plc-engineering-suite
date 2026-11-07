@@ -1,0 +1,166 @@
+{
+ "contract": {
+  "description": "ALIAS — call codesys_lad_generate_native instead; legacy/diagnostic use only. Compose multiple installed LD/FBD instructions into one InoProShop native LAD POU across one or more networks, then compile once and return atomic readback evidence. Full contract: see codesys_lad_generate_native (same bridge op; one call = one POU, all networks in one array, same-name fails destination_exists, trust data.acceptanceVerdict). The variables array accepts IEC PRIMITIVE types only (BOOL/WORD/TIME...) — NEVER declare FB instances (SR/BLINK/TON...) there; the generator auto-declares instances from the instruction/instance fields.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "confirm": {
+     "const": "generate_native_lad_instruction_batch",
+     "type": "string"
+    },
+    "disposable": {
+     "const": true,
+     "type": "boolean"
+    },
+    "name": {
+     "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+     "type": "string"
+    },
+    "networks": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "instructions": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "dataType": {
+           "minLength": 1,
+           "type": "string"
+          },
+          "inouts": {
+           "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "description": "Exact live port names mapped to IEC literal or symbol text. Native writers also accept conservative qualified symbols (GVL.Member or Application.GVL.Member).",
+           "type": "object"
+          },
+          "inputs": {
+           "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "description": "Exact live port names mapped to IEC literal or symbol text. Native writers also accept conservative qualified symbols (GVL.Member or Application.GVL.Member).",
+           "type": "object"
+          },
+          "instance": {
+           "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+           "type": "string"
+          },
+          "instruction": {
+           "minLength": 1,
+           "type": "string"
+          },
+          "namespace": {
+           "minLength": 1,
+           "type": "string"
+          },
+          "objectGuid": {
+           "minLength": 1,
+           "type": "string"
+          },
+          "outputs": {
+           "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "description": "Exact live port names mapped to IEC literal or symbol text. Native writers also accept conservative qualified symbols (GVL.Member or Application.GVL.Member).",
+           "type": "object"
+          },
+          "symbolTypes": {
+           "additionalProperties": {
+            "minLength": 1,
+            "type": "string"
+           },
+           "description": "Optional exact type readback for qualified IEC symbols.",
+           "type": "object"
+          }
+         },
+         "required": [
+          "instruction"
+         ],
+         "type": "object"
+        },
+        "minItems": 1,
+        "type": "array"
+       },
+       "title": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "instructions"
+      ],
+      "type": "object"
+     },
+     "maxItems": 64,
+     "minItems": 1,
+     "type": "array"
+    },
+    "parent": {
+     "default": "Device/Plc Logic/Application",
+     "enum": [
+      "Application",
+      "Device/Plc Logic/Application"
+     ],
+     "type": "string"
+    },
+    "pouName": {
+     "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+     "type": "string"
+    },
+    "symbolTypes": {
+     "additionalProperties": {
+      "minLength": 1,
+      "type": "string"
+     },
+     "description": "Optional exact type readback for qualified IEC symbols.",
+     "type": "object"
+    },
+    "variables": {
+     "items": {
+      "additionalProperties": false,
+      "properties": {
+       "name": {
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+        "type": "string"
+       },
+       "section": {
+        "default": "local",
+        "enum": [
+         "input",
+         "output",
+         "local"
+        ],
+        "type": "string"
+       },
+       "type": {
+        "minLength": 1,
+        "type": "string"
+       }
+      },
+      "required": [
+       "name",
+       "type"
+      ],
+      "type": "object"
+     },
+     "type": "array"
+    }
+   },
+   "required": [
+    "name",
+    "networks",
+    "confirm",
+    "disposable"
+   ],
+   "type": "object"
+  },
+  "name": "inoproshop_lad_native_generate_instruction_batch",
+  "permission": "DangerFullAccess"
+ },
+ "contractHash": "d4772617fe38112ef0d049c0ad631d666e64976d0c01780b9b34294c971973e8",
+ "name": "inoproshop_lad_native_generate_instruction_batch",
+ "schemaHash": "370d8f5c042da5304270be46c195ab9996d87fe9e7f520a032b9f1c2673e16bf"
+}

@@ -1,0 +1,26 @@
+{
+  "caseId": "tia-lad-inout",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "528096384d436507ae20dd9fe7191475a3389fb988c92b7b0970ee9706c5c9ab",
+  "specificationHash": "740e6d4bba5041cf14f1bce31df345d461da4963e2a9031218d0b64952333967",
+  "contractHash": "0e273628c96e0d5b04bb7a0e14a06b8530a74c30d590616a904cdfaf41ce5fa9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V18",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:38.449684+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "Generated XML parses"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-lad-inout.xml",
+      "sha256": "0eb1654c5c55faf166ec484d990b764ac7f2fa0dfb25812d07220ee9f5ab721d"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}

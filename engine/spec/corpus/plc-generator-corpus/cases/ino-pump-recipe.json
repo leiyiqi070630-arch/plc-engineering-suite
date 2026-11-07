@@ -1,0 +1,49 @@
+{
+  "id": "ino-pump-recipe",
+  "tool": "codesys_lad_generate_control_recipe",
+  "route": "inoproshop",
+  "title": "泵站反馈超时与故障锁存 recipe",
+  "covers": [
+    "pump_station_control"
+  ],
+  "language": "LAD",
+  "versions": [],
+  "keywords": [
+    "pump_station_control",
+    "泵站反馈超时与故障锁存",
+    "recipe",
+    "inoproshop",
+    "LAD",
+    "生成器",
+    "generator"
+  ],
+  "requirements": [
+    "泵站反馈超时与故障锁存 recipe"
+  ],
+  "input": {
+    "recipe": "pump_station_control",
+    "name": "Example_Pump",
+    "timeout": "T#3S",
+    "signals": {
+      "stop": "StopHealthy",
+      "e_stop": "EStopHealthy"
+    }
+  },
+  "expected": [
+    "返回接点/定时器计划及声明；3 秒无运行反馈形成启动失败锁存。",
+    "StopHealthy 与 EStopHealthy 为 TRUE 表示回路正常；此定义来自该 recipe 实际条件。"
+  ],
+  "preconditions": [
+    "确认 stop/e_stop 输入的正常态极性与该 recipe 一致，超载 TRUE 表示故障；在实际工艺验收前仅是程序样例。",
+    "这是指定线路的示例；不得跨用标准 CODESYS 与 InoProShop 的原生输入。",
+    "写入入口仅在已授权的实验工程/副本使用；确认对象放置、现有任务和输出接线。示例 confirm/disposable 不替用户授权。"
+  ],
+  "pitfalls": [],
+  "evidence": [
+    {
+      "stage": "offline-generation",
+      "path": "evidence/ino-pump-recipe.offline-generation.json",
+      "sha256": "58107944c9369d26c37d8bb3cc23af6eff0fdc914847c3840903925d5a00cf7c"
+    }
+  ]
+}

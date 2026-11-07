@@ -1,0 +1,30 @@
+{
+  "caseId": "tia-sd-latch",
+  "stage": "offline-generation",
+  "passed": true,
+  "inputHash": "51605cab4289fcea45ede82d21c91d16fd2d1507e1715bc72a2bd8fa41411f94",
+  "specificationHash": "af7432b2da12041b3439a768d7490a806e4a96e420d5d5dde1910866402610a2",
+  "contractHash": "b97ddb65d4ea1a18dba597e01828476209bf4481e281fbb4121d55528d7de0b9",
+  "runnerHash": "087099aa045c28681aea623b1584edba5de49e351079789b36258b81f2ed476a",
+  "environment": {
+    "engine": "debug execute_tool",
+    "tiaVersion": "V20",
+    "versionCoverage": "Only this execution version; versions[] is the supported contract scope"
+  },
+  "checkedAt": "2026-09-20T11:54:42.487456+00:00",
+  "checks": [
+    "Actual offline tool returned ok:true",
+    "SD text and resource document both present; CRLF checked"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/tia-sd-latch.s7dcl",
+      "sha256": "8676222de95c6b66ea2245562dfe0a8dcb8592a071e6bec53fc7f2a834100678"
+    },
+    {
+      "path": "artifacts/tia-sd-latch.s7res",
+      "sha256": "f0de2b7b5e3cc766fd54c97a9b14843273a0066f2434b6919bf7ff0fb20c48d0"
+    }
+  ],
+  "boundary": "Offline source execution only; no IDE import, compile, PLC or external model."
+}
