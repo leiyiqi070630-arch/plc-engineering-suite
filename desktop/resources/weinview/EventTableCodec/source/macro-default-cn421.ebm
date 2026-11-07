@@ -1,6 +1,6 @@
 ﻿macro_definition_begin
     "id": "0"
-    "name": "PLCCode_Test"
+    "name": "PLC_Eng_Test"
     "startup": "false"
     "periodic": [ "false" ]
     "interlock": [ "false" ]
