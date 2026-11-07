@@ -1,0 +1,5 @@
+# 构建配置：Windows 上用 GNU 目标时指定 MinGW 链接器。
+# 需保证 x86_64-w64-mingw32-gcc 在 PATH 中（见 docs/01）。
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+ar = "ar"

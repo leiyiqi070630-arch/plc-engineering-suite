@@ -1,8 +1,0 @@
-[knowledge] source=embedded files=771 bytes=15710204
-[error-kind: missing_manifests]
-error: Manifest source files are missing.
-  repo root: \\?\D:\codex工作目录\RE_PLCCode_BYOK\engine_re\runtime_probe
-  missing: src/commands.ts, src/tools.ts, src/entrypoints/cli.tsx
-  Hint: set CLAUDE_CODE_UPSTREAM=/path/to/upstream or pass `plccode dump-manifests --manifests-dir /path/to/upstream`.
-
-Run `plccode --help` for usage.

@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "Write a validated InoProShop ST body through the bridge POU route (pou.upsert). confirm must be \"write_pou\".",
+  "name": "codesys_generate_st_plan",
+  "description": "Generates ST plan from a structured plan. Inputs: confirm, declaration, disposable, implementation, name. Required: name, implementation, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -28,11 +30,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "codesys_generate_st_plan",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "c5fd552ee0a06954263518e30e161d3acb1159b3b29e2d11a1c51637d64db83a",
- "name": "codesys_generate_st_plan",
- "schemaHash": "8949c2514ec113552d98721b50cb1951407ce2097c875073397749f104be7ab4"
+  }
+ }
 }

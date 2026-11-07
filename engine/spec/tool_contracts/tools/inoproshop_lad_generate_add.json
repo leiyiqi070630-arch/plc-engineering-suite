@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "InoProShop alias for the verified parameterized ADD LAD generator.",
+  "name": "inoproshop_lad_generate_add",
+  "description": "Generates LAD add from a structured plan. Inputs: confirm, disposable, name. Required: name, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -23,11 +25,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "inoproshop_lad_generate_add",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "ee41dea9bf8b66319f1b329730ced3a4f1b3f274085898e47df4102c8d5cd5b5",
- "name": "inoproshop_lad_generate_add",
- "schemaHash": "52d9335908e3363a89b53bfefd203a856e88c7bce2fe614138296fd1b4310517"
+  }
+ }
 }

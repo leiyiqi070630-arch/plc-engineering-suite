@@ -1,5 +1,0 @@
-# tia_openness_import_block_xml — extended contract
-
-Reference data moved from the resident card on 2026-09-18. Current schema, diagnostic receipts, user scope and target version take precedence; historical measurements are scoped observations. Read only for an unresolved detail.
-
-Import one complete TIA XML/SimaticML block document into the active project. Mutating; requires confirm=true. Accepts xml inline or xml_path. device_name may be omitted when the active PLC is unambiguous; target_group_path is empty for root Program Blocks. For a related set, use one tia_openness_batch ordered as called FB/FC -> instance DB -> caller/OB, with one final compile. Override replaces the complete same-name block, so the supplied document defines the full retained network list. A changed callee interface requires regenerated callers; the final batch compile reports any stale call or missing dependency. The LAD/GRAPH generators already emit supported XML shapes, and the importer runs its own structural precheck.

@@ -1,0 +1,240 @@
+/* ─────────────────────────────────────────────────────────────
+   PLC Code — theme layer
+   在主样式之后加载，只覆盖设计令牌与少量细节，不触碰布局与逻辑。
+   目的：统一的工业风配色、更清晰的信息层级、更克制的动效。
+   ───────────────────────────────────────────────────────────── */
+
+/* ── 暗色（默认）────────────────────────────────────────────── */
+:root {
+  /* 表面：三层递进，避免大面积同色导致结构消失 */
+  --color-bg: #0f1115;
+  --color-panel: #15181d;
+  --color-surface: #15181d;
+  --color-elevated: #1b1f26;
+  --color-hover: #20242c;
+  --color-bubble: #1b1f26;
+
+  /* 分隔线：比背景亮一档，不抢注意力 */
+  --color-hairline: #262b33;
+  --color-outline: #333a45;
+  --color-outline-strong: #4a5462;
+
+  /* 文字：正文 / 次要 / 弱化 */
+  --color-text: #e6e9ee;
+  --color-muted: #9aa3b0;
+  --color-faint: #6f7885;
+
+  /* 强调：单一主色，避免多色混乱 */
+  --color-accent: #4c8dff;
+  --color-accent-hover: #6ba0ff;
+  --color-accent-press: #3a76e0;
+  --color-accent-soft: #4c8dff1f;
+
+  --color-ok: #3fbf5f;
+  --color-warning: #e0a52e;
+  --color-danger: #ef5350;
+  --color-danger-soft: #ef53501f;
+  --color-scrim: #05070a99;
+
+  /* 发送按钮：跟强调色一致，强化主操作 */
+  --color-send-bg: #4c8dff;
+  --color-send-bg-hover: #6ba0ff;
+  --color-send-bg-press: #3a76e0;
+  --color-send-fg: #0f1115;
+
+  /* 滚动条 */
+  --color-scrollbar-thumb: #333a45;
+  --color-scrollbar-thumb-hover: #4a5462;
+
+  /* 工具类别色：统一饱和度，靠色相区分 */
+  --color-tool-file: #4c8dff;
+  --color-tool-gen: #45b26b;
+  --color-tool-lint: #d9a13b;
+  --color-tool-tia: #21a37f;
+  --color-tool-online: #e07a4a;
+  --color-tool-web: #8b7ce8;
+  --color-tool-know: #d4649a;
+  --color-tool-agent: #a8864a;
+
+  /* 语法高亮 */
+  --color-syntax-keyword: #7b8cff;
+  --color-syntax-type: #2ec4ad;
+  --color-syntax-string: #8bd450;
+  --color-syntax-number: #e0a52e;
+  --color-syntax-comment: #6f7885;
+  --color-syntax-func: #4c8dff;
+  --color-syntax-addr: #f0719a;
+  --color-syntax-operator: #9aa3b0;
+  --color-syntax-label: #b98cff;
+
+  /* 形状与动效令牌 */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --motion-fast: 140ms cubic-bezier(.4, 0, .2, 1);
+  --motion-base: 200ms cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ── 亮色 ───────────────────────────────────────────────────── */
+[data-theme='light'],
+[data-theme='light'] body,
+html[data-theme='light'] {
+  --color-bg: #f6f7f9;
+  --color-panel: #eef0f4;
+  --color-surface: #eef0f4;
+  --color-elevated: #ffffff;
+  --color-hover: #e6e9ef;
+  --color-bubble: #ffffff;
+  --color-hairline: #dfe3ea;
+  --color-outline: #cdd3dd;
+  --color-outline-strong: #a9b2c0;
+  --color-text: #171a20;
+  --color-muted: #5a6270;
+  --color-faint: #8b94a3;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4fd8;
+  --color-accent-press: #1a44b8;
+  --color-accent-soft: #2563eb1a;
+  --color-ok: #1f9e46;
+  --color-warning: #b8801a;
+  --color-danger: #d33a34;
+  --color-scrim: #0f11150f;
+  --color-send-bg: #2563eb;
+  --color-send-bg-hover: #1d4fd8;
+  --color-send-bg-press: #1a44b8;
+  --color-send-fg: #ffffff;
+  --color-scrollbar-thumb: #cdd3dd;
+  --color-scrollbar-thumb-hover: #a9b2c0;
+}
+
+/* ── 细节 ───────────────────────────────────────────────────── */
+
+/* 全局滚动条：细、无轨道、悬停加深 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+  transition: background var(--motion-fast);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-thumb-hover);
+  background-clip: content-box;
+}
+
+/* 选中文字：用强调色的低透明度版本，避免刺眼 */
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+/* 键盘焦点：只在键盘导航时出现，形状统一 */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* 按钮与可点区域：按下时轻微缩放，给出物理反馈 */
+button,
+[role='button'],
+[role='tab'] {
+  transition:
+    background var(--motion-fast),
+    color var(--motion-fast),
+    border-color var(--motion-fast),
+    transform var(--motion-fast);
+}
+
+button:active:not(:disabled),
+[role='button']:active:not([aria-disabled='true']) {
+  transform: scale(.978);
+}
+
+/* 分隔线：统一为极细线，避免 1px 在缩放屏上发虚 */
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--color-hairline);
+}
+
+/* 代码块与内联代码：等宽 + 独立底色，长行横向滚动不撑破布局 */
+pre {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-hairline);
+  background: var(--color-panel);
+}
+
+pre code {
+  font-variant-ligatures: none;
+  tab-size: 4;
+}
+
+:not(pre) > code {
+  border-radius: 6px;
+  padding: .12em .38em;
+  background: var(--color-elevated);
+  border: 1px solid var(--color-hairline);
+  font-size: .94em;
+}
+
+/* 表格：去掉厚重边框，靠行分隔与底色区分 */
+table {
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--color-outline);
+}
+
+td {
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+tbody tr:hover {
+  background: var(--color-hover);
+}
+
+/* 输入区域：聚焦时用强调色描边，替代默认蓝框 */
+textarea:focus,
+input:focus {
+  outline: none;
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+/* 拖拽窗口时整窗降透明度，提示"正在移动" */
+body.is-dragging {
+  opacity: .94;
+}
+
+/* 尊重系统"减少动效"设置 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

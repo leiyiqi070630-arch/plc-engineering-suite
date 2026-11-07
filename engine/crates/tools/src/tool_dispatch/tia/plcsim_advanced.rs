@@ -1,24 +1,3 @@
-//! 模块骨架
-//! 模块路径: crates\tools\src\tool_dispatch\tia\plcsim_advanced.rs
+//! `src/tool_dispatch/tia/plcsim_advanced.rs`
 //!
-//! 说明: 本模块对外契约由接口证据整理，函数体以实现为准。
-//! 以下为对外契约线索，补实现时以此为准。
-//!
-//! 关联工具: accept_upload, await_native_upload, build_native_directory, export_backup, native_upload_receiptassociated_assets, prepare_cxob, prepare_user_accounts, target_hmiuser_accounts_artifact_kindsave_to_folder
-//!
-//! 契约线索（截断）:
-//!   prepare_download.
-//!   prepare_cxob
-//!   prepare_native_directoryÐ.
-//!   build_native_directory
-//!   await_native_upload
-//!   accept_upload
-//!   prepare_user_accounts
-//!   output_directorycompile_provenance_pathexpected_compile_provenance_sha256modelnative_download_directoryuploaded_cxob_pathuploaded_exob_pathexpected_uploaded_sha256upload_format6
-//!   target_hmiuser_accounts_artifact_kindsave_to_folder
-//!   export_backup
-//!   native_upload_receiptassociated_assets
-//!   weinview_field_handoffPrepare a file handoff from a verified whole-project CMTP/CXOB or EMTP/EXOB compile. prepare_download copies only the bound project and compiled artifact; ext
-//!   crates\tools\src\tool_dispatch\tia\plcsim_advanced.rs
-
-// TODO: 依上列契约实现 `plcsim_advanced` 模块。
+//! TODO: 实现 `plcsim_advanced` 模块。

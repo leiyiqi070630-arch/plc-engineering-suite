@@ -1,47 +1,40 @@
 {
  "contract": {
-  "description": "Generate a Classic HMI SCREEN as SimaticML XML from a structured plan (TIA V16-V21). The XML object shapes come from real exports; this tool does NOT select, attach, or create a TIA screen-template. If the task requires a project screen template, export that target project's real screen-template and use the separate screen-template import round trip. Acceptance still requires import and readback on the selected panel/version. Classic screen authoring uses whole-screen XML: generate, import with tia_openness_import_hmi_xml(kind=screen, device_name), then re-export/read back. Create referenced HMI tags/tables with tia_openness_create_hmi_tag and tia_openness_create_hmi_tag_table (Classic uses XML-backed creation), or import real tag-table XML. Inspect applied/skipped and verify PLC bindings. Screen XML does not set the device start screen: on a confirmed Classic device ask once for Runtime settings > General > Start screen, or reuse a verified configured panel/template. The current bridge cannot write that Classic setting; do not retry guessed attributes. Item fields and examples are in the schema. Alarm/trend/recipe views, illuminated_button and faceplate_instance are refused by this generator; use a separately verified workflow. Set plan.panel_family to check control compatibility: polyline, polygon, slider, gauge, clock and symbol_library require Comfort/Mobile/RT Advanced per the vendor table, even when Basic engineering import accepts them. Gauge/clock use native sizes; supplied width/height are ignored with a warning. Groups require at least two nested items and have no Left/Top. Function keys use plan.function_keys (F1..F8). A Classic button with navigate_to_screen emits the measured Release -> ActivateScreen system-function event; without it the button is label-only. The target screen must already exist or be imported as a companion screen on the same HMI, then the event must be re-exported and clicked in Runtime. Use the actual panel resolution and a free explicit screen number; a duplicate number can terminate TIA and lose unsaved edits. Rendered bounds use the same default sizes as XML generation and are rejected when they leave the canvas. Ordinary overlaps are rejected; nearby row/column controls are warned using plan.min_spacing (default 4). Static Chinese/long labels receive a conservative horizontal-fit warning, but final glyph metrics, layering, navigation and interaction still require a target-resolution Runtime screenshot. Set allow_overlap=true only for an intentional background/decoration layer and review the returned layout summary. If width/height are omitted, 800x480 is only a compatibility default, not the target panel resolution. Unknown fields produce warnings. Generation/import/compile do not prove visual layout or Runtime behavior.",
+  "name": "tia_hmi_generate_screen_xml",
+  "description": "Generates HMI screen XML from a structured plan. Inputs: output_path, plan. Required: plan. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
     "output_path": {
-     "description": "Optional file path; omitted returns the XML inline.",
      "type": "string"
     },
     "plan": {
      "additionalProperties": false,
      "properties": {
       "back_color": {
-       "description": "Decimal \"r, g, b\" triple, e.g. \"182, 182, 182\" (default).",
        "type": "string"
       },
       "culture": {
-       "description": "Project language for the text items, e.g. zh-CN (default) or en-US. MUST be a language that exists in the target project or TIA rejects the import with 'culture does not exist within the current project'.",
        "type": "string"
       },
       "function_keys": {
-       "description": "Function keys (softkeys) of this screen - manual 6.3.7.1 lists 'Function keys (softkeys)' as export/import Yes and they are available on every panel family. A softkey is a SCREEN-level object (composition SoftKeys), not a screen item: it has no Left/Top/Width/Height, so it belongs here and not in items. Shape taken from a real V17 all-widgets export.",
        "items": {
         "additionalProperties": false,
         "properties": {
          "global_assignment": {
-          "description": "Default true = the key follows the global screen's definition (the value in every object of the real export). false = this screen defines its own key.",
           "type": "boolean"
          },
          "key": {
-          "description": "F1..F8 (case-insensitive). Resolved to the WinCC KeyCode measured on a real export (F1 = 220 ... F8 = 227).",
           "type": "string"
          },
          "key_code": {
-          "description": "Raw WinCC KeyCode, for keys outside the measured F1..F8 range (e.g. panel-specific keys). Codes outside F1..F8 are never guessed - pass the code TIA uses.",
           "type": "integer"
          },
          "led_tag_bit_number": {
-          "description": "LED bit number; 0 (default) = no LED tag.",
           "type": "integer"
          },
          "name": {
-          "description": "ObjectName; defaults to Softkey_<key>.",
           "type": "string"
          }
         },
@@ -50,100 +43,78 @@
        "type": "array"
       },
       "height": {
-       "description": "Target panel height in pixels. Omit only for the compatibility default 480; for Classic import, read the actual target screen dimensions first.",
        "type": "integer"
       },
       "items": {
-       "description": "Screen objects. Items are rendered into the screen's first layer in the given order; a group nests its own members.",
        "items": {
         "additionalProperties": false,
         "properties": {
          "allow_overlap": {
-          "description": "Explicitly allow this item to overlap another item in the same parent container. Omitted/false rejects overlaps before XML generation; use true only for an intentional background or decoration layer and review the warning.",
           "type": "boolean"
          },
          "color": {
-          "description": "Decimal \"r, g, b\". Rectangle/ellipse BackColor (fill), line stroke, lamp fallback on-color, or text_field/io_field/bar foreground. Rectangle fill defaults to Transparent: use fill_style=Solid for a visible colored background. Omit to preserve the real-export default.",
           "type": "string"
          },
          "fill_style": {
-          "description": "rectangle/ellipse only: Solid or Transparent. Explicitly use Solid for background panels. Omitted preserves the real-export default: rectangle Transparent, ellipse Solid. Does not change outlines, layers or overlap permissions.",
           "type": "string"
          },
          "font_size": {
-          "description": "Font size for text_field, io_field and bar (same unit as the real exports' FontSize). Omit for the per-type default that fits the type's default box. A font as large as the item's height is clipped by the panel, so raise height or lower font_size; the generator warns when they conflict.",
           "maximum": 96,
           "minimum": 6,
           "type": "integer"
          },
          "format_pattern": {
-          "description": "io_field display pattern, e.g. 999 or 999.9.",
           "type": "string"
          },
          "height": {
-          "description": "Ignored for gauge/clock: their size properties are dependent, so TIA rejects any explicit box on import and the generator lets TIA derive it.",
           "type": "integer"
          },
          "items": {
-          "description": "group only: the group's members, each a full item of its own (nested groups are allowed). TIA refuses a group with fewer than 2 members. Members carry Left/Top relative to the group; the group itself takes no Left/Top.",
           "items": {
            "additionalProperties": false,
            "properties": {
             "allow_overlap": {
-             "description": "Explicitly allow this item to overlap another item in the same parent container. Omitted/false rejects overlaps before XML generation; use true only for an intentional background or decoration layer and review the warning.",
              "type": "boolean"
             },
             "color": {
-             "description": "Decimal \"r, g, b\". Rectangle/ellipse BackColor (fill), line stroke, lamp fallback on-color, or text_field/io_field/bar foreground. Rectangle fill defaults to Transparent: use fill_style=Solid for a visible colored background. Omit to preserve the real-export default.",
              "type": "string"
             },
             "fill_style": {
-             "description": "rectangle/ellipse only: Solid or Transparent. Explicitly use Solid for background panels. Omitted preserves the real-export default: rectangle Transparent, ellipse Solid. Does not change outlines, layers or overlap permissions.",
              "type": "string"
             },
             "font_size": {
-             "description": "Font size for text_field, io_field and bar (same unit as the real exports' FontSize). Omit for the per-type default that fits the type's default box. A font as large as the item's height is clipped by the panel, so raise height or lower font_size; the generator warns when they conflict.",
              "maximum": 96,
              "minimum": 6,
              "type": "integer"
             },
             "format_pattern": {
-             "description": "io_field display pattern, e.g. 999 or 999.9.",
              "type": "string"
             },
             "height": {
-             "description": "Ignored for gauge/clock: their size properties are dependent, so TIA rejects any explicit box on import and the generator lets TIA derive it.",
              "type": "integer"
             },
             "items": {
-             "description": "group only: the group's members, each a full item of its own (nested groups are allowed). TIA refuses a group with fewer than 2 members. Members carry Left/Top relative to the group; the group itself takes no Left/Top.",
              "items": {
               "additionalProperties": false,
               "properties": {
                "allow_overlap": {
-                "description": "Explicitly allow this item to overlap another item in the same parent container. Omitted/false rejects overlaps before XML generation; use true only for an intentional background or decoration layer and review the warning.",
                 "type": "boolean"
                },
                "color": {
-                "description": "Decimal \"r, g, b\". Rectangle/ellipse BackColor (fill), line stroke, lamp fallback on-color, or text_field/io_field/bar foreground. Rectangle fill defaults to Transparent: use fill_style=Solid for a visible colored background. Omit to preserve the real-export default.",
                 "type": "string"
                },
                "fill_style": {
-                "description": "rectangle/ellipse only: Solid or Transparent. Explicitly use Solid for background panels. Omitted preserves the real-export default: rectangle Transparent, ellipse Solid. Does not change outlines, layers or overlap permissions.",
                 "type": "string"
                },
                "font_size": {
-                "description": "Font size for text_field, io_field and bar (same unit as the real exports' FontSize). Omit for the per-type default that fits the type's default box. A font as large as the item's height is clipped by the panel, so raise height or lower font_size; the generator warns when they conflict.",
                 "maximum": 96,
                 "minimum": 6,
                 "type": "integer"
                },
                "format_pattern": {
-                "description": "io_field display pattern, e.g. 999 or 999.9.",
                 "type": "string"
                },
                "height": {
-                "description": "Ignored for gauge/clock: their size properties are dependent, so TIA rejects any explicit box on import and the generator lets TIA derive it.",
                 "type": "integer"
                },
                "left": {
@@ -156,47 +127,37 @@
                 "type": "number"
                },
                "mode": {
-                "description": "Field mode enum for io_field/date_time_field/symbolic_io_field/graphic_io_field: Input, Output, or InOutput (the real WinCC spelling; the InputOutput alias is accepted and normalized to InOutput). An unknown value is rejected.",
                 "type": "string"
                },
                "name": {
-                "description": "ObjectName; auto-derived when omitted. Unique per screen (checked across group members too).",
                 "type": "string"
                },
                "navigate_to_screen": {
-                "description": "Classic button only: emit the real-export Release -> ActivateScreen system-function event for this target screen name. The target screen must already exist or be imported as a companion screen on the same HMI; re-export the button event and verify the click in Runtime.",
                 "minLength": 1,
                 "type": "string"
                },
                "off_color": {
-                "description": "Bit-driven lamp: fill \"r, g, b\" when the bound tag is 0 (default grey).",
                 "type": "string"
                },
                "on_color": {
-                "description": "Bit-driven lamp: fill \"r, g, b\" when the bound tag is 1 (default green).",
                 "type": "string"
                },
                "show_date": {
-                "description": "date_time_field: show the date part (default true).",
                 "type": "boolean"
                },
                "show_time": {
-                "description": "date_time_field: show the time part (default true).",
                 "type": "boolean"
                },
                "tag": {
-                "description": "HMI tag name bound to the item: ProcessValue for io_field/bar/switch/slider, or the BOOL bit that drives a lamp_circle/lamp_rect color.",
                 "type": "string"
                },
                "text": {
-                "description": "text_field text / button label / switch caption.",
                 "type": "string"
                },
                "top": {
                 "type": "integer"
                },
                "type": {
-                "description": "text_field | io_field | button | lamp_circle | lamp_rect | line | bar | switch | ellipse | rectangle | graphic_view | graphic_io_field | symbolic_io_field | date_time_field | user_view | polyline | polygon | slider | gauge | clock | symbol_library | group. The last seven are verified on a live V18 classic panel; polyline/polygon/slider/gauge/clock/symbol_library are Comfort-and-above only (manual Table 5-2 marks them No for Basic), and group is a container that needs at least 2 members.",
                 "type": "string"
                },
                "width": {
@@ -232,47 +193,37 @@
              "type": "number"
             },
             "mode": {
-             "description": "Field mode enum for io_field/date_time_field/symbolic_io_field/graphic_io_field: Input, Output, or InOutput (the real WinCC spelling; the InputOutput alias is accepted and normalized to InOutput). An unknown value is rejected.",
              "type": "string"
             },
             "name": {
-             "description": "ObjectName; auto-derived when omitted. Unique per screen (checked across group members too).",
              "type": "string"
             },
             "navigate_to_screen": {
-             "description": "Classic button only: emit the real-export Release -> ActivateScreen system-function event for this target screen name. The target screen must already exist or be imported as a companion screen on the same HMI; re-export the button event and verify the click in Runtime.",
              "minLength": 1,
              "type": "string"
             },
             "off_color": {
-             "description": "Bit-driven lamp: fill \"r, g, b\" when the bound tag is 0 (default grey).",
              "type": "string"
             },
             "on_color": {
-             "description": "Bit-driven lamp: fill \"r, g, b\" when the bound tag is 1 (default green).",
              "type": "string"
             },
             "show_date": {
-             "description": "date_time_field: show the date part (default true).",
              "type": "boolean"
             },
             "show_time": {
-             "description": "date_time_field: show the time part (default true).",
              "type": "boolean"
             },
             "tag": {
-             "description": "HMI tag name bound to the item: ProcessValue for io_field/bar/switch/slider, or the BOOL bit that drives a lamp_circle/lamp_rect color.",
              "type": "string"
             },
             "text": {
-             "description": "text_field text / button label / switch caption.",
              "type": "string"
             },
             "top": {
              "type": "integer"
             },
             "type": {
-             "description": "text_field | io_field | button | lamp_circle | lamp_rect | line | bar | switch | ellipse | rectangle | graphic_view | graphic_io_field | symbolic_io_field | date_time_field | user_view | polyline | polygon | slider | gauge | clock | symbol_library | group. The last seven are verified on a live V18 classic panel; polyline/polygon/slider/gauge/clock/symbol_library are Comfort-and-above only (manual Table 5-2 marks them No for Basic), and group is a container that needs at least 2 members.",
              "type": "string"
             },
             "width": {
@@ -308,47 +259,37 @@
           "type": "number"
          },
          "mode": {
-          "description": "Field mode enum for io_field/date_time_field/symbolic_io_field/graphic_io_field: Input, Output, or InOutput (the real WinCC spelling; the InputOutput alias is accepted and normalized to InOutput). An unknown value is rejected.",
           "type": "string"
          },
          "name": {
-          "description": "ObjectName; auto-derived when omitted. Unique per screen (checked across group members too).",
           "type": "string"
          },
          "navigate_to_screen": {
-          "description": "Classic button only: emit the real-export Release -> ActivateScreen system-function event for this target screen name. The target screen must already exist or be imported as a companion screen on the same HMI; re-export the button event and verify the click in Runtime.",
           "minLength": 1,
           "type": "string"
          },
          "off_color": {
-          "description": "Bit-driven lamp: fill \"r, g, b\" when the bound tag is 0 (default grey).",
           "type": "string"
          },
          "on_color": {
-          "description": "Bit-driven lamp: fill \"r, g, b\" when the bound tag is 1 (default green).",
           "type": "string"
          },
          "show_date": {
-          "description": "date_time_field: show the date part (default true).",
           "type": "boolean"
          },
          "show_time": {
-          "description": "date_time_field: show the time part (default true).",
           "type": "boolean"
          },
          "tag": {
-          "description": "HMI tag name bound to the item: ProcessValue for io_field/bar/switch/slider, or the BOOL bit that drives a lamp_circle/lamp_rect color.",
           "type": "string"
          },
          "text": {
-          "description": "text_field text / button label / switch caption.",
           "type": "string"
          },
          "top": {
           "type": "integer"
          },
          "type": {
-          "description": "text_field | io_field | button | lamp_circle | lamp_rect | line | bar | switch | ellipse | rectangle | graphic_view | graphic_io_field | symbolic_io_field | date_time_field | user_view | polyline | polygon | slider | gauge | clock | symbol_library | group. The last seven are verified on a live V18 classic panel; polyline/polygon/slider/gauge/clock/symbol_library are Comfort-and-above only (manual Table 5-2 marks them No for Basic), and group is a container that needs at least 2 members.",
           "type": "string"
          },
          "width": {
@@ -376,28 +317,23 @@
       },
       "min_spacing": {
        "default": 4,
-       "description": "Minimum clear gap, in screen units, between ordinary rectangular controls in the same row or column. The generator warns when the gap is smaller. Use 0 only for intentionally touching edges; intentional background overlaps still require item.allow_overlap=true.",
        "maximum": 128,
        "minimum": 0,
        "type": "integer"
       },
       "number": {
-       "description": "Screen number; unique PER DEVICE. Omitting it emits number 1 with a warning: importing a number another screen already uses makes TIA throw a NonRecoverableException and CLOSE the Portal, losing unsaved changes. Read the device's existing screens first and pass a free number.",
        "type": "integer"
       },
       "panel_family": {
-       "description": "Target HMI family: basic | comfort | mobile | rt-advanced. Optional, and only used for checking: the official manual (Table 5-2) marks polyline, polygon, slider, gauge, clock, symbol_library and faceplate instances as NOT available on Basic panels, so passing the family turns a silently-unusable screen into a warning. Without it the check is reported as not performed.",
        "type": "string"
       },
       "schema_version": {
-       "description": "TIA version for the document header, e.g. V17. Defaults to V17; match the target portal.",
        "type": "string"
       },
       "screen_name": {
        "type": "string"
       },
       "width": {
-       "description": "Target panel width in pixels. Omit only for the compatibility default 800; for Classic import, read the actual target screen dimensions first.",
        "type": "integer"
       }
      },
@@ -411,11 +347,6 @@
     "plan"
    ],
    "type": "object"
-  },
-  "name": "tia_hmi_generate_screen_xml",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "5de4abc3305f27d48655b24da7717fae5df5c3c6753a1d68100de3c01cdff844",
- "name": "tia_hmi_generate_screen_xml",
- "schemaHash": "463a624cfe066024efacabac855db2d9473dcdad404a21115b70ea4409c68bc4"
+  }
+ }
 }

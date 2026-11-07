@@ -1,45 +1,39 @@
 {
  "contract": {
-  "description": "Generate a loadable file from blocks or whole units via the LoadableProvider (Siemens.Engineering.SW.Loader.LoadableProvider.GenerateLoadable, Openness manual 5.11.3.29/5.11.6.13). Requires confirm=true. Pass block_paths OR unit_names — exactly one source; target_option names the TargetOption member (omitted: provider default). The output file is what a loader/firmware flow consumes, not a download to hardware.",
+  "name": "tia_openness_generate_loadable_file",
+  "description": "Generates loadable file from a structured plan. Inputs: block_paths, confirm, device_name, output_path, project_match, save_project, target_option, tia_version, unit_names. Required: device_name, output_path, confirm. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
     "block_paths": {
-     "description": "PLC block paths to include; use this OR unit_names.",
      "items": {
       "type": "string"
      },
      "type": "array"
     },
     "confirm": {
-     "description": "Mutation confirmation the TIA bridge enforces: the call is refused unless this flag is true.",
      "type": "boolean"
     },
     "device_name": {
-     "description": "Exact device (station) name, e.g. from tia_openness_list_devices.",
      "type": "string"
     },
     "output_path": {
-     "description": "Destination file path for the loadable file.",
      "type": "string"
     },
     "project_match": {
      "type": "string"
     },
     "save_project": {
-     "description": "Persist the project to disk after this mutation. Default false: the change lives only in the running TIA Portal and is LOST if the Portal exits/crashes before a later save. Pass true at milestones (cheap) instead of batching everything to one final save.",
      "type": "boolean"
     },
     "target_option": {
-     "description": "TargetOption member name; omitted uses the provider default.",
      "type": "string"
     },
     "tia_version": {
-     "description": "Target TIA Portal version, V16-V21 (e.g. \"V20\"; bare \"20\" also accepted). Omitted: the bridge attaches to the running portal if one is open, else the highest installed version.",
      "type": "string"
     },
     "unit_names": {
-     "description": "Software unit names to include; use this OR block_paths.",
      "items": {
       "type": "string"
      },
@@ -52,11 +46,6 @@
     "confirm"
    ],
    "type": "object"
-  },
-  "name": "tia_openness_generate_loadable_file",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "9d44985b9abf21806eb70b8be00749e3a69ea608055c61d7bff240030d8c0297",
- "name": "tia_openness_generate_loadable_file",
- "schemaHash": "14edf1c76d287aa92cbcf1825fe84936b52d082fd3f6255b50c9ded65f2610ba"
+  }
+ }
 }

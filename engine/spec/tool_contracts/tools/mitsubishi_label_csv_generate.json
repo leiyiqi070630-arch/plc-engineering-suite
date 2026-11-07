@@ -1,40 +1,34 @@
 {
  "contract": {
-  "description": "Write a byte-correct Mitsubishi GX Works2 GLOBAL-LABEL CSV (labels.csv) from a structured label plan. The tool validates the plan, then writes UTF-16LE+BOM, TAB-separated quoted cells and LF line endings with the current 11-column GX Works2 label header, avoiding the partial-information warning caused by legacy 7-column files. Use it for FX ST projects where labels.csv maps variable names to devices. If validation fails, no file is written; repair the diagnostics and retry. X/Y addresses are octal. FX2/FX3 special relays use M8xxx (M8002 first scan, M8013 1 s clock); never use the newer SMxxx area. labels.csv must stay in sync with main.st.",
+  "name": "mitsubishi_label_csv_generate",
+  "description": "Generates label CSV from a structured plan. Inputs: labels, path, project_name, title. Required: path, labels. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
     "labels": {
-     "description": "Label definitions: each entry is {name, device?, data_type?, constant?, address?, comment?, class?}.",
      "items": {
       "additionalProperties": false,
       "properties": {
        "address": {
-        "description": "IEC %-form address (e.g. %IX1); usually empty for FX Simple projects.",
         "type": "string"
        },
        "class": {
-        "description": "VAR_GLOBAL (default) / VAR_GLOBAL_CONSTANT / VAR_GLOBAL_RETAIN.",
         "type": "string"
        },
        "comment": {
-        "description": "Description (Chinese allowed).",
         "type": "string"
        },
        "constant": {
-        "description": "Value for a compile-time constant label; else empty.",
         "type": "string"
        },
        "data_type": {
-        "description": "IEC type name (BOOL/INT/WORD/…); defaults to BOOL.",
         "type": "string"
        },
        "device": {
-        "description": "Physical device address (X0/Y0/M100/D200); empty = auto-assign. X/Y are octal. FX2/FX3 special relays are M8xxx (for example M8002), not SMxxx.",
         "type": "string"
        },
        "name": {
-        "description": "Label/variable name (valid identifier).",
         "type": "string"
        }
       },
@@ -46,15 +40,12 @@
      "type": "array"
     },
     "path": {
-     "description": "Destination path for the labels CSV (e.g. 'labels.csv'); written as UTF-16LE+BOM on success.",
      "type": "string"
     },
     "project_name": {
-     "description": "Optional project/title cell for row 1 (defaults to the real GX placeholder '(工程未设置)').",
      "type": "string"
     },
     "title": {
-     "description": "Alias for project_name.",
      "type": "string"
     }
    },
@@ -63,11 +54,6 @@
     "labels"
    ],
    "type": "object"
-  },
-  "name": "mitsubishi_label_csv_generate",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "cec9adc5dd6c79090e46fa64571e879777bb890057c41a49a5d716f8b75bce2c",
- "name": "mitsubishi_label_csv_generate",
- "schemaHash": "5ad52954c4942e98db3c0c3c1a914e4a1b270a334b27cc205a47b3b79f291cee"
+  }
+ }
 }

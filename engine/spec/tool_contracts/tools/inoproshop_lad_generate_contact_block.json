@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "Alias of codesys_lad_generate_contact_block; identical schema, plan validation, native writer and compile gates.",
+  "name": "inoproshop_lad_generate_contact_block",
+  "description": "Generates LAD contact block from a structured plan. Inputs: confirm, disposable, plan, task. Required: plan, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -14,7 +16,6 @@
     },
     "plan": {
      "additionalProperties": false,
-     "description": "Canonical contact/timer plan. interface is an object of member arrays, never a VAR_* declaration string. Each contact_coil network needs declared contacts and a writable coil; timer networks use TON/TOF/TP/TONR with instance, input, q, and pt.",
      "examples": [
       {
        "block_name": "MotorControl",
@@ -461,11 +462,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "inoproshop_lad_generate_contact_block",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "0fb957e15694c3c2a45ddbc66d51e0fc276092f17e94f18f96dfbc21a19e6e54",
- "name": "inoproshop_lad_generate_contact_block",
- "schemaHash": "717b61e699c499eeec000ed84eab4e746537250161e53526d485c7cb85067da0"
+  }
+ }
 }

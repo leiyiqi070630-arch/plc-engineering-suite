@@ -1763,8 +1763,8 @@ function applyPortablePythonEnv(v174, v175) {
 }
 function ragAccountServer(v179) {
   const v180 = v179.trim().replace(/\/+$/, "");
-  if (["http://8.160.164.129:5173", "http://plccodeing.com:5173", "https://www.plccodeing.com"].includes(v180)) {
-    return "https://plccodeing.com";
+  if (["http://127.0.0.1:5173", "http://localhost:5173"].includes(v180)) {
+    return "";
   }
   return v180;
 }
@@ -2430,7 +2430,7 @@ function engineOsErrorCode(v277) {
   }
   return v278;
 }
-const DEFAULT_ACCOUNT_SERVER = "https://plccodeing.com";
+const DEFAULT_ACCOUNT_SERVER = "";
 const LOGGED_OUT_STATE = {
   isLoggedIn: false,
   phone: "",
@@ -11125,6 +11125,10 @@ async function fetchAnnouncementsAsync(v2481, v2482 = ANNOUNCEMENTS_TIMEOUT_MS) 
     doc: null,
     bytes: 0
   });
+  // 离线构建：默认不请求任何远端公告源；仅在显式设置 PLC_CODE_ANNOUNCEMENT_SOURCE 时才联网。
+  if (!(process.env[ANNOUNCEMENTS_SOURCE_ENV] ?? "").trim()) {
+    return v2483("announcements disabled (offline build)");
+  }
   let v2485;
   try {
     if (v2481.kind === "file") {
@@ -11922,7 +11926,7 @@ function mainWindow() {
   const v2680 = resolveWindowState(runtimeHome(), electron.screen.getAllDisplays(), electron.screen.getPrimaryDisplay());
   const v2681 = settingsStore?.current.theme ?? "system";
   const v2682 = v2681 === "light" || v2681 === "system" && electron.nativeTheme.shouldUseDarkColors === false;
-  const v2683 = v2682 ? "#fafafa" : "#171717";
+  const v2683 = v2682 ? "#f6f7f9" : "#0f1115";
   const v2684 = new electron.BrowserWindow({
     x: v2680.x,
     y: v2680.y,
@@ -11932,7 +11936,7 @@ function mainWindow() {
     titleBarStyle: "hidden",
     titleBarOverlay: {
       color: v2683,
-      symbolColor: v2682 ? "#5c5c54" : "#9c9c96",
+      symbolColor: v2682 ? "#5a6270" : "#9aa3b0",
       height: 32
     },
     webPreferences: {

@@ -67,6 +67,20 @@ tool_dispatch/        工具名 → 实现的路由
 
 ---
 
+## 下载
+
+到 **Releases** 页下载 `PLC-Code-2.1.13-win32-x64.zip`（约 150 MB），解压后直接运行 `PLC Code.exe`，无需安装。
+
+| 项 | 值 |
+| --- | --- |
+| 平台 | Windows 10/11 x64 |
+| 运行时 | Electron 43.3.0（Chromium 150，已内置） |
+| 首次启动 | 约 1–2 秒，带启动画面 |
+| 配置位置 | `<解压目录>\data\runtime\`（会话、设置、模型配置） |
+| 模型 | 首次使用需在「自备模型」页填写服务地址与密钥 |
+
+> 未签名构建，SmartScreen 可能提示「未知发布者」，选择「更多信息 → 仍要运行」即可。
+
 ## 快速开始
 
 ### 桌面端
@@ -89,10 +103,33 @@ npm run pack
 
 ```bash
 cd engine
-cargo check           # 需要 Rust stable (x86_64-pc-windows-msvc)
-cargo run -p plccode-engine -- --help
-cargo run -p plccode-engine -- system-prompt      # 查看内置提示词
-cargo run -p plccode-engine -- skills             # 列出内置技能
+cargo check --workspace                         # 类型检查，无需链接器
+cargo build --release -p plccode-engine         # MSVC 目标（需 VS Build Tools）
+cargo build --release -p plccode-engine \
+  --target x86_64-pc-windows-gnu                # 或用 MinGW，见下
+```
+
+Windows 上用 MinGW 构建（无需安装 Visual Studio）：
+
+```powershell
+# 1) 装 MinGW-w64（或已有任意 x86_64-w64-mingw32-gcc 在 PATH 中）
+winget install BrechtSanders.WinLibs.POSIX.UCRT
+
+# 2) 添加 GNU 目标
+rustup target add x86_64-pc-windows-gnu
+
+# 3) 构建（.cargo/config.toml 已指定链接器名）
+cargo build --release -p plccode-engine --target x86_64-pc-windows-gnu
+```
+
+产物：`engine/target/x86_64-pc-windows-gnu/release/plccode-engine.exe`（约 270 KB）。
+
+```bash
+plccode-engine --version
+plccode-engine tools          # 列出注册的工具
+plccode-engine status         # 工作区快照（JSON）
+plccode-engine bridge         # JSON-Lines 会话（桌面端使用）
+echo '{"command":"capabilities"}' | plccode-engine bridge
 ```
 
 引擎与桌面端通过 **JSON-Lines over stdio** 通信，协议见 `engine/docs/04-bridge协议与CLI.md`。
@@ -127,6 +164,23 @@ cargo run -p plccode-engine -- skills             # 列出内置技能
 | `engine/docs/05-知识与语料库.md` | 内嵌知识库结构、工程产物样例 |
 
 ---
+
+## 界面
+
+界面层以「主题覆盖」的方式定制，不改动打包后的渲染进程 bundle：
+
+| 文件 | 作用 |
+| --- | --- |
+| `src/renderer/theme.css` | 覆盖设计令牌（颜色/圆角/动效），统一暗色与亮色两套 |
+| `src/renderer/index.html` | 启动画面（纯 CSS 淡出）、主题色 meta、首帧背景 |
+| `src/main/index.js` | 窗口背景色与标题栏按钮配色跟随主题 |
+
+设计取向：
+
+- **三层表面**：`bg / panel / elevated` 递进，避免大面积同色导致结构消失；
+- **单一强调色**：主色只用于主操作与焦点，工具类别靠色相区分、饱和度统一；
+- **克制动效**：过渡 140–200 ms，按下时轻微缩放（0.978），提供物理反馈；
+- **可访问性**：`prefers-reduced-motion` 下关闭动画；`:focus-visible` 统一焦点环；滚动条细且无轨道。
 
 ## 设计原则
 

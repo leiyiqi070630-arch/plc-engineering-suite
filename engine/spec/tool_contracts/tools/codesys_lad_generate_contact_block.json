@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "Canonical contact/timer LAD generator: calls lad.generate_contact_block once with the exact plan schema below, imports the native graph, saves it, and returns independent precompile/compile diagnostics. plan uses interface={input,inout,output,static_members,local,temp} arrays of {name,datatype}; do not pass a declaration string. contact_coil semantics: coil=(OR of branches[] legs) AND (AND of contacts[] series terms); a seal-in rung uses branches=[start leg,self-coil leg] and contacts=[NC stop/interlocks]. timer uses timer/instance/input/q/pt; instance,input,q,et accept either a member name string or {name}, and every timer instance MUST be declared in interface.static_members with datatype TON/TOF/TP/TONR. INOPROSHOP NATIVE CONSTRAINT (C23, verified): every contact_coil network needs at least TWO series contacts when it has no branches, and a network WITH branches needs at least one series contact plus two or more branch legs â€” a one-contact rung is not importable; add an enable/interlock contact or restructure as branches. Pass task=<exact task name, e.g. MainTask> and the bridge wires the generated PROGRAM into that task automatically (cross-task conflict preflight + exact readback) â€” do NOT follow up with task_pou_set; the default PLC_PRG stays unless you delete it with inoproshop_object_delete. Examples below cover seal-in, interlock, TON, and flash patterns; copy their shapes. Use codesys_lad_generate_control_recipe for the standard pump_station_control composition, and codesys_lad_generate_native when the program needs counters/latches/edges/timers/compare/logic/math/operators.",
+  "name": "codesys_lad_generate_contact_block",
+  "description": "Generates LAD contact block from a structured plan. Inputs: confirm, disposable, plan, task. Required: plan, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -14,7 +16,6 @@
     },
     "plan": {
      "additionalProperties": false,
-     "description": "Canonical contact/timer plan. interface is an object of member arrays, never a VAR_* declaration string. Each contact_coil network needs declared contacts and a writable coil; timer networks use TON/TOF/TP/TONR with instance, input, q, and pt.",
      "examples": [
       {
        "block_name": "MotorControl",
@@ -461,11 +462,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "codesys_lad_generate_contact_block",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "dd7207b2aad12c127e5f68ef4a70a4458eb6ff8f4297317b6886edaf661e8a45",
- "name": "codesys_lad_generate_contact_block",
- "schemaHash": "717b61e699c499eeec000ed84eab4e746537250161e53526d485c7cb85067da0"
+  }
+ }
 }

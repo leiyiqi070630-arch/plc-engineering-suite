@@ -1,4 +1,0 @@
-provider: generic
-url: https://plccodeing.com/updates/win/
-channel: latest
-updaterCacheDirName: desktop-electron-updater

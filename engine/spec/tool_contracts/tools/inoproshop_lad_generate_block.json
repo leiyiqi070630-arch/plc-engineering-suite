@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "Topology-free LAD writer (networks: instruction_box, timer, fb_call, move). NOT AVAILABLE on the InoProShop line as delivered: MEASURED 2026-09-19, every call answers errorCode=lad_plan_adapter_unavailable with expected=\"loaded plccode_lad_plan_adapter\" - the plan-adapter plugin is not part of this installation, so the op cannot emit anything. Do NOT retry it and do not treat it as a missing feature: use the ROUTE's own writers instead - codesys_lad_generate_native (canonical batch generator: one POU, networks[].instructions[] with exact ports; library FBs work, e.g. instruction=PID_FIXCYCLE namespace=UTIL with an instance, verified 2026-09-19 with a 0-error compile and a passing simulation assertion) or codesys_lad_generate_contact_block for contacts/branches/coils. For an FB call in LAD the native schema is {instruction, namespace, instance, inputs:{PORT:VARIABLE}, outputs:{PORT:VARIA…",
+  "name": "inoproshop_lad_generate_block",
+  "description": "Generates LAD block from a structured plan. Inputs: confirm, disposable, plan. Required: plan, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -24,7 +26,6 @@
        "type": "integer"
       },
       "block_type": {
-       "description": "InoProShop native production currently supports PROGRAM.",
        "type": "string"
       },
       "callee_interfaces": {
@@ -666,7 +667,6 @@
           "type": "string"
          },
          "type": {
-          "description": "Topology-free PLCCode network discriminator for this writer: instruction_box, timer, fb_call, or move. Do not put contacts, branches, coils, fanout, or other power-flow topology here; send those plans to inoproshop_lad_generate_contact_bloc",
           "enum": [
            "instruction_box",
            "timer",
@@ -711,11 +711,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "inoproshop_lad_generate_block",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "16d38b19d87af0329fe143a4ceadf772207b878c9dfa2aa7eb1f2576fc2493af",
- "name": "inoproshop_lad_generate_block",
- "schemaHash": "8069b017f6305c89e200590ddc8630f089732c2ce451e23c41ee1e1d3d19b1d0"
+  }
+ }
 }

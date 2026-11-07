@@ -1,5 +1,0 @@
-[knowledge] source=embedded files=771 bytes=15710204
-MCP
-  Working directory D:\codex工作目录
-  Configured servers 0
-  No MCP servers configured.

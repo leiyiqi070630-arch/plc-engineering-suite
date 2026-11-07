@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "Replace a GVL or native LAD POU in one delete->recreate call. Back up the exact target before calling. Basic request shape and supported instruction names are checked before deletion; recreation can still fail. If deletion succeeds and recreation fails, the target stays deleted and no automatic rollback runs. Read the failure receipt and retry only recreation, without deleting again. kind=gvl requires a full VAR_GLOBAL declaration. kind=lad uses the native batch generator's networks contract and symbolTypes for qualified symbols; name defaults to the target's final path component. LAD recreates at Application level; explicit LAD variable declarations are not supported by this shortcut. Returns deletion and recreation readbacks on success.",
+  "name": "inoproshop_object_regenerate",
+  "description": "Generates object from a structured plan. Inputs: confirm, declaration, disposable, kind, name, networks, symbolTypes, target. Required: target, kind, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -33,7 +35,6 @@
       "minLength": 1,
       "type": "string"
      },
-     "description": "Exact IEC types for qualified symbols, such as GVL.Run: BOOL.",
      "type": "object"
     },
     "target": {
@@ -47,11 +48,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "inoproshop_object_regenerate",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "4c5aa70f6d797e06d0c0d2ba505911d489e3b8deb476dc99cf9679cd1c999506",
- "name": "inoproshop_object_regenerate",
- "schemaHash": "1b60e8e7d3317baa56aef197774fa6b1e3c401dd8d228e36ca2818a77bba6393"
+  }
+ }
 }

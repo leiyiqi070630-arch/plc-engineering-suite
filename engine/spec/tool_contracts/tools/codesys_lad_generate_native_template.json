@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "NOT a prerequisite â€” SR/BLINK/TON/TOF/TP/CTU/CTD/CTUD/R_TRIG/F_TRIG shapes are already inline in codesys_lad_generate_native's description. This generates a verified native template graph for one registry instruction only when a rejection asks for the exact port-keyed shape; returns the shape to copy into a codesys_lad_generate_native network.",
+  "name": "codesys_lad_generate_native_template",
+  "description": "Generates LAD template from a structured plan. Inputs: confirm, disposable, instruction, name. Required: instruction, name, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -26,11 +28,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "codesys_lad_generate_native_template",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "55abbcd8fd5a769c760a15476ab1861ef6c9ce08d960682682fcbdfe34eb5660",
- "name": "codesys_lad_generate_native_template",
- "schemaHash": "8240e3cd4dc17649c8eb380f74496d7740beb48866836bd65cf07bebddae814a"
+  }
+ }
 }

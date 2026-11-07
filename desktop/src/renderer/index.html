@@ -6,20 +6,94 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: https: http:; media-src 'self' https: http:"
     />
-    <!-- 17-user-feedback.md C2 — `img-src` needed its own directive (was
-         inheriting `default-src 'self'`, which does NOT include `data:`):
-         pasted/dropped image attachments and any assistant-markdown image
-         are rendered as `data:image/...;base64,...` <img src> values (see
-         lib/attachments.ts's readFileAsDataUrl), which a bare `default-src
-         'self'` silently fails to load — no console error beyond a CSP
-         violation notice, easy to miss without a real-machine screenshot.
-         Scoped to images only; script-src/style-src are untouched. -->
+    <!-- CSP 说明：img-src 需要放行 data:，否则粘贴/拖入的图片附件（data:image/...;base64）
+         会被 default-src 拦掉且控制台只给一条易被忽略的 violation 提示。script-src 与
+         style-src 保持收紧。 -->
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0f1115" />
     <title>PLC Code</title>
     <link rel="preload" href="./assets/NotoSerifSC-B28r8lj8.ttf" as="font" type="font/ttf" crossorigin />
-    <script type="module" crossorigin src="./assets/index-CXb3UsfP.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-pqC5qFDs.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-pqC5qFDs.css" />
+    <link rel="stylesheet" href="./theme.css" />
+    <style>
+      /* 启动画面：纯 CSS 淡出，不依赖 React 挂载时机，全程不拦截交互。 */
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 18px;
+        background: #0f1115;
+        color: #e6e9ee;
+        font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+        pointer-events: none;
+        animation: splash-out 420ms ease 1100ms forwards;
+      }
+      #splash .mark {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        letter-spacing: .2px;
+        font-weight: 600;
+      }
+      #splash .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4c8dff;
+        box-shadow: 0 0 0 4px rgba(76, 141, 255, .16);
+        animation: splash-pulse 1400ms ease-in-out infinite;
+      }
+      #splash .hint {
+        font-size: 12px;
+        color: #6f7885;
+        letter-spacing: .3px;
+      }
+      #splash .bar {
+        width: 148px;
+        height: 2px;
+        border-radius: 2px;
+        background: #262b33;
+        overflow: hidden;
+      }
+      #splash .bar > i {
+        display: block;
+        width: 40%;
+        height: 100%;
+        border-radius: inherit;
+        background: #4c8dff;
+        animation: splash-slide 1100ms ease-in-out infinite;
+      }
+      @keyframes splash-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(.72); opacity: .55; }
+      }
+      @keyframes splash-slide {
+        0% { transform: translateX(-110%); }
+        100% { transform: translateX(320%); }
+      }
+      @keyframes splash-out {
+        to { opacity: 0; visibility: hidden; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #splash { animation-duration: 1ms; animation-delay: 300ms; }
+        #splash .dot, #splash .bar > i { animation: none; }
+      }
+      /* 首帧背景色与主题一致，避免窗口出现的瞬间闪白。 */
+      html, body { background: #0f1115; }
+      html[data-theme='light'], html[data-theme='light'] body { background: #f6f7f9; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="splash" aria-hidden="true">
+      <div class="mark"><span class="dot"></span>PLC Code</div>
+      <div class="bar"><i></i></div>
+      <div class="hint">正在加载工程工作区</div>
+    </div>
+    <div id="root"></div>
+    <script type="module" crossorigin src="./assets/index-CXb3UsfP.js"></script>
   </body>
 </html>

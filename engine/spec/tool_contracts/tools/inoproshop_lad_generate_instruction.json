@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "InoProShop native alias for exact-port parameterized LD/FBD instruction generation.",
+  "name": "inoproshop_lad_generate_instruction",
+  "description": "Generates LAD instruction from a structured plan. Inputs: confirm, disposable, instruction. Required: instruction, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -23,11 +25,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "inoproshop_lad_generate_instruction",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "9fb1ca4b6dd39014be0f1a79a3827353d8f5e77b6cbc23d4da3afa5e3e61e5ea",
- "name": "inoproshop_lad_generate_instruction",
- "schemaHash": "a3b44898fb3471edd8e9d31484962b0b88f3637691aabe21ca388d46c7831e83"
+  }
+ }
 }

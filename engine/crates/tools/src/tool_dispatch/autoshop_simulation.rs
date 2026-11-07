@@ -1,28 +1,3 @@
-//! 模块骨架
-//! 模块路径: crates\tools\src\tool_dispatch\autoshop_simulation.rs
+//! `src/tool_dispatch/autoshop_simulation.rs`
 //!
-//! 说明: 本模块对外契约由接口证据整理，函数体以实现为准。
-//! 以下为对外契约线索，补实现时以此为准。
-//!
-//! 关联工具: actual, apimessage_usagerequest_idtotal_tokensestimated_cost_usd8, view_reopened_exact
-//!
-//! 契约线索（截断）:
-//!   struct TiaOpennessGenerateWebPagesBlocksInput with 9 elements
-//!   struct TiaOpennessCreateSafetyRuntimeGroupInput with 8 elements
-//!   struct TiaOpennessGsdPrmDataInput with 11 elements
-//!   struct TiaOpennessConfigureOpcUaServerInput with 7 elements
-//!   struct SessionIdentity with 4 elements
-//!   struct LaneOwnership with 3 elements
-//!   struct LaneEventMetadata with 10 elements
-//!   .cargo\registry\src\index.crates.io-1949cf8c6b5b557f\quick-xml-0.38.4\src\reader\slice_reader.rs
-//!   Invalid local file header
-//!   Invalid Central Directory header
-//!   crates\tools\src\plc_generator_corpus.rs
-//!   expectedy÷=C
-//!   projectPathpersistencecrates\tools\src\tool_dispatch\autoshop.rs
-//!   view_reopened_exact
-//!   crates\api\src\providers\anthropic.rs
-//!   apimessage_usagerequest_idtotal_tokensestimated_cost_usd8
-//!   Simulation grants unavailablecrates\tools\src\tool_dispatch\autoshop_simulation.rs
-
-// TODO: 依上列契约实现 `autoshop_simulation` 模块。
+//! TODO: 实现 `autoshop_simulation` 模块。

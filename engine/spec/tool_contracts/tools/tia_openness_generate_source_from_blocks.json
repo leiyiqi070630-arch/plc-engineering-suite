@@ -1,41 +1,36 @@
 {
  "contract": {
-  "description": "Generate a UTF-8 source FILE from selected supported blocks via PlcExternalSourceSystemGroup.GenerateSource. Requires confirm=true. block_paths limits selection; omitted selects all user blocks of the resolved PLC, which may contain unsupported graphical languages. with_dependencies defaults true; false uses GenerateOptions.None or the two-argument overload. The native method returns void and creates no PlcExternalSource project object: verify output_path and the returned file size/SHA-256, not list_external_sources. File export is not runtime acceptance.",
+  "name": "tia_openness_generate_source_from_blocks",
+  "description": "Generates source from blocks from a structured plan. Inputs: block_paths, confirm, device_name, output_path, project_match, save_project, tia_version, with_dependencies. Required: output_path, confirm. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
     "block_paths": {
-     "description": "Block paths to include, e.g. from tia_openness_list_blocks; omitted generates from every user block.",
      "items": {
       "type": "string"
      },
      "type": "array"
     },
     "confirm": {
-     "description": "Mutation confirmation the TIA bridge enforces: the call is refused unless this flag is true.",
      "type": "boolean"
     },
     "device_name": {
-     "description": "Target PLC station name; omit when the open project contains exactly one PLC.",
      "type": "string"
     },
     "output_path": {
-     "description": "Destination file path for the generated source (missing parent directories are created).",
      "type": "string"
     },
     "project_match": {
      "type": "string"
     },
     "save_project": {
-     "description": "Persist the project to disk after this mutation. Default false: the change lives only in the running TIA Portal and is LOST if the Portal exits/crashes before a later save. Pass true at milestones (cheap) instead of batching everything to one final save.",
      "type": "boolean"
     },
     "tia_version": {
-     "description": "Target TIA Portal version, V16-V21 (e.g. \"V20\"; bare \"20\" also accepted). Omitted: the bridge attaches to the running portal if one is open, else the highest installed version.",
      "type": "string"
     },
     "with_dependencies": {
-     "description": "Include the blocks the selection depends on (default true when the API overload exists).",
      "type": "boolean"
     }
    },
@@ -44,11 +39,6 @@
     "confirm"
    ],
    "type": "object"
-  },
-  "name": "tia_openness_generate_source_from_blocks",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "3edc684ee0fd5fb223e0d45d0ae42f4cd39a3f71d61d08ea721cd44e54479359",
- "name": "tia_openness_generate_source_from_blocks",
- "schemaHash": "55760b388ae25230dfb97f4c85ffb7bf0965d2de1f5fc20e2a15e79b97ce2c93"
+  }
+ }
 }

@@ -2,7 +2,8 @@ node_modules/
 out/
 dist/
 data/
-.claw/
+release/
+target/
 *.log
 run-test*.log
 .DS_Store

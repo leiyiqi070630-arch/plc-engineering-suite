@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "Resolve one installed LD/FBD signature and generate an exact-port parameterized LAD POU, then import, native-readback, save and compile it…",
+  "name": "codesys_lad_generate_instruction",
+  "description": "Generates LAD instruction from a structured plan. Inputs: confirm, disposable, instruction. Required: instruction, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -23,11 +25,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "codesys_lad_generate_instruction",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "51e185487bbfa97499eaa69421afdfdcf1f9cef6a95fc6f3eed9a3957a5185d5",
- "name": "codesys_lad_generate_instruction",
- "schemaHash": "a3b44898fb3471edd8e9d31484962b0b88f3637691aabe21ca388d46c7831e83"
+  }
+ }
 }

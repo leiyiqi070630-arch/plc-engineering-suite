@@ -1,25 +1,3 @@
-//! 模块骨架
-//! 模块路径: crates\runtime\src\prompt\plc_extension\desktop_admin.rs
+//! `src/prompt/plc_extension/desktop_admin.rs`
 //!
-//! 说明: 本模块对外契约由接口证据整理，函数体以实现为准。
-//! 以下为对外契约线索，补实现时以此为准。
-//!
-//! 关联工具: analysissummary
-//!
-//! 契约线索（截断）:
-//!   ready for inputready for your inputready for promptsend a message│ >│ ›│ ❯command not foundsyntax error near unexpected tokenparse error nearno such file or directoryunknown comman
-//!   allow theallow toolthe  serveralways allowallow alwaysallow this tool alwaysallow for all sessionsallow onceallow for this sessionallow this sessionyes, allow__crates\runtime\src\b
-//!   ...[output truncated: À
-//!    total bytes; keeping first À
-//!    + last ÀB bytes â re-read the file with offset/limit for the middle]...
-//!   cmd/C# Workspace instructions_Additional instruction content omitted after reaching the prompt budget._
-//!   CLAUDE.mdAGENTS.mdCLAUDE.local.mdinstructions.mdPLC_CODE_SKIP_PROJECT_INSTRUCTIONS
-//!   crates\runtime\src\compact\text.rs
-//!   analysissummary
-//!   PLC_CODE_CONFIG_HOMEHOMEUSERPROFILEExperience library is too large
-//!   actionlistrouteKeyUnknown experience actionSelect a bound project or an existing experience route firstExperience path is unavailableExperience home is unavailableExperience path e
-//!   This experience entry has already changed; refresh the listÀ
-//!   <!-- plc-code:archive -->Missing experience idtitleAdded by the user in desktop settingsengineering_lessonInvalid experience pathcrates\runtime\src\prompt\plc_extension\desktop_adm
-//!   Experience file exceeds the size limit
-
-// TODO: 依上列契约实现 `desktop_admin` 模块。
+//! TODO: 实现 `desktop_admin` 模块。

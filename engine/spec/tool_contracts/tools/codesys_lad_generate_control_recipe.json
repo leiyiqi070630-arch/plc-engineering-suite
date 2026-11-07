@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "Compose a complete pump station contact/timer plan from a high-level control recipe. Returns one ready request for codesys_lad_generate_contact_block, including declarations, self-hold branches, safety interlocks, overload/start-failure latches, alarm, and a TON feedback timeout. Optional task is the exact existing task name (for example MainTask). This is a plan builder; the returned request is not written until the generator is called.",
+  "name": "codesys_lad_generate_control_recipe",
+  "description": "Generates LAD control recipe from a structured plan. Inputs: name, recipe, signals, task, timeout. Required: recipe, name. Returns a structured result with status and diagnostics.",
+  "permission": "ReadOnly",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -15,15 +17,12 @@
      "additionalProperties": {
       "type": "string"
      },
-     "description": "Optional signal-name overrides for mode_auto,start,stop,e_stop,low_level,high_level,run_feedback,overload,fault_reset,pump_output,alarm_output.",
      "type": "object"
     },
     "task": {
-     "description": "Exact existing task name, for example MainTask; omit if task wiring is handled separately.",
      "type": "string"
     },
     "timeout": {
-     "description": "IEC TIME literal, default T#3S.",
      "type": "string"
     }
    },
@@ -32,11 +31,6 @@
     "name"
    ],
    "type": "object"
-  },
-  "name": "codesys_lad_generate_control_recipe",
-  "permission": "ReadOnly"
- },
- "contractHash": "55e40e7698d01df5cba8530685db20eca5d9944ec588eb2a2d2b8442a6577c68",
- "name": "codesys_lad_generate_control_recipe",
- "schemaHash": "2ef4d4082fd91cfb9626fbaaf0f8f9c15d33bb85be61bd9cd2d2c728aa56a98a"
+  }
+ }
 }

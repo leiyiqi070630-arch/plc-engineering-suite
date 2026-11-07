@@ -1,5 +1,0 @@
-# tia_openness_add_network_device — extended contract
-
-Reference data moved from the resident card on 2026-09-18. Current schema, diagnostic receipts, user scope and target version take precedence; historical measurements are scoped observations. Read only for an unresolved detail.
-
-Add a whole network device/station to the active TIA Portal project. Mutating; requires confirm=true. Use an exact typeIdentifier from tia_openness_search_equipment_catalog (live on V18+; bundled CPU fallback on V16/V17) or supplied by the user. For an S7-1200 destined for standard S7-PLCSIM pick firmware V4.x up front (6ES7 214-1AG40-0XB0/V4.0) — lower firmware is refused by tia_plcsim_plan and swapping later costs a delete+re-add cycle. The result returns device.path and rootItemName; for a classic rack, read hardware after creation and address the rack as <device>/<first rack item> before tia_openness_list_plug_locations/tia_openness_plug_rack_module. Not for rack/slot expansion modules; use tia_openness_plug_rack_module.

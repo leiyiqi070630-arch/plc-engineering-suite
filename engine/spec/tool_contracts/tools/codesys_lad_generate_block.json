@@ -1,12 +1,13 @@
 {
  "contract": {
-  "description": "Compatibility alias for the canonical batch generator: calls bridge operation lad.native_generate_instruction_batch with the same one-POU instruction-network schema. Use codesys_lad_generate_native for new calls; this alias remains for older plans.",
+  "name": "codesys_lad_generate_block",
+  "description": "Generates LAD block from a structured plan. Inputs: catalog, confirm, disposable, name, networks, parent, symbolTypes, variables. Required: name, networks, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "additionalProperties": true,
    "properties": {
     "catalog": {
      "additionalProperties": true,
-     "description": "Optional exact live catalog data (common/signatures), passed through unchanged; omit for automatic live lookup.",
      "type": "object"
     },
     "confirm": {
@@ -21,7 +22,6 @@
      "type": "string"
     },
     "networks": {
-     "description": "Each network contains title and instructions[]. Bind exact ports using inputs/outputs maps. Verified timer shape: {\"instruction\":\"TON\",\"instance\":\"tonDelay\",\"inputs\":{\"IN\":\"xRun\",\"PT\":\"T#1s\"},\"outputs\":{\"Q\":\"xDone\"}}. Native operators additionally require dataType; qualified symbols require exact symbolTypes.",
      "items": {
       "additionalProperties": true,
       "properties": {
@@ -30,7 +30,6 @@
          "additionalProperties": true,
          "properties": {
           "dataType": {
-           "description": "Required for native operators: explicit IEC operand type; for conversion operators use the destination type. See the inline per-operator rules.",
            "minLength": 1,
            "type": "string"
           },
@@ -47,7 +46,6 @@
            "type": "object"
           },
           "instance": {
-           "description": "FB instance name; instances are declared by the generator, not in variables[].",
            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
            "type": "string"
           },
@@ -58,7 +56,6 @@
            "type": "string"
           },
           "objectGuid": {
-           "description": "Optional exact instruction object GUID from live signature lookup.",
            "minLength": 1,
            "type": "string"
           },
@@ -73,7 +70,6 @@
             "minLength": 1,
             "type": "string"
            },
-           "description": "Exact IEC types for qualified symbols used by this instruction.",
            "type": "object"
           }
          },
@@ -106,7 +102,6 @@
       "minLength": 1,
       "type": "string"
      },
-     "description": "Exact IEC types of qualified symbols such as GVL.Value.",
      "type": "object"
     },
     "variables": {
@@ -127,7 +122,6 @@
         "type": "string"
        },
        "type": {
-        "description": "IEC primitive type; FB instances are auto-declared.",
         "minLength": 1,
         "type": "string"
        }
@@ -148,11 +142,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "codesys_lad_generate_block",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "178f9217f90906396ff8a94d2152d786cc065af738d54df3939863cd4cee462e",
- "name": "codesys_lad_generate_block",
- "schemaHash": "530d262286e189b935b98468b6c0869c5535d998909f73f6f0285d1eb7ac13bc"
+  }
+ }
 }

@@ -1,19 +1,18 @@
 {
  "contract": {
-  "description": "Generate a Mitsubishi GX Works2 list-format PROGRAM CSV (FX2/FX3) from structured rungs. Output matches real GX exports: a 3-row preamble, seven TAB-separated quoted columns, optional line statements and notes, real step numbers, continuation rows for multi-operand instructions, and a trailing END. A line_statement is limited to 64 GX text units (half-width=1, full-width=2); over-limit input is rejected before writing because GX imports it with a warning. Every network needs an execution condition; when an explicit network starts with MOV/ADD/OUT or another enabled instruction, the generator inserts LD M8000 so GX Program Check does not fail with C9322. This import format is only for label-free GX Works2 Simple Projects using device operands such as X0/Y0. The result round-trips through the lint as {ok, csv, diagnostics}; repair the rungs when ok is false. Write the returned csv with write_file; PLC Code writes .csv files as UTF-16LE+BOM with CRLF, so staging and saved files open directly in GX/Excel.",
+  "name": "mitsubishi_csv_generate",
+  "description": "Generates CSV from a structured plan. Inputs: family, project_name, rungs. Required: family, rungs. Returns a structured result with status and diagnostics.",
+  "permission": "ReadOnly",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
     "family": {
-     "description": "fx2 or fx3",
      "type": "string"
     },
     "project_name": {
-     "description": "Project name used in the CSV preamble; defaults to the GX placeholder.",
      "type": "string"
     },
     "rungs": {
-     "description": "Structured rungs: each entry is one instruction row with instruction, operand/operands, and optional line_statement/note.",
      "items": {
       "additionalProperties": false,
       "properties": {
@@ -21,19 +20,15 @@
         "type": "string"
        },
        "line_statement": {
-        "description": "Optional 行间声明 row; maximum 64 GX text units (half-width=1, full-width=2). Split longer text across rows.",
         "type": "string"
        },
        "note": {
-        "description": "注解 attached to this instruction; emitted as its own follow-on row in the 注解 column.",
         "type": "string"
        },
        "operand": {
-        "description": "Single operand/device (e.g. X0). For a multi-operand instruction use operands instead.",
         "type": "string"
        },
        "operands": {
-        "description": "All operands in order for a multi-operand instruction (e.g. MOV: [\"K0\",\"D0\"]); emitted as instruction row + one continuation row per further operand, like a real export.",
         "items": {
          "type": "string"
         },
@@ -50,11 +45,6 @@
     "rungs"
    ],
    "type": "object"
-  },
-  "name": "mitsubishi_csv_generate",
-  "permission": "ReadOnly"
- },
- "contractHash": "78db979e0bf90288fa05b208fbd073801b900f2a2bcd47e8fdb7f2d091847b52",
- "name": "mitsubishi_csv_generate",
- "schemaHash": "f85f0a2b82b156392a384a742d3a7384924d70a9760b6a2ee0e05127b6089c2a"
+  }
+ }
 }

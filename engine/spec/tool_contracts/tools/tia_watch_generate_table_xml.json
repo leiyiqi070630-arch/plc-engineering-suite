@@ -1,34 +1,29 @@
 {
  "contract": {
-  "description": "Generate a real TIA watch-table SimaticML document (.xml) from a structured plan. Mutating; writes a file when output_path is given, otherwise returns the xml string. The real element types are SW.WatchAndForceTables.PlcWatchTableEntry and <Name> — do not invent SW.WatchAndForceTables.WatchItem or a <TagName> child. Plain UTF-8, no BOM. Import with tia_openness_import_watch_table_xml; ok:true here means shape correctness only, not a confirmed TIA import.",
+  "name": "tia_watch_generate_table_xml",
+  "description": "Generates watch table XML from a structured plan. Inputs: output_path, plan, plan_json. Required: plan. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "$defs": {
     "entry": {
      "additionalProperties": false,
-     "description": "One watch row. Provide `name` (the symbolic operand, e.g. \"\\\"DB_Motor\\\".StartPB\" or a tag name) which is emitted as <Name>, and/or `address` (the absolute operand, e.g. %M0.0 or %DB1.DBX0.0) emitted as <Address> — at least one is required. Optional fields map 1:1 to the proven PlcWatchTableEntry property element names and are written only when present. The on-disk token form of enum fields is import-confirmed, so unknown tokens warn but do not block.",
      "properties": {
       "address": {
-       "description": "Absolute operand -> <Address> (\"Address of watch table entry\"), e.g. %M0.0.",
        "type": "string"
       },
       "display_format": {
-       "description": "-> <DisplayFormat>. Proven PlcWatchAndForceTableDisplayFormat members (exact case): Undef, Any_pointer, BCD, Bin, Bool, Character, Character_sequence, Date, DATE_AND_TIME, DEC_sequence, DEC_signed, DEC_unsigned, Hex, Block_number, Octal, Pointer, Float, Counter, SIMATIC_Time, String, Time, TIME_OF_DAY, Unicode_character, Unicode_character_sequence, Unicode_string, Symbolic. No enum is used for OpenAI compatibility.",
        "type": "string"
       },
       "modify_trigger": {
-       "description": "-> <ModifyTrigger>. Same PreDefinedTrigger member set as monitor_trigger.",
        "type": "string"
       },
       "modify_value": {
-       "description": "-> <ModifyValue>, the value used when modifying (e.g. true, 100, 16#FF).",
        "type": "string"
       },
       "monitor_trigger": {
-       "description": "-> <MonitorTrigger>. Proven PlcWatchAndForceTablePreDefinedTrigger members: Permanent, PermanentAtStart, OnceOnlyAtStart, PermanentAtEnd, OnceOnlyAtEnd, PermanentAtStop, OnceOnlyAtStop, Undef.",
        "type": "string"
       },
       "name": {
-       "description": "Symbolic operand -> <Name> (\"Tag name of watch table entry\").",
        "type": "string"
       }
      },
@@ -44,18 +39,15 @@
      "additionalProperties": false,
      "properties": {
       "entries": {
-       "description": "Watch table rows. Each row becomes a SW.WatchAndForceTables.PlcWatchTableEntry. A bare string is treated as {name}.",
        "items": {
         "$ref": "#/$defs/entry"
        },
        "type": "array"
       },
       "schema_version": {
-       "description": "TIA version for the <Engineering version> attribute. Accepts V16-V21 (V15 is rejected); emitted verbatim — a real V21 watch export carries version=\"V21\". Omitted defaults to the project's openness_version (plc-code.project.json).",
        "type": "string"
       },
       "table_name": {
-       "description": "Watch table display name, emitted as the PlcWatchTable AttributeList <Name>. For example 监控梯形图逻辑.",
        "type": "string"
       }
      },
@@ -72,11 +64,6 @@
     "plan"
    ],
    "type": "object"
-  },
-  "name": "tia_watch_generate_table_xml",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "132e7a1430aa2765cfbc28c523d863eb285a1edc707e4711b91e675f8bc39f9f",
- "name": "tia_watch_generate_table_xml",
- "schemaHash": "203df9839e46df7c4a3b957b7effca8e5602995a06f898b2cbb5765b2f36bf40"
+  }
+ }
 }

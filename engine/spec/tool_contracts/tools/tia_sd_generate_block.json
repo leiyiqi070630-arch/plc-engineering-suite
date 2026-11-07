@@ -1,11 +1,12 @@
 {
  "contract": {
-  "description": "Use: Validate and generate a complete SIMATIC SD FB/FC/OB plan.\nWhen: V20/V21 authoring; output_directory writes BOM/CRLF .s7dcl + .s7res.\nAvoid: Using SD on V16-V19; use LAD XML there.\nNext: Resolve a concrete unsupported shape with instruction_spec; import the paired documents and obtain a final compile verdict.",
+  "name": "tia_sd_generate_block",
+  "description": "Generates SIMATIC SD block from a structured plan. Inputs: output_directory, plan, plan_json. Required: plan. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "$defs": {
     "binding": {
      "additionalProperties": false,
-     "description": "One wired parameter for an instr op: name (the catalog parameter token, e.g. REQ/ID/CONNECT) and op (the operand). Direction (:= vs =>) comes from the catalog signature, not set here. Omit a parameter to leave it unbound (renders name:=  ).",
      "properties": {
       "name": {
        "type": "string"
@@ -22,7 +23,6 @@
     },
     "box_arg": {
      "additionalProperties": false,
-     "description": "Generic box param: name (param token), dir (in -> name:=op default, out -> name=>op), op (operand).",
      "properties": {
       "dir": {
        "type": "string"
@@ -42,7 +42,6 @@
     },
     "box_pragma": {
      "additionalProperties": false,
-     "description": "Box pragma. style single = `{ k := \"v\"; ... }` on one line; multi (default) = multi-line block where every entry except the last ends `; `. entries are {key, value}, value is the inner text e.g. key=S7_Templates value=\"SrcType := Real\" or \"[SrcType := Real, DestType := DInt]\".",
      "properties": {
       "entries": {
        "items": {
@@ -58,7 +57,6 @@
     },
     "cc_branch": {
      "additionalProperties": false,
-     "description": "One parallel OR leg of a contact_coil network: a series chain of contacts (ANDed). The legs are ORed together. A single-contact leg is just {contacts:[{operand:{name:...}}]}.",
      "properties": {
       "contacts": {
        "items": {
@@ -71,7 +69,6 @@
     },
     "cc_coil": {
      "additionalProperties": false,
-     "description": "The driven coil of a contact_coil network. operand is the tag; kind (optional) is coil (default), s_coil (set) or r_coil (reset).",
      "properties": {
       "kind": {
        "type": "string"
@@ -87,7 +84,6 @@
     },
     "cc_contact": {
      "additionalProperties": false,
-     "description": "A contact in the contact_coil form. operand is the tag; kind (optional) is contact/no (normally-open, default) or i_contact/nc (normally-closed).",
      "properties": {
       "kind": {
        "type": "string"
@@ -103,7 +99,6 @@
     },
     "element": {
      "additionalProperties": false,
-     "description": "op selects the element: contact/i_contact/coil/s_coil/r_coil (operand); wire (name, inline wire#); compare (kind in EQ/NE/GT/LT/GE/LE, in1, in2, optional src_type — inferred from interface-local operand datatypes or a constant's shape; set it explicitly when both operands are global/DB members of a non-Int type); range (kind in InRange/OutRange, min, in, max, optional src_type); move (in, outputs[] -> out1..outN); timer (kind TON/TP/TOF/TONR, instance, instance_scope local|global, optional r for TONR reset, pt, optional et); math (kind Add/Sub/Mul/Div/Mod/And/Or/Xor/Min/Max, in1, in2, out, optional src_type default Int, optional generate_eno bool); unary_math (kind Abs/Neg/Sqr/Sqrt/Round/Trunc/Ceil/Floor/Frac/Ln/Exp/Sin/Cos/Tan/Asin/Acos/Atan, in, out, optional src_type default Real, optional dest_type for Round/Trunc/Ceil/Floor default DInt); counter (kind CTU/CTD/CTUD, instance, instance_scope local|global, value_type default Int; CTU uses r/pv/cv, CTD uses ld/pv/cv, CTUD uses cd/r/ld/pv/qd/cv; pv required, qd/cv optional outputs, cu is the preceding contact RLO not a param, instance declared in var_retain as CTU_INT/CTD_INT/CTUD_INT); edge_contact (kind P rising / N falling, operand trigger, bit edge-memory Bool declared in VAR — both operand and bit render with :=); box (GENERIC function box for any LAD box instruction not covered by a typed op above — name is the instruction token e.g. Convert/Scale/Normalize/Calculate/Limit/Sel/Mux/Shl/Shr/Ror/Rol/T_ADD/string funcs; optional pragma {style single|multi, entries[{key,value}] e.g. key S7_Templates value \"SrcType := Real\"}; args[{name, dir in|out, op}] in order — dir in renders name:=op, out renders name=>op; correctness of an arbitrary box is proven by tia_openness_import_block_sd compile, not assumed); call (GENERIC FB/FC/instance call — name is the FB/FC/method, optional instance + instance_scope local|global, optional pragma, args[{name,dir,op}]; with instance renders #Inst.Name(...) or #Inst(...) when name is empty e.g. the SFB form #TCON_1(...), without instance renders \"Name\"(...) for an FC/FB-by-name; covers comms TCON/TSEND/TRCV, motion MC_*, PID, R_TRIG/F_TRIG and FB/FC calls — proven by compile); instr (CATALOG-DRIVEN call — mnemonic is a machine-verified instruction in the SD catalog, spanning the basic block (Add/Sub/Convert/Serialize/MoveBlock/SEL/Mux/DECO/ENCO/Switch/type-tests…), the communication block (GET/PUT/TSEND_C/TRCV_C/TCON/MB_CLIENT/Modbus_Master/USS_Drive_Control/USS_Read_Param…), the technology block (PID_Compact/MC_Power/MC_MoveAbsolute/CTRL_HSC_EXT/TIO_DI…), and the extended block (T_COMP/RD_SYS_T/LEN/CONCAT/RDREC/PE_CMD/Program_Alarm/GET_DIAG…); for the common LAD primitives (Contact/Coil/Compare/Move/Timer/Counter) prefer the typed ops which emit the wired form; the generator fills the FULL correctly-ordered parameter list, the default pragma (e.g. T_COMP -> S7_Relation, string funcs -> S7_GenerateENO), the single-line form for 1-param calls, and the string lead-blank — all from the verified signature; you supply only bindings[{name, op}] for the wires you want and every other param renders unbound name:=  ; FB instructions need instance (its DB; instance_scope global by default, or local for a multi-instance like Program_Alarm declared in VAR), FC instructions take none; optional pragma overrides the catalog default (e.g. a different S7_Relation mode); prefer instr over call for catalogued instructions — you need not know the signature, only the mnemonic). WIRING RULES for a COMPILABLE instr (machine-verified V21): motion MC_* bind the technology object — Axis:=TO_PositioningAxis, gear/phasing Master+Slave (Slave:=TO_SynchronousAxis), Cam:=TO_Cam, kinematics AxesGroup:=TO_Kinematics, OutputCam/CamTrack/MeasuringInput:=their TO type, PTO axis:=TO_Axis_PTO; MC_WriteParameter/CopyCamData take a generic Axis/Cam:=DB_ANY; comm bind ID:=CONN_OUC (open user comm) or CONN_PRG (GET/PUT), CONNECT:=TCON_IP_v4, GET/PUT need ADDR_1 (a P# remote pointer) + RD_1/SD_1; PID and other LIBRARY single-instance FBs must use a LOCAL multi-instance (declare `name : <FB>` in var and set instance_scope local) — create_instance_db only works for user FBs; never name an interface tag En/A/B/R (reserved — use Ena etc.). A correctly-wired instr block compiles 0 errors and can then also be exported as SimaticML XML. No enum is used for OpenAI compatibility. Only these SD_VERIFIED machine-verified forms are accepted; an unknown instr mnemonic is rejected with the full catalog listing (typed ops already cover TONR/CTD via timer/counter kinds).",
      "properties": {
       "args": {
        "items": {
@@ -234,7 +229,6 @@
     },
     "network": {
      "additionalProperties": false,
-     "description": "A network has one of two forms. rungs[] supplies explicit ladder elements. The higher-level contact_coil form supplies coil, optional branches[] for parallel OR legs, and optional contacts[] for series interlocks after the merge; the generator emits the wire# seal-in structure automatically. Example: branches=[{contacts:[{operand:{name:Start}}]},{contacts:[{operand:{name:Motor}}]}], contacts=[{operand:{name:Stop},kind:nc}], coil={operand:{name:Motor}}.",
      "properties": {
       "branches": {
        "items": {
@@ -265,7 +259,6 @@
     },
     "operand": {
      "additionalProperties": false,
-     "description": "A variable or constant. scope is local (renders #name, default), global (renders the verbatim quoted/dotted path like \"DB\".Field), constant (renders the bare constant_value like T#5S or 100), or wire (renders wire#name, a WIRE branch reference used by TONR reset / counter inputs). A bare string is also accepted and treated as a local variable.",
      "properties": {
       "constant_value": {
        "type": "string"
@@ -296,7 +289,6 @@
     },
     "rung": {
      "additionalProperties": false,
-     "description": "wire_in defaults to powerrail. Set wire_out to close the rung as END_RUNG wire#<name>, forming a single-layer OR/seal-in with another rung that emits a `wire` element of the same name.",
      "properties": {
       "elements": {
        "items": {
@@ -323,20 +315,16 @@
      "additionalProperties": false,
      "properties": {
       "block_name": {
-       "description": "Target block name, for example FB_SD_Demo.",
        "type": "string"
       },
       "block_number": {
-       "description": "Optional fixed block number.",
        "type": "integer"
       },
       "block_type": {
-       "description": "FB, FC, or OB. Defaults to FB.",
        "type": "string"
       },
       "interface": {
        "additionalProperties": false,
-       "description": "Block interface. Sections emit in fixed order input/output/inout/var/var_retain/temp/constant; only non-empty sections are written. IEC instance types (TON_TIME/TP_TIME/TOF_TIME/CTU_INT/CTUD_INT) auto-get a { S7_Setpoint := \"False\" } pragma; counter instances (CTU_INT/CTUD_INT) must live in var_retain.",
        "properties": {
         "constant": {
          "items": {
@@ -384,26 +372,21 @@
        "type": "object"
       },
       "networks": {
-       "description": "SD networks. The MVP emits the single-line { S7_Language := \"LAD\" } pragma; a network title is accepted but IGNORED with a warning (the MVP does not write the .s7res entry a title needs). Each network has rungs[] or the contact_coil form.",
        "items": {
         "$ref": "#/$defs/network"
        },
        "type": "array"
       },
       "optimized": {
-       "description": "S7_Optimized header flag. Defaults to true.",
        "type": "boolean"
       },
       "preferred_language": {
-       "description": "S7_PreferredLanguage header value. Defaults to LAD.",
        "type": "string"
       },
       "schema_version": {
-       "description": "TIA schema version. SIMATIC SD is V20/V21-only; V16-V19 are rejected with guidance to use tia_lad_generate_block_xml, and V15 is unsupported. Omitted defaults to the project's openness_version (plc-code.project.json).",
        "type": "string"
       },
       "version": {
-       "description": "S7_Version header value. Defaults to 0.1.",
        "type": "string"
       }
      },
@@ -421,11 +404,6 @@
     "plan"
    ],
    "type": "object"
-  },
-  "name": "tia_sd_generate_block",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "b97ddb65d4ea1a18dba597e01828476209bf4481e281fbb4121d55528d7de0b9",
- "name": "tia_sd_generate_block",
- "schemaHash": "f39615359a5d9346da4ec3d58dca93cf17f6ed906b7fc5dc97e590490c52a2d5"
+  }
+ }
 }

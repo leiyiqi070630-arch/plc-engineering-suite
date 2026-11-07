@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "ALIAS — call codesys_lad_generate_native instead; legacy/diagnostic use only. Compose multiple installed LD/FBD instructions into one InoProShop native LAD POU across one or more networks, then compile once and return atomic readback evidence. Full contract: see codesys_lad_generate_native (same bridge op; one call = one POU, all networks in one array, same-name fails destination_exists, trust data.acceptanceVerdict). The variables array accepts IEC PRIMITIVE types only (BOOL/WORD/TIME...) — NEVER declare FB instances (SR/BLINK/TON...) there; the generator auto-declares instances from the instruction/instance fields.",
+  "name": "inoproshop_lad_native_generate_instruction_batch",
+  "description": "Generates LAD instruction batch from a structured plan. Inputs: confirm, disposable, name, networks, parent, pouName, symbolTypes, variables. Required: name, networks, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -33,7 +35,6 @@
             "minLength": 1,
             "type": "string"
            },
-           "description": "Exact live port names mapped to IEC literal or symbol text. Native writers also accept conservative qualified symbols (GVL.Member or Application.GVL.Member).",
            "type": "object"
           },
           "inputs": {
@@ -41,7 +42,6 @@
             "minLength": 1,
             "type": "string"
            },
-           "description": "Exact live port names mapped to IEC literal or symbol text. Native writers also accept conservative qualified symbols (GVL.Member or Application.GVL.Member).",
            "type": "object"
           },
           "instance": {
@@ -65,7 +65,6 @@
             "minLength": 1,
             "type": "string"
            },
-           "description": "Exact live port names mapped to IEC literal or symbol text. Native writers also accept conservative qualified symbols (GVL.Member or Application.GVL.Member).",
            "type": "object"
           },
           "symbolTypes": {
@@ -73,7 +72,6 @@
             "minLength": 1,
             "type": "string"
            },
-           "description": "Optional exact type readback for qualified IEC symbols.",
            "type": "object"
           }
          },
@@ -115,7 +113,6 @@
       "minLength": 1,
       "type": "string"
      },
-     "description": "Optional exact type readback for qualified IEC symbols.",
      "type": "object"
     },
     "variables": {
@@ -156,11 +153,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "inoproshop_lad_native_generate_instruction_batch",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "d4772617fe38112ef0d049c0ad631d666e64976d0c01780b9b34294c971973e8",
- "name": "inoproshop_lad_native_generate_instruction_batch",
- "schemaHash": "370d8f5c042da5304270be46c195ab9996d87fe9e7f520a032b9f1c2673e16bf"
+  }
+ }
 }

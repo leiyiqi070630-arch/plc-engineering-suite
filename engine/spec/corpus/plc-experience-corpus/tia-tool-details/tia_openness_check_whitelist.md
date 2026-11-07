@@ -1,5 +1,0 @@
-# tia_openness_check_whitelist — extended contract
-
-Reference data moved from the resident card on 2026-09-18. Current schema, diagnostic receipts, user scope and target version take precedence; historical measurements are scoped observations. Read only for an unresolved detail.
-
-Read-only check of whether the PLC Code TIA bridge binary is registered in the Siemens Openness whitelist, per installed TIA version. Reports OK / MISSING per version plus the binary's SHA256 in both base64 (what the registry stores) and hex (what certutil/Get-FileHash print), and how many entries exist for it. Needs no administrator rights and writes nothing. Use it when a TIA tool fails with a whitelist/trust error, or right after the bridge was rebuilt — rebuilding changes the hash and invalidates the registration. Registration APPENDS a new entry, so an existing entry does NOT mean the current build is trusted; only a current-hash match does. Registering is a separate elevated action (register-whitelist).

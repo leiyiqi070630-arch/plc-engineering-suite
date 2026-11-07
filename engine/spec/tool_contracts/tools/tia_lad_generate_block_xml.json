@@ -1,11 +1,12 @@
 {
  "contract": {
-  "description": "Use: Generate and validate one complete LAD (ladder) XML plan, V16-V21; V19+ uses V18 XML.\nWhen: Supply plan plus output_path/output_directory for a file; callee_interfaces for calls; classic CPUs need target_family/block_number.\nAvoid: Invented pins, TEMP timer state or hand-spliced FlgNet. timer static type=TON_TIME; global DB calls need instance.scope=GlobalVariable.\nNext: Review logicSummary; resolve unknown pins with instruction_spec. contact_coil is OR(branches) AND contacts. Import/compile/save only within scope; no output path means no file.",
+  "name": "tia_lad_generate_block_xml",
+  "description": "Generates LAD block XML from a structured plan. Inputs: block_number, output_directory, output_path, plan, plan_json, schema_version, target_family, tia_version. Returns a structured result with status and diagnostics.",
+  "permission": "WorkspaceWrite",
   "inputSchema": {
    "$defs": {
     "boxPort": {
      "additionalProperties": false,
-     "description": "Named {port,operand}; positional {operand} or direct operand fields.",
      "properties": {
       "constant_value": {
        "type": "string"
@@ -30,10 +31,8 @@
     },
     "branch": {
      "additionalProperties": false,
-     "description": "One complete leg inside the leading OR group, not the whole group. A seal-in needs two branch objects: Start and the output's own hold contact.",
      "properties": {
       "branches": {
-       "description": "Nested OR before this leg's contacts. Children repeat this contacts/branches shape. Each OR needs at least 2 legs; runtime validates recursive children.",
        "items": {
         "additionalProperties": true,
         "type": "object"
@@ -53,7 +52,6 @@
      "additionalProperties": false,
      "properties": {
       "kind": {
-       "description": "coil (default), set_coil, reset_coil, negated_coil (assign NOT power). Edge and timer/counter coils unsupported.",
        "type": "string"
       },
       "name": {
@@ -78,7 +76,6 @@
        "type": "string"
       },
       "negated": {
-       "description": "true tests NOT operand; false tests operand. Follow the signal's actual polarity.",
        "type": "boolean"
       },
       "operand": {
@@ -170,7 +167,6 @@
       },
       "direction": {
        "default": "in",
-       "description": "Wire in (default)/out; outputs require explicit out. IN_OUT: in + section=InOut, or callee_interfaces.inout.",
        "type": "string"
       },
       "name": {
@@ -180,7 +176,6 @@
        "$ref": "#/$defs/operand"
       },
       "section": {
-       "description": "Input/Output/InOut; inferred from callee_interfaces.",
        "type": "string"
       }
      },
@@ -211,38 +206,30 @@
     }
    },
    "additionalProperties": false,
-   "description": "Supply plan (complete object, preferred) or plan_json (JSON string). At least one non-empty plan is required.",
    "properties": {
     "block_number": {
-     "description": "Optional top-level alias for plan.block_number. Classic S7-300/400 FB/FC blocks need a fixed number.",
      "type": "integer"
     },
     "output_directory": {
      "type": "string"
     },
     "output_path": {
-     "description": "Set a workspace XML path on the first call when the result will be imported, read back or delivered as a file. Omitted: XML is returned only, no file is created.",
      "type": "string"
     },
     "plan": {
      "additionalProperties": false,
-     "description": "Complete block: block_name, block_type, schema_version, interface, networks. Operands: variable {name,scope?} or constant {constant_value,datatype}, no name needed for constants; scope defaults to LocalVariable. Member comments are accepted but not emitted (warning).",
      "properties": {
       "block": {
        "additionalProperties": true,
-       "description": "Legacy wrapper accepted for compatibility: block.name/block.type/block.number or block.autoNumber.",
        "type": "object"
       },
       "block_name": {
-       "description": "Target OB/FB/FC block name, for example Main or FB_Motor.",
        "type": "string"
       },
       "block_number": {
-       "description": "Fixed block number; required for S7-300/400, optional for optimized targets.",
        "type": "integer"
       },
       "block_type": {
-       "description": "OB (ProgramCycle only), FB or FC. OB: Temp/Constant only.",
        "type": "string"
       },
       "callee_interfaces": {
@@ -270,20 +257,16 @@
         },
         "type": "object"
        },
-       "description": "Map call_name -> {input,output,inout:[{name,datatype}]}; infers Section/Type and checks members. Reuse known interfaces; export an existing callee only if unknown.",
        "type": "object"
       },
       "comment": {
-       "description": "Accepted, not emitted (warning). Use networks[].comment or write_object_attributes on the real block.",
        "type": "string"
       },
       "culture": {
-       "description": "Network text language; default zh-CN. Must exist in target project or import fails.",
        "type": "string"
       },
       "interface": {
        "additionalProperties": false,
-       "description": "PLC block interface. Canonical keys are input/output/inout/static_members/temp/constant. Legacy inputs/outputs/static are also accepted and normalized.",
        "properties": {
         "constant": {
          "items": {
@@ -325,7 +308,6 @@
        "type": "object"
       },
       "networks": {
-       "description": "contact_coil: branches -> contacts -> coil. fb_call/move/instruction_box: optional enable. timer: TON/TOF/TP/TONR. chain: ordered boxes. Legacy elements normalize to contact_coil.",
        "items": {
         "additionalProperties": false,
         "properties": {
@@ -333,21 +315,18 @@
           "type": "string"
          },
          "box_inputs": {
-          "description": "Use {port,operand} for named pins, or operands in the instruction's DATA pin order. en uses enable. Query instruction_spec when the needed pin order is unknown.",
           "items": {
            "$ref": "#/$defs/boxPort"
           },
           "type": "array"
          },
          "box_outputs": {
-          "description": "Use {port,operand} for named pins or positional operands. CTU positional #0 is Q; port CV selects CV. Outputs require writable variables.",
           "items": {
            "$ref": "#/$defs/boxPort"
           },
           "type": "array"
          },
          "branches": {
-          "description": "Leading OR group, at least 2 legs. Three alternative paths require three branch objects; top-level contacts do not add another parallel path.",
           "items": {
            "$ref": "#/$defs/branch"
           },
@@ -363,7 +342,6 @@
           "type": "string"
          },
          "contacts": {
-          "description": "AND after branches: (OR of branch legs) AND every contact here. Put common permissives here; each independent start/hold/jog path belongs in branches. Choose negation from signal meaning.",
           "items": {
            "$ref": "#/$defs/contact"
           },
@@ -382,14 +360,12 @@
           "$ref": "#/$defs/operand"
          },
          "equation": {
-          "description": "Required for Calc: formula using IN1..INn, e.g. (IN1-IN2)/IN3.",
           "type": "string"
          },
          "et": {
           "$ref": "#/$defs/operand"
          },
          "fanout": {
-          "description": "chain: last stage's power-out (or enable with no stages) drives every sink on one wire. Sink: coil {operand,mode?} or box {part_name,box_inputs?,box_outputs?}.",
           "items": {
            "additionalProperties": true,
            "type": "object"
@@ -407,8 +383,7 @@
           "type": "array"
          },
          "instance": {
-          "$ref": "#/$defs/instance",
-          "description": "Required for FB instructions. Two legal homes: {name} (scope LocalVariable default; an FB plan auto-declares the missing Static member) or {name, scope:\"GlobalVariable\"} backed by a real single-instance DB."
+          "$ref": "#/$defs/instance"
          },
          "open_outputs": {
           "items": {
@@ -450,7 +425,6 @@
           "$ref": "#/$defs/operand"
          },
          "stages": {
-          "description": "chain: ordered {part_name,box_inputs?,box_outputs?,version?} boxes, each with power-in/out. Stage k's power-out feeds stage k+1's power-in; each has independent data wiring. Pin shapes match instruction_box.",
           "items": {
            "additionalProperties": true,
            "type": "object"
@@ -470,7 +444,6 @@
           "type": "string"
          },
          "type": {
-          "description": "contact_coil, fb_call, move, timer, instruction_box or chain.",
           "type": "string"
          },
          "version": {
@@ -491,15 +464,12 @@
        "type": "string"
       },
       "schema_version": {
-       "description": "V16-V21; V16-V18 native XML, V19-V21 V18-format XML. Omitted follows project/live target, else V18. V15 requires real exported V15 XML.",
        "type": "string"
       },
       "target_family": {
-       "description": "S7-300/400 require classic XML attributes and explicit block_number; S7-1200/1500 use optimized XML (default). Pass the actual CPU family.",
        "type": "string"
       },
       "title": {
-       "description": "Accepted, not emitted (warning). Use networks[].title or write_object_attributes on the real block.",
        "type": "string"
       }
      },
@@ -510,14 +480,12 @@
      "type": "object"
     },
     "plan_json": {
-     "description": "Stringified fallback of plan. Prefer the plan object form: stringified JSON double-encodes and truncates on long plans.",
      "type": "string"
     },
     "schema_version": {
      "type": "string"
     },
     "target_family": {
-     "description": "Optional top-level alias for plan.target_family. Accepts S7-300, S7-400, S7-1200, or S7-1500; useful when target metadata is supplied beside tia_version.",
      "type": "string"
     },
     "tia_version": {
@@ -525,11 +493,6 @@
     }
    },
    "type": "object"
-  },
-  "name": "tia_lad_generate_block_xml",
-  "permission": "WorkspaceWrite"
- },
- "contractHash": "0e273628c96e0d5b04bb7a0e14a06b8530a74c30d590616a904cdfaf41ce5fa9",
- "name": "tia_lad_generate_block_xml",
- "schemaHash": "27a957a2fae77d74cb9740810b1bbf002ad73fab4b18591c9cb37bf98947bbe4"
+  }
+ }
 }

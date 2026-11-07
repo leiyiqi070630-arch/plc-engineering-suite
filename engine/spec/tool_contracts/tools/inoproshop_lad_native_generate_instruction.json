@@ -1,6 +1,8 @@
 {
  "contract": {
-  "description": "ALIAS — call codesys_lad_generate_native instead; legacy/diagnostic use only. InoProShop native alias for direct NWL Network/Box/Operand instruction generation with export, save and compile evidence.",
+  "name": "inoproshop_lad_native_generate_instruction",
+  "description": "Generates LAD instruction from a structured plan. Inputs: confirm, disposable, instruction. Required: instruction, confirm, disposable. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {
@@ -23,11 +25,6 @@
     "disposable"
    ],
    "type": "object"
-  },
-  "name": "inoproshop_lad_native_generate_instruction",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "a278f190ebc198402c94991b6f00734fa1e33f4c17e2e51a5cd7d3e630d35ef2",
- "name": "inoproshop_lad_native_generate_instruction",
- "schemaHash": "b7326cac70835ff1e8bfe3248cba76a397324cbf9ad01b6f6181554782dc1295"
+  }
+ }
 }

@@ -1,15 +1,12 @@
 {
  "contract": {
-  "description": "Run the active application's code-generation pass and return diagnostics.",
+  "name": "codesys_build_generate_code",
+  "description": "Generates build code from a structured plan. Returns a structured result with status and diagnostics.",
+  "permission": "DangerFullAccess",
   "inputSchema": {
    "additionalProperties": false,
    "properties": {},
    "type": "object"
-  },
-  "name": "codesys_build_generate_code",
-  "permission": "DangerFullAccess"
- },
- "contractHash": "363c33e182acff41a001ae8a177652982f0de2b418326a102b4f849aed767be5",
- "name": "codesys_build_generate_code",
- "schemaHash": "99334726611ccf58a148b0814696bfa6fe08c1b2d027e946beccf5a74331c9aa"
+  }
+ }
 }
