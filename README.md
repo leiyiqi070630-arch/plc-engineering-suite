@@ -20,13 +20,19 @@ PLC Engineering Suite 是一套面向工业自动化工程场景的 AI 辅助工
 
 ## 项目结构与系统架构
 
+> 以下两张图按当前 `main` 分支重新梳理，版本基线为 **2.1.20**。图示区分桌面端、Rust 引擎、本地模型网关、工程软件适配器与工业协议层；仓库结构同时标出了源码目录、工具契约、知识语料及发行包资源边界。
+
 ### 系统架构
 
-![PLC Engineering Suite 系统架构图](docs/images/system-architecture.svg)
+![PLC Engineering Suite 2.1.20 系统架构图](docs/images/system-architecture.svg)
+
+桌面端负责交互、会话与工程工作区治理；Rust Agent 负责任务规划和工具编排；工具层按“声明—校验—执行—路由”组织；本地模型网关独立处理模型协议与密钥。工程写入先进入 staging，经过漂移检查和人工确认后才提升到真实工程。
 
 ### 仓库结构
 
-![PLC Engineering Suite 仓库结构图](docs/images/repository-structure.svg)
+![PLC Engineering Suite 2.1.20 仓库结构图](docs/images/repository-structure.svg)
+
+仓库由 `desktop/`、`engine/`、`model-gateway/` 和项目文档组成。Rust workspace 包含 9 个 crate；工具契约与知识语料分别维护。部分执行器、厂商桥和运行时二进制需要在打包前准备，不应把源码克隆等同于完整发行环境。
 
 ---
 
