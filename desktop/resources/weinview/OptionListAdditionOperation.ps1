@@ -28,7 +28,7 @@ function Assert-WeinviewOptionListInputs($Object,[int]$CanvasWidth,[int]$CanvasH
 # The ordinary Mapping rows and the dedicated last error row stay separate.
 function Read-WeinviewOptionListFields($Native,$Property,[long]$DialogHwnd,[string]$DialogTitle) {
  if($null -eq $Native -or $null -eq $Property -or !$DialogHwnd -or !$DialogTitle){throw 'Owned Option List property context required.'}
- if(!('PLCCode.Weinview.OptionListGridControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'OptionListGridControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ if(!('PLC Engineering Suite.Weinview.OptionListGridControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'OptionListGridControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
  $dialogs=@($Native.EnumTopWindows()|Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Class -ceq '#32770' -and $_.Visible -and $_.Enabled -and $_.Title -ceq $DialogTitle})
  if($dialogs.Count -ne 1){throw 'Exact owned Option List property dialog required.'}
  $tab=$Native.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')
@@ -38,8 +38,8 @@ function Read-WeinviewOptionListFields($Native,$Property,[long]$DialogHwnd,[stri
  $nativeMode=$Property.ComboSelected($modeControl.Hwnd)
  $mode=switch -CaseSensitive ($nativeMode){'清单'{'list'} '下拉式选单'{'dropdown'} default{throw 'Native Option List mode unsupported.'}}
  $device=$Property.ComboSelected(($Native.FindUniqueControlWithoutLabel($DialogHwnd,1646,'ComboBox')).Hwnd)
- if(!('PLCCode.Weinview.NumericAddressTypeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NumericAddressTypeControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
- $typeReader=[PLCCode.Weinview.NumericAddressTypeControls]::new($Native,$DialogTitle)
+ if(!('PLC Engineering Suite.Weinview.NumericAddressTypeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NumericAddressTypeControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ $typeReader=[PLC Engineering Suite.Weinview.NumericAddressTypeControls]::new($Native,$DialogTitle)
  $foundTypes=@();foreach($qt in @($Native.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$snapshot=$typeReader.Inspect($DialogHwnd,$qt.Hwnd,'LW');if($snapshot){$foundTypes+=$snapshot}}
  if($foundTypes.Count -ne 1){throw 'Unique native Option List LW address-type selector required.'}
  $addressText=$Native.GetControlText(($Native.FindUniqueControlWithoutLabel($DialogHwnd,2510,'Edit')).Hwnd,64)
@@ -47,9 +47,9 @@ function Read-WeinviewOptionListFields($Native,$Property,[long]$DialogHwnd,[stri
  $dataType=$Native.GetControlText(($Native.FindUniqueControlWithoutLabel($DialogHwnd,1342,'Static')).Hwnd,128)
  if($dataType -cne '16-bit Unsigned'){throw 'Current Option List data type outside observed profile.'}
  $Property.SelectTabExact($tab.Hwnd,'源数据')
- $itemCount=([PLCCode.Weinview.OptionListGridControls]::new($Native)).ReadPredefinedItemCount($DialogHwnd,$DialogTitle)
+ $itemCount=([PLC Engineering Suite.Weinview.OptionListGridControls]::new($Native)).ReadPredefinedItemCount($DialogHwnd,$DialogTitle)
  $Property.SelectTabExact($tab.Hwnd,'状态设置')
- $mapping=([PLCCode.Weinview.OptionListGridControls]::new($Native)).ReadRows($DialogHwnd,$DialogTitle)
+ $mapping=([PLC Engineering Suite.Weinview.OptionListGridControls]::new($Native)).ReadRows($DialogHwnd,$DialogTitle)
  $items=@();$normal=@($mapping.rows|Where-Object {-not $_.error})
  if($itemCount -ne $normal.Count){throw 'Option List native predefined item count differs from ordinary mapping rows.'}
  foreach($row in $normal){$value=0;if(![int]::TryParse([string]$row.value,[ref]$value) -or $value -lt 0 -or $value -gt 65535){throw 'Actual Option List mapped value outside unsigned16.'};$items+=[pscustomobject]@{text=[string]$row.text;value=$value}}
@@ -59,10 +59,10 @@ function Read-WeinviewOptionListFields($Native,$Property,[long]$DialogHwnd,[stri
 # Applies an ordinary mapping row through the native grid editor. Switching tabs
 # is the observed commit gesture.
 function Set-WeinviewOptionListMappingCell($Native,$Property,[long]$DialogHwnd,[string]$DialogTitle,[int]$Index,[ValidateSet('value','text')][string]$Field,[string]$ExpectedBefore,[string]$Replacement) {
- if(!('PLCCode.Weinview.OptionListGridControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'OptionListGridControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ if(!('PLC Engineering Suite.Weinview.OptionListGridControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'OptionListGridControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
  $tab=$Native.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')
  $Property.SelectTabExact($tab.Hwnd,'状态设置')
- $grid=[PLCCode.Weinview.OptionListGridControls]::new($Native)
+ $grid=[PLC Engineering Suite.Weinview.OptionListGridControls]::new($Native)
  $column=if($Field -ceq 'value'){2}else{3}
  $editor=$grid.BeginCellEdit($DialogHwnd,$DialogTitle,$Index,$column,$ExpectedBefore)
  $grid.ReplaceEditorText($DialogHwnd,$editor,$Replacement)
@@ -78,7 +78,7 @@ function Set-WeinviewOptionListMappingCell($Native,$Property,[long]$DialogHwnd,[
 function Restore-WeinviewOptionListErrorText($Native,$Property,[long]$DialogHwnd,[string]$DialogTitle,[int]$Index,[string]$ExpectedBefore,[string]$Replacement) {
  $tab=$Native.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')
  $Property.SelectTabExact($tab.Hwnd,'状态设置')
- $grid=[PLCCode.Weinview.OptionListGridControls]::new($Native)
+ $grid=[PLC Engineering Suite.Weinview.OptionListGridControls]::new($Native)
  $editor=$grid.BeginErrorTextEdit($DialogHwnd,$DialogTitle,$Index,$ExpectedBefore)
  $grid.ReplaceEditorText($DialogHwnd,$editor,$Replacement)
  $Property.SelectTabExact($tab.Hwnd,'项目选单')
@@ -106,7 +106,7 @@ function Set-WeinviewOptionListFields($Native,$Property,[long]$DialogHwnd,[strin
  if($Native.GetControlText($addressControl.Hwnd,64) -cne [string]$Wanted.address){throw 'Option List address native readback differs.'}
  if($requested.Count -ne @($before.options).Count){
   $Property.SelectTabExact($tab.Hwnd,'源数据')
-  $grid=[PLCCode.Weinview.OptionListGridControls]::new($Native)
+  $grid=[PLC Engineering Suite.Weinview.OptionListGridControls]::new($Native)
   $null=$grid.SelectPredefinedItemCount($DialogHwnd,$DialogTitle,@($before.options).Count,$requested.Count)
  }
  $working=Read-WeinviewOptionListFields $Native $Property $DialogHwnd $DialogTitle
@@ -137,8 +137,8 @@ function Initialize-WeinviewNewOptionListBinding($Native,$Property,[long]$Dialog
  $device=$Native.FindUniqueControlWithoutLabel($DialogHwnd,1646,'ComboBox')
  if($Property.ComboSelected($device.Hwnd) -cne 'Local HMI'){$Property.SelectComboExact($device.Hwnd,'Local HMI')}
  if($Property.ComboSelected($device.Hwnd) -cne 'Local HMI'){throw 'Local HMI native selection differs.'}
- if(!('PLCCode.Weinview.NumericAddressTypeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NumericAddressTypeControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
- $reader=[PLCCode.Weinview.NumericAddressTypeControls]::new($Native,$title)
+ if(!('PLC Engineering Suite.Weinview.NumericAddressTypeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NumericAddressTypeControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ $reader=[PLC Engineering Suite.Weinview.NumericAddressTypeControls]::new($Native,$title)
  $found=@();foreach($qt in @($Native.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$value=$reader.Inspect($DialogHwnd,$qt.Hwnd,'LW');if($value){$found+=$value}}
  if($found.Count -ne 1){throw 'Unique native new Option List LW selector required.'}
  if($found[0].Value -cne 'LW'){$selected=$reader.SelectExact($DialogHwnd,$found[0].Hwnd,$found[0].Value,'LW',(Join-Path $PSScriptRoot 'QtElementBridge.exe'));if($selected.Value -cne 'LW'){throw 'Option List native LW selection differs.'}}
@@ -168,9 +168,9 @@ function Invoke-WeinviewOptionListAddition($Session,[ValidateSet('Apply')][strin
  $prefix=$Session.output_path+'.option-list-'+[guid]::NewGuid().ToString('N')
  $before=Read-WeinviewAdditionSnapshot $Session $SourceSha256 ($prefix+'.before') $BridgeRoot @()
  if($BeforeSnapshot){Assert-WeinviewAdditionSnapshots $BeforeSnapshot $before 0}
- $n=$Session.native;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
- $sem=[PLCCode.Weinview.NativeSemanticControls]::new($n)
- $scene=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
+ $n=$Session.native;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $sem=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($n)
+ $scene=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
  $oldIds=@($before.directory.rows|ForEach-Object {$_.object_id})
  $journalPath=$prefix+'.creation.json';$journal=[ordered]@{phase='entry';requested=$wanted;entry=$null;dialog=$null;configuration=$null;placement=$null;object_id=$null;confirmed=$false;saved=$false}
  try{

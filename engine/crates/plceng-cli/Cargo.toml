@@ -1,8 +1,9 @@
 [package]
-name = "plccode-engine"
+name = "plceng-cli"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 publish.workspace = true
 
 [dependencies]
+plceng-engine = { path = "../plceng-engine" }

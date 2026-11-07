@@ -15,22 +15,22 @@ function Invoke-WeinviewNativeWindowCopy($Session,$Arguments,[string]$ExpectedPr
  try {
   $null=$Session.native.ActivateOwnedMain($Session.main.Hwnd)
   if(@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'}).Count){throw 'Unexpected modal before native window-copy entry.'}
-  $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($Session.native)
+  $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($Session.native)
   $proof=$semantic.CaptureRibbon($Session.main.Hwnd,($EvidencePrefix+'.entry.png'))
-  $items=@([PLCCode.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,[NullString]::Value))
+  $items=@([PLC Engineering Suite.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,[NullString]::Value))
   $matches=@($items|Where-Object {$_.name -ceq '窗口复制' -and $_.action -and !($_.state -band 1)})
   if($matches.Count -gt 1){throw 'Ambiguous exact original Window Copy ribbon command.'}
-  if($matches.Count -eq 1){$null=[PLCCode.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,'窗口复制')}
+  if($matches.Count -eq 1){$null=[PLC Engineering Suite.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,'窗口复制')}
   else{
    $tabs=@($items|Where-Object {$_.name -ceq '常用' -and $_.action -and !($_.state -band 1)})
    if($tabs.Count -gt 1){throw 'Ambiguous exact native Home ribbon tab.'}
-   if($tabs.Count -eq 1){$null=[PLCCode.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,'常用')}
+   if($tabs.Count -eq 1){$null=[PLC Engineering Suite.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,'常用')}
    else{$null=Invoke-WeinviewWindowRibbonOcr $Session $semantic '常用'}
    Start-Sleep -Milliseconds 400
-   $homeItems=@([PLCCode.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,[NullString]::Value))
+   $homeItems=@([PLC Engineering Suite.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,[NullString]::Value))
    $homeMatches=@($homeItems|Where-Object {$_.name -ceq '窗口复制' -and $_.action -and !($_.state -band 1)})
    if($homeMatches.Count -gt 1){throw 'Ambiguous exact original Window Copy ribbon command after Home selection.'}
-   if($homeMatches.Count -eq 1){$null=[PLCCode.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,'窗口复制')}
+   if($homeMatches.Count -eq 1){$null=[PLC Engineering Suite.Weinview.WindowRibbonSemantic]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,'窗口复制')}
    else{$null=Invoke-WeinviewWindowRibbonOcr $Session $semantic '窗口复制'}
   }
   $dialog=WaitFor {$matches=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq '#32770' -and $_.Title -ceq '窗口复制'});if($matches.Count -gt 1){throw 'Native window-copy dialog ambiguous.'};if($matches.Count -eq 1){return $matches[0]}} 8

@@ -55,7 +55,7 @@ The V21 Readme documents three changes:
 2. **Path migration**: from `...\Portal V20\PublicAPI\V20\` to `...\Portal V21\PublicAPI\V21\net48\`.
 3. **Hard incompatibility (must recompile)**: applications/Add-Ins targeting V21 **must be rebuilt for V21**, otherwise they will not run from V21 on; conversely, an application built for V21+ will not run against any earlier version.
 
-> Meaning for PLC Code: to support V21, the bridge cannot reuse V20's assembly references and app.config — the token, the path, and the assembly split all change. When building the V21 bridge, identify the specific domain assembly that provides block import/export.
+> Meaning for PLC Engineering Suite: to support V21, the bridge cannot reuse V20's assembly references and app.config — the token, the path, and the assembly split all change. When building the V21 bridge, identify the specific domain assembly that provides block import/export.
 
 ## Sources
 

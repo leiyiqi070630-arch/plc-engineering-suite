@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Accessibility;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
   // Raw MSAA evidence for the CN421 Enhanced Security table. A Qt table cell's
   // FOCUSED bit is not the value of the check box painted inside that cell.
   public static class ProjectSecurityTableControls {

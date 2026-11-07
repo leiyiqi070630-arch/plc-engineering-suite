@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  // Navigate the owned MFC grid with its keyboard row commands. The caller
  // verifies the resulting label name in the native Text property dialog.
  public static class LabelGridControls {

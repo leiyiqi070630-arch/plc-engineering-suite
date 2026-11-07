@@ -1,4 +1,4 @@
-# PLC Code Desktop
+# PLC Engineering Suite Desktop
 
 工业 PLC 编程智能套件的桌面端（Electron 43 / React 19）。
 负责界面、会话、工作区治理、模型接入，以及把意图编排给引擎执行。
@@ -31,7 +31,7 @@
 └───────────────┬──────────────────────────────┘
                 │ JSON-Lines over stdio
                 ▼
-        plccode-engine（Rust agent）
+        plceng-engine（Rust agent）
 ```
 
 **核心设计**：桌面端不实现 PLC 逻辑，只做编排与治理。所有工程写操作先落到 staging 影子副本，
@@ -97,7 +97,7 @@ OK   main: 残留混淆调用: 0
 主进程按 `process.resourcesPath` 定位引擎；开发态用环境变量指定即可：
 
 ```powershell
-$env:PLC_CODE_ENGINE_PATH              = "<...>\plccode-engine.exe"
+$env:PLC_CODE_ENGINE_PATH              = "<...>\plceng-engine.exe"
 $env:PLC_CODE_TIA_OPENNESS_BRIDGE_EXE  = "<...>\TiaOpennessBridge.exe"
 & "<electron>\electron.exe" . --no-sandbox
 ```
@@ -105,7 +105,7 @@ $env:PLC_CODE_TIA_OPENNESS_BRIDGE_EXE  = "<...>\TiaOpennessBridge.exe"
 正常日志：
 
 ```
-[main] engine resolved: path=...\plccode-engine.exe packaged=false bridgeExe=...\TiaOpennessBridge.exe
+[main] engine resolved: path=...\plceng-engine.exe packaged=false bridgeExe=...\TiaOpennessBridge.exe
 [main] credential injection: hasToken=true tokenTail=... server=http://127.0.0.1:<port>
 [engine stderr] [knowledge] source=embedded files=771 bytes=15710204
 [engine stderr] windows-computer-use MCP server 0.1.3 ready

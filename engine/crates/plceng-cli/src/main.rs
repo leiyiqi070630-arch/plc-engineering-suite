@@ -21,5 +21,5 @@ pub mod session_store;
 pub mod status_diagnostics;
 
 fn main() {
-    std::process::exit(plccode_engine::run());
+    std::process::exit(plceng_engine::run());
 }

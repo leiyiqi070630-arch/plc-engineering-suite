@@ -8,7 +8,7 @@
 use std::io::{self, BufRead, Write};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub const NAME: &str = "plccode-engine";
+pub const NAME: &str = "plceng-engine";
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// 已注册的工具（名, 权限）。权限：r = 只读，w = 仅工作区，d = 可写真实工程。
@@ -48,16 +48,16 @@ const TOOLS: &[(&str, &str)] = &[
 ];
 
 const HELP: &str = "\
-PLC Code Engine — industrial PLC agent engine
+PLC Engineering Suite Engine — industrial PLC agent engine
 
 Usage:
-  plccode-engine [flags] prompt TEXT      run one prompt and exit
-  plccode-engine bridge                   JSON-Lines session over stdio
-  plccode-engine status                   workspace snapshot (JSON)
-  plccode-engine tools                    list registered tools
-  plccode-engine system-prompt            print the built-in system prompt
-  plccode-engine --version | -V           print version
-  plccode-engine --help | -h              print this help
+  plceng-engine [flags] prompt TEXT      run one prompt and exit
+  plceng-engine bridge                   JSON-Lines session over stdio
+  plceng-engine status                   workspace snapshot (JSON)
+  plceng-engine tools                    list registered tools
+  plceng-engine system-prompt            print the built-in system prompt
+  plceng-engine --version | -V           print version
+  plceng-engine --help | -h              print this help
 
 Flags:
   --model MODEL                override the active model
@@ -68,7 +68,7 @@ Flags:
 
 fn system_prompt() -> &'static str {
     "\
-You are PLC Code — an industrial control engineer. You design, generate, inspect and repair
+You are PLC Engineering Suite — an industrial control engineer. You design, generate, inspect and repair
 real PLC programs for Siemens TIA Portal, Mitsubishi GX Works, Inovance InoProShop/CODESYS,
 AutoShop and Weinview EasyBuilder.
 

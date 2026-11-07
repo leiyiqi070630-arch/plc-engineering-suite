@@ -4,7 +4,7 @@
 function Find-WeinviewProjectAccountTable($Session,$Page) {
  $table=@()
  foreach($qt in @($Session.native.EnumChildControls($Page.dialog.Hwnd)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq 'Qt5QWindowIcon'})){
-  try {if(@([PLCCode.Weinview.ProjectSecurityTableControls]::Headers($qt.Hwnd,$Session.process.Id)).Count -eq 16){$table+=,$qt}}
+  try {if(@([PLC Engineering Suite.Weinview.ProjectSecurityTableControls]::Headers($qt.Hwnd,$Session.process.Id)).Count -eq 16){$table+=,$qt}}
   catch {continue}
  }
  if($table.Count -ne 1){throw 'Unique native engineering account table required.'}
@@ -13,20 +13,20 @@ function Find-WeinviewProjectAccountTable($Session,$Page) {
 
 function Read-WeinviewProjectAccountsNonSecret($Session) {
  . (Join-Path $PSScriptRoot 'ProjectSecurityOperation.ps1')
- if(!('PLCCode.Weinview.ProjectSecurityTableControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityTableControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
- if(!('PLCCode.Weinview.ProjectSecurityAccountControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityAccountControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll','System.Drawing.dll','System.Windows.Forms.dll'}
+ if(!('PLC Engineering Suite.Weinview.ProjectSecurityTableControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityTableControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ if(!('PLC Engineering Suite.Weinview.ProjectSecurityAccountControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityAccountControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll','System.Drawing.dll','System.Windows.Forms.dll'}
  $page=$null
  try {
   $page=Open-WeinviewProjectSecurityPage $Session
   $table=Find-WeinviewProjectAccountTable $Session $page;$hwnd=[long]$table.Hwnd;$accountPid=[int]$Session.process.Id
   $rows=@(foreach($row in 0..10){
    $enabled='unknown';$name='unknown';$nameSource='unavailable';$nameVerified=$false;$classes='unknown';$readErrors=@{}
-   try {$enabled=[PLCCode.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$row,0)} catch {$readErrors.enabled=$_.Exception.Message}
-   try {$name=[PLCCode.Weinview.ProjectSecurityAccountControls]::ReadUserName($hwnd,$accountPid,$row);$nameSource='native_accessibility_value';$nameVerified=$true} catch {$readErrors.native_user_name=$_.Exception.Message}
+   try {$enabled=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$row,0)} catch {$readErrors.enabled=$_.Exception.Message}
+   try {$name=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadUserName($hwnd,$accountPid,$row);$nameSource='native_accessibility_value';$nameVerified=$true} catch {$readErrors.native_user_name=$_.Exception.Message}
    if(!$nameVerified -and $enabled -ne $false){
-    try {$name=[PLCCode.Weinview.ProjectSecurityAccountControls]::ReadStoredUserNameViaEditor($hwnd,$accountPid,$row);$nameSource='saved_project_inline_editor_copy';$nameVerified=$true} catch {$readErrors.inline_user_name=$_.Exception.Message}
+    try {$name=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadStoredUserNameViaEditor($hwnd,$accountPid,$row);$nameSource='saved_project_inline_editor_copy';$nameVerified=$true} catch {$readErrors.inline_user_name=$_.Exception.Message}
    }
-   try {$observed=@(foreach($i in 0..11){if([PLCCode.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$row,4+$i)){[string][char]([int][char]'A'+$i)}});$classes=$observed} catch {$readErrors.classes=$_.Exception.Message}
+   try {$observed=@(foreach($i in 0..11){if([PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$row,4+$i)){[string][char]([int][char]'A'+$i)}});$classes=$observed} catch {$readErrors.classes=$_.Exception.Message}
    # Qt paints the user name even for disabled rows but exports no accValue.
    # A read must not toggle any other engineering accounts to seek a value.
    @{row=$row;row_enabled=$enabled;user_name=$name;user_name_source=$nameSource;user_name_readback_verified=$nameVerified;classes=$classes;password_column_queried=$false;read_errors=$readErrors}
@@ -51,8 +51,8 @@ function Read-WeinviewProjectAccountNonSecret($Session,[int]$Row) {
 function Read-WeinviewStoredProjectAccountUserNameFromEditor($Session,[int]$Row) {
  if($Row -lt 0 -or $Row -ge 11){throw 'Engineering account row must be 0 through 10.'}
  . (Join-Path $PSScriptRoot 'ProjectSecurityOperation.ps1')
- if(!('PLCCode.Weinview.ProjectSecurityTableControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityTableControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
- if(!('PLCCode.Weinview.ProjectSecurityAccountControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityAccountControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll','System.Drawing.dll','System.Windows.Forms.dll'}
+ if(!('PLC Engineering Suite.Weinview.ProjectSecurityTableControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityTableControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ if(!('PLC Engineering Suite.Weinview.ProjectSecurityAccountControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityAccountControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll','System.Drawing.dll','System.Windows.Forms.dll'}
  $page=$null
  try {
   $page=Open-WeinviewProjectSecurityPage $Session
@@ -63,7 +63,7 @@ function Read-WeinviewStoredProjectAccountUserNameFromEditor($Session,[int]$Row)
   # Reading the existing name does not change row enablement. The painted
   # checkbox is not a prerequisite for opening the exact name cell, and its
   # pixel read can fail independently of the native editor/clipboard read.
-  $name=[PLCCode.Weinview.ProjectSecurityAccountControls]::ReadStoredUserNameViaEditor($hwnd,$accountPid,$Row)
+  $name=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadStoredUserNameViaEditor($hwnd,$accountPid,$Row)
   return @{operation='engineering_project_account_stored_name_probe';row=$Row;user_name=$name;source='saved_project_inline_editor_copy';password_column_queried=$false;project_saved=$false;public_readback_verified=$false}
  } finally {
   if($page){
@@ -86,8 +86,8 @@ function Invoke-WeinviewProjectAccountEdit($Session,[int]$Row,$UserName=$null,[s
   if($requested.Count -gt 12 -or @($requested|Where-Object {$_ -isnot [string] -or $_ -cnotmatch '^[A-L]$'}).Count -or @($requested|Select-Object -Unique).Count -ne $requested.Count){throw 'Distinct A through L classes required.'}
  }
  . (Join-Path $PSScriptRoot 'ProjectSecurityOperation.ps1')
- if(!('PLCCode.Weinview.ProjectSecurityTableControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityTableControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
- if(!('PLCCode.Weinview.ProjectSecurityAccountControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityAccountControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll','System.Drawing.dll','System.Windows.Forms.dll'}
+ if(!('PLC Engineering Suite.Weinview.ProjectSecurityTableControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityTableControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ if(!('PLC Engineering Suite.Weinview.ProjectSecurityAccountControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityAccountControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll','System.Drawing.dll','System.Windows.Forms.dll'}
  $page=$null;$confirmed=$false
  try {
   $page=Open-WeinviewProjectSecurityPage $Session
@@ -96,23 +96,23 @@ function Invoke-WeinviewProjectAccountEdit($Session,[int]$Row,$UserName=$null,[s
   $table=Find-WeinviewProjectAccountTable $Session $page
   $hwnd=[long]$table.Hwnd;$accountPid=[int]$Session.process.Id
   # Preserve omitted fields. Temporarily enable only when an edit requires it.
-  $beforeEnabled=[PLCCode.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$Row,0)
+  $beforeEnabled=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$Row,0)
   $targetEnabled=if($null -ne $Enabled){[bool]$Enabled}else{$beforeEnabled}
   $needsEnabled=($null -ne $UserName -or $Password.Length -gt 0 -or $classSpecified)
-  if($needsEnabled -and !$beforeEnabled){$null=[PLCCode.Weinview.ProjectSecurityAccountControls]::SetCheck($hwnd,$accountPid,$Row,0,$true)}
-  if($null -ne $UserName){$null=[PLCCode.Weinview.ProjectSecurityAccountControls]::SetText($hwnd,$accountPid,$Row,2,$UserName,$false)}
-  if($Password.Length){$null=[PLCCode.Weinview.ProjectSecurityAccountControls]::SetText($hwnd,$accountPid,$Row,3,$Password,$true)}
+  if($needsEnabled -and !$beforeEnabled){$null=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::SetCheck($hwnd,$accountPid,$Row,0,$true)}
+  if($null -ne $UserName){$null=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::SetText($hwnd,$accountPid,$Row,2,$UserName,$false)}
+  if($Password.Length){$null=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::SetText($hwnd,$accountPid,$Row,3,$Password,$true)}
   if($classSpecified){foreach($i in 0..11){
     $letter=[string][char]([int][char]'A'+$i)
-    $null=[PLCCode.Weinview.ProjectSecurityAccountControls]::SetCheck($hwnd,$accountPid,$Row,4+$i,($letter -cin $requested))
+    $null=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::SetCheck($hwnd,$accountPid,$Row,4+$i,($letter -cin $requested))
    }}
   $afterName='unknown';$afterClasses='unknown'
-  try {$afterName=[PLCCode.Weinview.ProjectSecurityAccountControls]::ReadUserName($hwnd,$accountPid,$Row)} catch {}
-  try {$afterClasses=@(foreach($i in 0..11){if([PLCCode.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$Row,4+$i)){[string][char]([int][char]'A'+$i)}})} catch {if($classSpecified){throw}}
+  try {$afterName=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadUserName($hwnd,$accountPid,$Row)} catch {}
+  try {$afterClasses=@(foreach($i in 0..11){if([PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$Row,4+$i)){[string][char]([int][char]'A'+$i)}})} catch {if($classSpecified){throw}}
   if($null -ne $UserName -and $afterName -cne 'unknown' -and $afterName -cne $UserName){throw 'Native account user name differs after edit.'}
   if($classSpecified -and (@($afterClasses) -join ',') -cne (@($requested|Sort-Object) -join ',')){throw 'Native account classes differ after edit.'}
-  $null=[PLCCode.Weinview.ProjectSecurityAccountControls]::SetCheck($hwnd,$accountPid,$Row,0,$targetEnabled)
-  if([PLCCode.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$Row,0) -ne $targetEnabled){throw 'Native account row enable state differs after edit.'}
+  $null=[PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::SetCheck($hwnd,$accountPid,$Row,0,$targetEnabled)
+  if([PLC Engineering Suite.Weinview.ProjectSecurityAccountControls]::ReadCheck($hwnd,$accountPid,$Row,0) -ne $targetEnabled){throw 'Native account row enable state differs after edit.'}
   $Session.native.ClickButton($page.dialog.Hwnd,1,'确定')
   $deadline=[DateTime]::UtcNow.AddSeconds(4)
   do {

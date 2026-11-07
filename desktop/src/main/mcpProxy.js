@@ -524,7 +524,7 @@ async function run() {
     throw new Error("MCP connection is unavailable");
   }
   const v130 = new mcpClient.Client({
-    name: "plccode-remote-connector",
+    name: "plceng-remote-connector",
     version: "1.0.0"
   });
   const v131 = mcpClient.connectionTransport(v128);

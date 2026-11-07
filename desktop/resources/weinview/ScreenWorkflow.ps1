@@ -43,14 +43,14 @@ function Close-WeinviewScreenDialog($Session,$Dialog,[bool]$Confirm){
 }
 function Open-WeinviewDirectoryObject($Session,$Directory,$Row){
  $id=Get-Content -LiteralPath $Session.identity_path -Raw -Encoding UTF8|ConvertFrom-Json
- $tree=[PLCCode.Weinview.Research.WindowTreeControls]::new([int]$id.Pid,[long]$id.CreationTicks,[string]$id.Exe,[long]$Session.main.Hwnd,$false)
+ $tree=[PLC Engineering Suite.Weinview.Research.WindowTreeControls]::new([int]$id.Pid,[long]$id.CreationTicks,[string]$id.Exe,[long]$Session.main.Hwnd,$false)
  $tree.OpenObjectAtObservedRow($Directory.tree_hwnd,$Row.semantic_path,$Row.raw_label,$Row.object_id,$Row.kind)
  $dialogKind=if($Row.kind -ceq 'Bit' -and $Row.object_id -cmatch '^BL_'){'BitLamp'}else{$Row.kind}
  return Find-WeinviewScreenDialog $Session $dialogKind
 }
 function Read-WeinviewRecipeViewSelectedName($Session,$Dialog){
- if($Dialog.Title -cnotmatch '配方检视' -or -not ('PLCCode.Weinview.RecipeViewDisplayControls' -as [type])){throw 'Owned Recipe View property reader required'}
- $selected=[PLCCode.Weinview.RecipeViewDisplayControls]::ReadSelectedRecipeDirectory($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id)
+ if($Dialog.Title -cnotmatch '配方检视' -or -not ('PLC Engineering Suite.Weinview.RecipeViewDisplayControls' -as [type])){throw 'Owned Recipe View property reader required'}
+ $selected=[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::ReadSelectedRecipeDirectory($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id)
  if($selected -isnot [string] -or [string]::IsNullOrWhiteSpace($selected) -or $selected.Length -gt 128 -or $selected -match '[\x00-\x1f]'){throw 'Selected native Recipe directory name required'}
  return $selected
 }
@@ -310,7 +310,7 @@ function Read-WeinviewTargetObject($Session,[string]$ObjectId,[string]$ExpectedS
    if(@($properties|Where-Object {$_ -cnotin @('workspace_root','project_path','output_path','expected_project_sha256','exe_path','screen','window_number','kind','object_id','expected_object_sha256','description','rect','font_size','use_object_heading')}).Count){throw 'Alarm Display screen update accepts only description, rect, font_size and cMT object heading'}
    if(@($properties|Where-Object {$_ -cin @('description','rect','font_size','use_object_heading')}).Count -eq 0){throw 'Alarm Display property change required'}
    $expected=$before.object.canonical_json|ConvertFrom-Json
-   $n=$Session.native;$h=$dialog.Hwnd;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+   $n=$Session.native;$h=$dialog.Hwnd;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
    $tab=$n.FindUniqueControlWithoutLabel($h,12320,'SysTabControl32')
    if($properties -ccontains 'description'){
     $description=[string]$Arguments.description
@@ -337,7 +337,7 @@ function Read-WeinviewTargetObject($Session,[string]$ObjectId,[string]$ExpectedS
     $current=[bool]$expected.cmt_options.use_object_heading
     if($current -ne $requested){
      $p.SelectTabExact($tab.Hwnd,'报警')
-     $guard=[PLCCode.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)
+     $guard=[PLC Engineering Suite.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)
      $guard.AssertDialog($h,'报警显示的属性')
      $qt=WaitFor {$q=@($n.EnumChildControls($h)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq 'Qt5QWindowIcon' -and $_.Title -ceq 'EasyBuilder Pro'});if($q.Count -gt 1){throw 'Ambiguous original cMT alarm heading page'};if($q.Count -eq 1){return $q[0]}} 3
      $headingEdit=$guard.SetObjectHeading($h,$qt.Hwnd,$current,$requested)

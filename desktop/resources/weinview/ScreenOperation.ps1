@@ -29,15 +29,15 @@ try {
   }
   function Overlap($a,$b){return ($a[0] -lt $b[0]+$b[2] -and $a[0]+$a[2] -gt $b[0] -and $a[1] -lt $b[1]+$b[3] -and $a[1]+$a[3] -gt $b[1])}
   if((Overlap $sources[0].Rectangle $sources[1].Rectangle) -or (Overlap $targets[0].rect $targets[1].rect) -or ($Action -eq 'Apply' -and (Overlap $targets[0].rect $sources[1].Rectangle))){throw 'Overlapping source/target object footprints unsupported'}
-  if(-not ('PLCCode.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
+  if(-not ('PLC Engineering Suite.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
   Add-Type -AssemblyName Accessibility
-  if(-not ('PLCCode.Weinview.Research.NativePropertyCandidate' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativePropertyCandidate.cs') -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)}
-  if(-not ('PLCCode.Weinview.Research.NativeScreenScene' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeScreenScene.cs') -ReferencedAssemblies @('System.dll','System.Drawing.dll')}
-  $controls=[PLCCode.Weinview.NativeControls]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,800)
-  $tabs=[PLCCode.Weinview.Research.NativePropertyCandidate]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe)
+  if(-not ('PLC Engineering Suite.Weinview.Research.NativePropertyCandidate' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativePropertyCandidate.cs') -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)}
+  if(-not ('PLC Engineering Suite.Weinview.Research.NativeScreenScene' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeScreenScene.cs') -ReferencedAssemblies @('System.dll','System.Drawing.dll')}
+  $controls=[PLC Engineering Suite.Weinview.NativeControls]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,800)
+  $tabs=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe)
   $mainMatch=@($controls.EnumTopWindows() | Where-Object {$_.Hwnd -eq $MainHwnd -and $_.Class -ceq 'EasyBuilderPro' -and $_.Visible -and $_.Enabled -and $_.Title.Contains([IO.Path]::GetFileNameWithoutExtension($project))})
   if($mainMatch.Count -ne 1){throw 'Exact caller-owned main document mismatch'}
-  $scene=[PLCCode.Weinview.Research.NativeScreenScene]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,$MainHwnd)
+  $scene=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,$MainHwnd)
   $receipt.ObjectEvidence=@();$receipt.objects=@();$receipt.Identity=$identity;$receipt.SourceSha256=$ExpectedProjectSha256;$receipt.SceneCaptureAttempts=@()
   for($index=0;$index -lt 2;$index++){
    $receipt.Stage="object-$index-scene-capture"
@@ -52,9 +52,9 @@ try {
     }catch{
      $captureError=$_.Exception
      while($null -ne $captureError.InnerException){$captureError=$captureError.InnerException}
-          if($captureError.GetType().FullName -ceq 'PLCCode.Weinview.Research.SceneGeometryChangedException'){
+          if($captureError.GetType().FullName -ceq 'PLC Engineering Suite.Weinview.Research.SceneGeometryChangedException'){
       $receipt.SceneCaptureAttempts+=@{ObjectIndex=$index;Attempt=$captureAttempt;Status='geometry-changed';ImagePath=$captureError.ImagePath;Before=$captureError.Before;After=$captureError.After}
-     }elseif($captureError.GetType().FullName -ceq 'PLCCode.Weinview.Research.CanvasNotPaintedException'){
+     }elseif($captureError.GetType().FullName -ceq 'PLC Engineering Suite.Weinview.Research.CanvasNotPaintedException'){
       $receipt.SceneCaptureAttempts+=@{ObjectIndex=$index;Attempt=$captureAttempt;Status='not-painted';ImagePath=$captureError.ImagePath;CanvasBox=$captureError.CanvasBox;PixelCount=$captureError.PixelCount}
      }else{throw}
      $remaining=($paintDeadline-[DateTime]::UtcNow).TotalMilliseconds
@@ -118,11 +118,11 @@ try {
   $labels=@($obj.labels);if($labels.Count -ne 2 -or $labels[0].state -cne '0' -or $labels[1].state -cne '1'){throw 'Explicit two-state label recipe required before mutation'}
   foreach($label in $labels){if($label.font -cne 'Microsoft YaHei' -or $label.size -cne '24' -or [string]::IsNullOrWhiteSpace($label.text) -or $label.text.Length -gt 64){throw 'Unsupported button label recipe before mutation'}}
  }
- if(-not ('PLCCode.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
+ if(-not ('PLC Engineering Suite.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
  Add-Type -AssemblyName Accessibility
- if(-not ('PLCCode.Weinview.Research.NativePropertyCandidate' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativePropertyCandidate.cs') -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)}
- $native=[PLCCode.Weinview.NativeControls]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,800)
- $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe)
+ if(-not ('PLC Engineering Suite.Weinview.Research.NativePropertyCandidate' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativePropertyCandidate.cs') -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)}
+ $native=[PLC Engineering Suite.Weinview.NativeControls]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,800)
+ $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe)
  $title=if($obj.kind -ceq 'numeric_display'){'数值的属性'}else{'功能键的属性'}
  $dialog=@($native.EnumTopWindows() | Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Class -ceq '#32770' -and $_.Title -ceq $title -and $_.Visible -and $_.Enabled})
  if($dialog.Count -ne 1){throw 'Exact existing object property dialog required'}

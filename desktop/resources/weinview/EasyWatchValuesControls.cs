@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Accessibility;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class EasyWatchValuesControls {
   readonly int pid; readonly long ticks; readonly string exe;
   [DllImport("oleacc.dll")] static extern int AccessibleObjectFromWindow(IntPtr h,uint obj,ref Guid iid,out IAccessible a);
@@ -82,7 +82,7 @@ namespace PLCCode.Weinview {
      a.Class("CLocation_None",true);a.Class("CDeviceLocation",false);
      a.Class("CUpdateCycle",false);a.Class("CCycleItem",false);a.Dword(500);a.Dword(0);
      a.Class("CWatchBaseItem",false);
-     a.Text((writable?"PLCCode_Writable_":"PLCCode_Readonly_")+(bit?"LB":"LW")+n.ToString(CultureInfo.InvariantCulture));
+     a.Text((writable?"PLC Engineering Suite_Writable_":"PLC Engineering Suite_Readonly_")+(bit?"LB":"LW")+n.ToString(CultureInfo.InvariantCulture));
      a.Text("Local Host ( "+port.ToString(CultureInfo.InvariantCulture)+" ) ");a.Text("New Page");
     }
     writer.Flush();return stream.ToArray();
@@ -209,7 +209,7 @@ namespace PLCCode.Weinview {
   void AssertWriterForeground(WritableTarget target,bool activateOnce) {
    var main=GetAncestor(target.Grid,2);if(main==IntPtr.Zero)throw new InvalidOperationException("Actual writable grid main ancestor absent.");AssertWriterWindow(main.ToInt64());
    string title=new NativeControls(pid,ticks,exe,1000).GetControlText(main.ToInt64(),128);
-   if(!WriterClass(main).StartsWith("Afx:",StringComparison.Ordinal) || title!="PLCCodeWritable - EasyWatch")throw new InvalidOperationException("Actual private file-loaded writable EasyWatch main required.");
+   if(!WriterClass(main).StartsWith("Afx:",StringComparison.Ordinal) || title!="PLC Engineering SuiteWritable - EasyWatch")throw new InvalidOperationException("Actual private file-loaded writable EasyWatch main required.");
    bool requested=false;
    if(GetForegroundWindow()!=main && activateOnce){requested=true;if(!SetForegroundWindow(main))throw new InvalidOperationException("Owned fresh EasyWatch foreground activation denied; no input.");new NativeControls(pid,ticks,exe,1000).GetControlText(main.ToInt64(),128);}
    if(GetForegroundWindow()!=main)throw new InvalidOperationException("Owned fresh EasyWatch main must be foreground.");
@@ -218,7 +218,7 @@ namespace PLCCode.Weinview {
    target.Evidence.main_hwnd=main.ToInt64();target.Evidence.main_title=title;target.Evidence.foreground_hwnd=GetForegroundWindow().ToInt64();target.Evidence.active_hwnd=info.active.ToInt64();target.Evidence.activation_requested=requested;target.Evidence.activated=true;target.Evidence.focus_hwnd=info.focus.ToInt64();AssertWriterWindow(main.ToInt64());
   }
   WritableTarget ReadWritableTarget(long gridHwnd,string name,int address,int port,int expected) {
-   if(address<0 || address>8999 || name!="PLCCode_Writable_LW"+address.ToString(CultureInfo.InvariantCulture))throw new ArgumentException("Exact writable LW0..8999 monitor name/address required.");
+   if(address<0 || address>8999 || name!="PLC Engineering Suite_Writable_LW"+address.ToString(CultureInfo.InvariantCulture))throw new ArgumentException("Exact writable LW0..8999 monitor name/address required.");
    if(port<1 || port>65535)throw new ArgumentOutOfRangeException("port");AssertInt16(expected,"expected");
    SetProcessDPIAware();AssertWriterWindow(gridHwnd);var h=Owned(gridHwnd);var row=Rows(gridHwnd,1)[0];
    if(row.get_accName(0)!="Row 1")throw new InvalidOperationException("Actual writable monitor must be the single Row 1.");
@@ -288,7 +288,7 @@ namespace PLCCode.Weinview {
 }
 
 // Existing Object table only: no monitor creation; value edits stay in the owned Diagnoser.
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class CmtObjectValuesControls {
   [DllImport("oleacc.dll")]static extern int AccessibleObjectFromWindow(IntPtr h,uint obj,ref Guid iid,[MarshalAs(UnmanagedType.Interface)]out IAccessible a);
   [DllImport("oleacc.dll")]static extern int AccessibleChildren(IAccessible a,int start,int count,[Out,MarshalAs(UnmanagedType.LPArray,SizeParamIndex=2)]object[] children,out int obtained);

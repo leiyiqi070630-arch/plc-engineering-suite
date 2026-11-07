@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using Accessibility;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class OptionListGridRow {
   public int index;
   public string item;

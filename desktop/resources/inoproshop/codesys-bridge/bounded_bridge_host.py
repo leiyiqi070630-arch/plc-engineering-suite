@@ -76,7 +76,7 @@ class BoundedBridgeHost(object):
                  executor_factory=None, environment=None):
         env = os.environ if environment is None else environment
         local = env.get("LOCALAPPDATA") or os.path.expanduser("~")
-        work = os.path.join(local, "PLC Code", "codesys-bridge", "work")
+        work = os.path.join(local, "PLC Engineering Suite", "codesys-bridge", "work")
         self.req_dir = env.get("CODESYS_BRIDGE_REQ_DIR", os.path.join(work, "req"))
         self.res_dir = env.get("CODESYS_BRIDGE_RES_DIR", os.path.join(work, "res"))
         self.ready_file = env.get("CODESYS_BRIDGE_READY_FILE",

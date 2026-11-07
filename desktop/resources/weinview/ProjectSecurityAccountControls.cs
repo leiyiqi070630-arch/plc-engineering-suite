@@ -7,7 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Accessibility;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
   // Edits the observed CN421 Qt enhanced-security table. Qt paints checkboxes
   // and the inline name editor inside ROLE_SYSTEM_CELL without child controls.
   public static class ProjectSecurityAccountControls {
@@ -220,7 +220,7 @@ namespace PLCCode.Weinview {
     static string CopyFocusedUserNameEditor(long hwnd,int pid) {
       OwnedForeground(hwnd,pid);
       var prior=ClipboardAccess("snapshot",()=>Clipboard.GetDataObject());
-      string marker="PLCCodeAccountRead-"+Guid.NewGuid().ToString("N");
+      string marker="PLC Engineering SuiteAccountRead-"+Guid.NewGuid().ToString("N");
       string copied=null;
       try {
         ClipboardAccess("marker_write",()=>{Clipboard.SetText(marker);return true;});

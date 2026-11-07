@@ -1,5 +1,5 @@
 using System;using System.Collections.Generic;using System.Runtime.InteropServices;using Accessibility;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class ModbusEndpoint {public string Ip{get;set;}public int Port{get;set;}}
  // Exact actual 421 Qt device-settings subtree only. COM calls require an external watchdog.
  public sealed class QtModbusEndpointCandidate {

@@ -1,5 +1,5 @@
 ﻿using System;using System.IO;using System.Runtime.InteropServices;using System.Security.Cryptography;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  // Finite sampling entry only; all coordinates originate in one fresh owned OCR image.
  public static class SamplingRibbonControls {
   [StructLayout(LayoutKind.Sequential)]struct Point {public int x,y;}

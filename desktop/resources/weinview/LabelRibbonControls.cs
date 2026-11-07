@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class LabelRibbonControls {
   [StructLayout(LayoutKind.Sequential)] struct R { public int l,t,r,b; }
   [StructLayout(LayoutKind.Sequential)] struct P { public int x,y; }

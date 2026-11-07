@@ -4,7 +4,7 @@ function Set-WeinviewTrendDefaultAppearance($Session,$Dialog,[int]$Width,[int]$P
  if([IO.Path]::GetExtension([string]$Session.project_path) -ine '.cmtp'){throw 'Observed cMT Trend appearance required'}
  . (Join-Path $PSScriptRoot 'NativeAppearanceColorOperation.ps1')
  $n=$Session.native;$h=[long]$Dialog.Hwnd
- $p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $tab=$n.FindUniqueControlWithoutLabel($h,12320,'SysTabControl32');$p.SelectTabExact($tab.Hwnd,'趋势图')
  $grid=$n.FindUniqueControl($h,1076,'Button','显示');$original=$n.GetCheckboxState($grid.Hwnd)
  if($original -notin @(0,1)){throw 'Native Trend grid state unavailable'}
@@ -122,12 +122,12 @@ function Assert-WeinviewTrendChannelYAxes($Evidence,$Expected,$Requested) {
 function Read-WeinviewTrendDialog($Session,$Dialog,[string]$ObjectId,$SamplingBinding=$null) {
  $n=$Session.native;$h=[long]$Dialog.Hwnd;$title=[string]$Dialog.Title
  if($title -cne '趋势图的属性' -or $ObjectId -cnotmatch '^TD_[0-9]{1,5}$'){throw 'Existing exact Trend title and real TD identity required.'}
- $identity=[PLCCode.Weinview.TrendRibbonControls]::RequireDialog($n,$h,$Session.main.Hwnd,$title)
- $p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $identity=[PLC Engineering Suite.Weinview.TrendRibbonControls]::RequireDialog($n,$h,$Session.main.Hwnd,$title)
+ $p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $tab=$n.FindUniqueControlWithoutLabel($h,12320,'SysTabControl32')
  $tabs=@($p.TabNames($tab.Hwnd)) -join '|'
  if($tabs -cnotin @('一般属性|趋势图|通道|Y 轴|安全|图片|轮廓','一般属性|显示|趋势图|通道|Y 轴|数据格式|安全|图片|轮廓','一般属性|显示|趋势图|通道|Y 轴|数据格式|安全|图片')){throw 'Observed existing Trend tab profile differs.'}
- function TrendTab([string]$name){$null=[PLCCode.Weinview.TrendRibbonControls]::RequireDialog($n,$h,$Session.main.Hwnd,$title);$p.SelectTabExact($tab.Hwnd,$name)}
+ function TrendTab([string]$name){$null=[PLC Engineering Suite.Weinview.TrendRibbonControls]::RequireDialog($n,$h,$Session.main.Hwnd,$title);$p.SelectTabExact($tab.Hwnd,$name)}
  function TrendControl([int]$id,[string]$class){return $n.FindUniqueControlWithoutLabel($h,$id,$class)}
  function TrendInteger([int]$id){$text=$n.GetControlText((TrendControl $id 'Edit').Hwnd,64);$value=0;if(![int]::TryParse($text,[ref]$value)){throw 'Trend finite integer profile required.'};return [int]$value}
  function TrendRange([int]$id){$text=$n.GetControlText((TrendControl $id 'Edit').Hwnd,64);$value=0.0;if(![double]::TryParse($text,[Globalization.NumberStyles]::Float,[Globalization.CultureInfo]::InvariantCulture,[ref]$value) -or [double]::IsNaN($value) -or [double]::IsInfinity($value)){throw 'Trend finite native range required.'};return [double]$value}
@@ -144,12 +144,12 @@ function Read-WeinviewTrendDialog($Session,$Dialog,[string]$ObjectId,$SamplingBi
  if(!$isCmt){foreach($entry in @(@(1991,'像素'),@(1735,'时间'),@(2008,'启用'))){$control=@($n.EnumChildControls($h)|Where-Object {$_.Id -eq [int]$entry[0] -and $_.Class -ceq 'Button' -and $_.Visible});if($control.Count -gt 1){throw 'Trend legacy state control ambiguous.'};if($control.Count -eq 1){$value=TrendState ([int]$entry[0]) ([string]$entry[1]);switch([int]$entry[0]){1991{$pixel=$value}1735{$time=$value}2008{$pause=$value}}}}}
  $gridDisplay=$null;if($SamplingBinding -and $isCmt){TrendTab '趋势图';$gridDisplay=TrendState 1076 '显示'}
  TrendTab '通道';$channelEvidence=$null;$channelRanges=$null
- if($SamplingBinding){$channels=@($SamplingBinding.channels);$labels=[string[]]@($channels|ForEach-Object {$_.label});$types=[string[]]@($channels|ForEach-Object {$_.data_type});$channelEvidence=[PLCCode.Weinview.TrendRibbonControls]::ReadSamplingChannels($n,$h,$Session.main.Hwnd,$title,$labels,$types);if(!$channelEvidence.all_enabled){throw 'Native Trend channel checked readback differs.'};$channelRanges=@([PLCCode.Weinview.TrendRibbonControls]::ReadChannelRanges($n,$h,$Session.main.Hwnd,$title,$labels,$types))}
- if($isCmt -and $SamplingBinding){$null=[PLCCode.Weinview.TrendRibbonControls]::SelectChannelRow($n,$h,$Session.main.Hwnd,$title,$labels,$types,1);$range=TrendState 1688 '取自寄存器';$minimum=[double]$channelRanges[0].minimum;$maximum=[double]$channelRanges[0].maximum;$widthRaw=$p.ComboSelected((TrendControl 1299 'ComboBox').Hwnd);$channelControl=TrendState 1689 '启用'}
+ if($SamplingBinding){$channels=@($SamplingBinding.channels);$labels=[string[]]@($channels|ForEach-Object {$_.label});$types=[string[]]@($channels|ForEach-Object {$_.data_type});$channelEvidence=[PLC Engineering Suite.Weinview.TrendRibbonControls]::ReadSamplingChannels($n,$h,$Session.main.Hwnd,$title,$labels,$types);if(!$channelEvidence.all_enabled){throw 'Native Trend channel checked readback differs.'};$channelRanges=@([PLC Engineering Suite.Weinview.TrendRibbonControls]::ReadChannelRanges($n,$h,$Session.main.Hwnd,$title,$labels,$types))}
+ if($isCmt -and $SamplingBinding){$null=[PLC Engineering Suite.Weinview.TrendRibbonControls]::SelectChannelRow($n,$h,$Session.main.Hwnd,$title,$labels,$types,1);$range=TrendState 1688 '取自寄存器';$minimum=[double]$channelRanges[0].minimum;$maximum=[double]$channelRanges[0].maximum;$widthRaw=$p.ComboSelected((TrendControl 1299 'ComboBox').Hwnd);$channelControl=TrendState 1689 '启用'}
  else{$range=TrendState 1688 '取自寄存器';$minimum=TrendRange 1297;$maximum=TrendRange 1298;$widthRaw=$p.ComboSelected((TrendControl 1299 'ComboBox').Hwnd);$channelControl=TrendState 1689 '启用';if($channelRanges){$minimum=[double]$channelRanges[0].minimum;$maximum=[double]$channelRanges[0].maximum}}
  $width=0;if(![int]::TryParse($widthRaw,[ref]$width) -or $width -le 0){throw 'Actual Trend line-width integer required.'}
  $channelAxes=$null;$channelYAxisEvidence=$null
- if($SamplingBinding -and $isCmt){TrendTab 'Y 轴';$channelAxes=@([PLCCode.Weinview.TrendRibbonControls]::ReadChannelAxes($n,$h,$Session.main.Hwnd,$title,$labels,$types))
+ if($SamplingBinding -and $isCmt){TrendTab 'Y 轴';$channelAxes=@([PLC Engineering Suite.Weinview.TrendRibbonControls]::ReadChannelAxes($n,$h,$Session.main.Hwnd,$title,$labels,$types))
   $optionControls=@($n.EnumChildControls($h));$hideControls=@($optionControls|Where-Object {$_.Id -eq 1332 -and $_.Class -ceq 'Button'});$alignmentControls=@($optionControls|Where-Object {$_.Id -eq 1370 -and $_.Class -ceq 'ComboBox'})
   if($hideControls.Count -gt 1 -or $alignmentControls.Count -gt 1){throw 'Trend Y axis option controls are ambiguous.'}
   if($hideControls.Count -eq 1 -and $hideControls[0].Title -cne '通道数据不显示时隐藏通道 Y 刻度'){throw 'Actual Trend Y axis hide option label changed.'}
@@ -230,7 +230,7 @@ function Read-WeinviewTrendSelectedRectangle($Session,$Scene,$Guard,[string]$Obj
   $row=@($directory.rows|Where-Object {$_.object_id -ceq $ObjectId -and $_.kind -ceq 'Trend'})
   if($row.Count -ne 1){throw 'Exact Trend directory element required for geometry'}
   $dialog=Open-WeinviewDirectoryObject $Session $directory $row[0]
-  $n=$Session.native;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+  $n=$Session.native;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
   $tab=$n.FindUniqueControlWithoutLabel($dialog.Hwnd,12320,'SysTabControl32')
   if(@($p.TabNames($tab.Hwnd)) -cnotcontains '轮廓'){throw 'Native Trend contour element is unavailable; coordinate resizing is disabled'}
   $p.SelectTabExact($tab.Hwnd,'轮廓')
@@ -273,10 +273,10 @@ function Invoke-WeinviewTrendAddition($Session,$Objects,[string]$SourceSha256,$B
  $before=Read-WeinviewTrendSnapshot $Session $SourceSha256 ($prefix+'.before') $BridgeRoot
  if($BeforeSnapshot){Assert-WeinviewAdditionSnapshots $BeforeSnapshot.screen_snapshot $before.screen_snapshot 0}
  $items=@(Assert-WeinviewTrendInputs $Objects @($before.screen_snapshot.objects).Count ([int]$Session.window_width) ([int]$Session.window_height))
- $n=$Session.native;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$semantic=[PLCCode.Weinview.NativeSemanticControls]::new($n);$isCmt=([IO.Path]::GetExtension([string]$Session.project_path) -ieq '.cmtp')
+ $n=$Session.native;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($n);$isCmt=([IO.Path]::GetExtension([string]$Session.project_path) -ieq '.cmtp')
  if([int]$before.screen_snapshot.directory.window_number -ne [int]$Session.window_number){throw 'Trend directory differs from verified selected window.'}
- $scene=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
- $canvasGuard=[PLCCode.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)
+ $scene=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
+ $canvasGuard=[PLC Engineering Suite.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)
  function TrendSet([long]$h,[int]$id,[string]$value){$c=$n.FindUniqueControlWithoutLabel($h,$id,'Edit');$n.SetControlText($c.Hwnd,$value);if($n.GetControlText($c.Hwnd,4096) -cne $value){throw 'Actual Trend edit immediate readback differs.'}}
  function TrendRequiredState([long]$h,[int]$id,[string]$label,[int]$state){$control=$n.FindUniqueControl($h,$id,'Button',$label);$actual=if($id -in @(1991,1735)){$p.GetRadioState($control.Hwnd)}else{$n.GetCheckboxState($control.Hwnd)};if($actual -ne $state){throw 'Actual default Trend state differs; no speculative setters.'}}
  $records=@();$evidence=@();$confirmedReads=@{};$restore=$null
@@ -295,10 +295,10 @@ function Invoke-WeinviewTrendAddition($Session,$Objects,[string]$SourceSha256,$B
    if($isCmt -and @($expectedAxes|Where-Object {$_.axis -cne 'none'}).Count){$p.SelectTabExact($tab.Hwnd,'趋势图');$gridDisplay=$n.FindUniqueControl($h,1076,'Button','显示');$beforeGrid=$n.GetCheckboxState($gridDisplay.Hwnd);if($beforeGrid -notin @(0,1)){throw 'Native Trend Grid display state unknown.'};if($beforeGrid -eq 0){$n.ClickButton($h,1076,'显示')};if($n.GetCheckboxState($gridDisplay.Hwnd) -ne 1){throw 'Trend Y axis Grid display prerequisite not enabled.'};$journal['y_axis_grid_display_evidence']=[pscustomobject]@{control_id=1076;label='显示';before=$beforeGrid;after=1}}
    if($isCmt){$journal.default_appearance=Set-WeinviewTrendDefaultAppearance $Session $dialog ([int]$o.rect[2]) ([int]$o.pixel_spacing)}
    $p.SelectTabExact($tab.Hwnd,'通道');$journal.phase='configure_channel'
-   $channels=@($binding.channels);$journal['sampling_channels_enabled_evidence']=[PLCCode.Weinview.TrendRibbonControls]::EnableSamplingChannels($n,$h,$Session.main.Hwnd,'新增 趋势图',[string[]]@($channels|ForEach-Object {$_.label}),[string[]]@($channels|ForEach-Object {$_.data_type}))
-   $journal['channel_range_write_evidence']=[PLCCode.Weinview.TrendRibbonControls]::SetChannelRangesPerRow($n,$h,$Session.main.Hwnd,'新增 趋势图',[string[]]@($channels|ForEach-Object {$_.label}),[string[]]@($channels|ForEach-Object {$_.data_type}),[double[]]@($expectedAxes|ForEach-Object {$_.minimum}),[double[]]@($expectedAxes|ForEach-Object {$_.maximum}))
+   $channels=@($binding.channels);$journal['sampling_channels_enabled_evidence']=[PLC Engineering Suite.Weinview.TrendRibbonControls]::EnableSamplingChannels($n,$h,$Session.main.Hwnd,'新增 趋势图',[string[]]@($channels|ForEach-Object {$_.label}),[string[]]@($channels|ForEach-Object {$_.data_type}))
+   $journal['channel_range_write_evidence']=[PLC Engineering Suite.Weinview.TrendRibbonControls]::SetChannelRangesPerRow($n,$h,$Session.main.Hwnd,'新增 趋势图',[string[]]@($channels|ForEach-Object {$_.label}),[string[]]@($channels|ForEach-Object {$_.data_type}),[double[]]@($expectedAxes|ForEach-Object {$_.minimum}),[double[]]@($expectedAxes|ForEach-Object {$_.maximum}))
    if($isCmt -and ($o.channel_y_axes -or $o.y_axis_options)){$p.SelectTabExact($tab.Hwnd,'Y 轴');$journal.phase='configure_y_axis'
-    $journal['channel_axis_write_evidence']=[PLCCode.Weinview.TrendRibbonControls]::SetChannelAxes($n,$h,$Session.main.Hwnd,'新增 趋势图',[string[]]@($channels|ForEach-Object {$_.label}),[string[]]@($channels|ForEach-Object {$_.data_type}),[string[]]@($expectedAxes|ForEach-Object {$_.native_axis}))
+    $journal['channel_axis_write_evidence']=[PLC Engineering Suite.Weinview.TrendRibbonControls]::SetChannelAxes($n,$h,$Session.main.Hwnd,'新增 趋势图',[string[]]@($channels|ForEach-Object {$_.label}),[string[]]@($channels|ForEach-Object {$_.data_type}),[string[]]@($expectedAxes|ForEach-Object {$_.native_axis}))
     if($o.y_axis_options){$hideControl=$n.FindUniqueControl($h,1332,'Button','通道数据不显示时隐藏通道 Y 刻度');$wantedHide=if($o.y_axis_options.hide_when_channel_invisible){1}else{0};if($n.GetCheckboxState($hideControl.Hwnd) -ne $wantedHide){$n.ClickButton($h,1332,'通道数据不显示时隐藏通道 Y 刻度')};if($n.GetCheckboxState($hideControl.Hwnd) -ne $wantedHide){throw 'Trend Y axis hide preference differs.'}
      $alignControl=$n.FindUniqueControlWithoutLabel($h,1370,'ComboBox');$wantedAlignment=if($o.y_axis_options.value_alignment -ceq 'full_text'){'完整显示'}else{'以刻度为中心'};if((@($p.ComboItems($alignControl.Hwnd)) -join '|') -cne '以刻度为中心|完整显示'){throw 'Trend Y axis alignment choices changed.'};$p.SelectComboExact($alignControl.Hwnd,$wantedAlignment);if($p.ComboSelected($alignControl.Hwnd) -cne $wantedAlignment){throw 'Trend Y axis alignment native selection differs.'}}
    }
@@ -306,7 +306,7 @@ function Invoke-WeinviewTrendAddition($Session,$Objects,[string]$SourceSha256,$B
    $placement=$scene.CapturePlacement();$journal.placement=$placement;$scene.PlaceNewObject($placement,$o.rect[0],$o.rect[1]);$scene.EndPlacement()
    $freshDirectory=Get-WeinviewWindowDirectory -Session $Session;$fresh=@($freshDirectory.rows|Where-Object {$_.object_id -cnotin $oldIds});if($fresh.Count -ne 1 -or $fresh[0].kind -cne 'Trend' -or $fresh[0].object_id -cnotmatch '^TD_[0-9]{1,5}$' -or @($freshDirectory.rows).Count -ne $oldIds.Count+1){throw 'One actual new TD directory record required; reviewed shared Trend integration must be ready.'};$journal.object_id=$fresh[0].object_id
    if($isCmt){$journal.phase='exact_canvas_rectangle';$journal.native_rectangle=Read-WeinviewTrendSelectedRectangle $Session $scene $canvasGuard $journal.object_id $o.rect ($prefix+'.'+$i+'.'+$journal.object_id) $true;if((@($journal.native_rectangle)-join ',') -cne (@($o.rect)-join ',')){throw 'Native selected Trend rectangle differs from requested size.'}}
-   if(!$isCmt){$property=Open-WeinviewDirectoryObject $Session $freshDirectory $fresh[0];$null=[PLCCode.Weinview.TrendRibbonControls]::RequireDialog($n,$property.Hwnd,$Session.main.Hwnd,'趋势图的属性');$propertyTab=$n.FindUniqueControlWithoutLabel($property.Hwnd,12320,'SysTabControl32');$p.SelectTabExact($propertyTab.Hwnd,'轮廓');$journal.phase='exact_contour'
+   if(!$isCmt){$property=Open-WeinviewDirectoryObject $Session $freshDirectory $fresh[0];$null=[PLC Engineering Suite.Weinview.TrendRibbonControls]::RequireDialog($n,$property.Hwnd,$Session.main.Hwnd,'趋势图的属性');$propertyTab=$n.FindUniqueControlWithoutLabel($property.Hwnd,12320,'SysTabControl32');$p.SelectTabExact($propertyTab.Hwnd,'轮廓');$journal.phase='exact_contour'
     TrendRequiredState $property.Hwnd 1602 '保持长/宽比例' 0;for($r=0;$r -lt 4;$r++){TrendSet $property.Hwnd (@(1050,1052,1045,1044)[$r]) ([string]$o.rect[$r])};foreach($id in @(1056,1060)){if($n.GetControlText(($n.FindUniqueControlWithoutLabel($property.Hwnd,$id,'Edit')).Hwnd,64) -cne '100'){throw 'Actual Trend geometry percentage changed.'}}
     Close-WeinviewScreenDialog $Session $property $true}
    $journal.phase='read_confirmed_property';$confirmedDirectory=Get-WeinviewWindowDirectory -Session $Session;$row=@($confirmedDirectory.rows|Where-Object {$_.object_id -ceq $journal.object_id});if($row.Count -ne 1 -or $row[0].kind -cne 'Trend'){throw 'Confirmed TD identity changed.'};$property=Open-WeinviewDirectoryObject $Session $confirmedDirectory $row[0]

@@ -1,10 +1,10 @@
 # 开发态占位：原程序用 findRepoRoot() 向上查找 rust/Cargo.toml 来判断"是否在源码仓库里运行"，
 # 命中后会把 repoRoot 用于：
-#   - locateEngine() 的开发回退（<repoRoot>/rust/target/.../plccode-engine.exe）
+#   - locateEngine() 的开发回退（<repoRoot>/rust/target/.../plceng-engine.exe）
 #   - computerUseMcpConfig() 的组件路径（<repoRoot>/tools/windows-computer-use）
 # 打包后走 process.resourcesPath，不读这里。
 [package]
-name = "plccode-engine"
+name = "plceng-engine"
 version = "2.1.13"
 edition = "2021"
 

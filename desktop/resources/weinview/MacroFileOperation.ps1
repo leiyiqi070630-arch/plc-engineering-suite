@@ -73,7 +73,7 @@ function Import-WeinviewMacroFile($Session,$Manager,[string]$EbmPath,[Nullable[i
  if($null -ne $ReplaceId){
   $body=$Session.native.FindUniqueControlWithoutLabel($success.Hwnd,2393,'Static')
   $expected=$ReplaceName+" 已经存在 !`n`n是否要替代此项目 ?"
-  if([PLCCode.Weinview.NativeControls]::NormalizeLF($Session.native.GetControlText($body.Hwnd,4096)) -cne $expected){throw 'Exact original-vendor macro replacement body differs.'}
+  if([PLC Engineering Suite.Weinview.NativeControls]::NormalizeLF($Session.native.GetControlText($body.Hwnd,4096)) -cne $expected){throw 'Exact original-vendor macro replacement body differs.'}
   Button $Session $success 1606 '置换';Wait-WeinviewMacroDialogClosed $Session $success.Hwnd
   $success=Get-WeinviewMacroExchangeDialog $Session 'EasyBuilder Pro'
  }

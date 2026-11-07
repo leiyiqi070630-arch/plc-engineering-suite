@@ -6,7 +6,7 @@ function Open-WeinviewProjectSecurityPage($Session) {
  . (Join-Path $PSScriptRoot 'NativeRibbonAction.ps1')
  if(!$Session.native -or !$Session.process -or !$Session.main -or !$Session.output_path -or !$Session.exe_path){throw 'Owned editable EasyBuilder session required.'}
  $native=$Session.native
- $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($native)
+ $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($native)
  $entry=Open-WeinviewSystemParametersRibbon $Session $semantic
  $deadline=[DateTime]::UtcNow.AddSeconds(8);$dialog=$null
  do{
@@ -16,7 +16,7 @@ function Open-WeinviewProjectSecurityPage($Session) {
   Start-Sleep -Milliseconds 100
  }while([DateTime]::UtcNow -lt $deadline)
  if(!$dialog){throw 'System Parameters did not open for project security.'}
- $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $tab=$native.FindUniqueControlWithoutLabel($dialog.Hwnd,12320,'SysTabControl32')
  $tabs=@($property.TabNames($tab.Hwnd))
  if(@($tabs|Where-Object {$_ -ceq '用户密码'}).Count -ne 1){throw 'Current cMT User Password tab unavailable.'}
@@ -61,14 +61,14 @@ function ConvertTo-WeinviewRequestedSecurityClasses($Classes) {
 # Column 3 (password) is never queried, including through child enumeration.
 function Read-WeinviewProjectSecurityRowEvidence($Session,$Page,[int]$Row) {
  if($Row -lt 0 -or $Row -ge 11){throw 'Account row must be 0 through 10.'}
- if(!('PLCCode.Weinview.ProjectSecurityTableControls' -as [type])){
+ if(!('PLC Engineering Suite.Weinview.ProjectSecurityTableControls' -as [type])){
   Add-Type -Path (Join-Path $PSScriptRoot 'ProjectSecurityTableControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'
  }
  $native=$Session.native
  $candidates=@($native.EnumChildControls($Page.dialog.Hwnd)|Where-Object {$_.Visible -and $_.Class -ceq 'Qt5QWindowIcon'})
  $table=$null;$headers=$null
  foreach($candidate in $candidates){
-  try{$h=@([PLCCode.Weinview.ProjectSecurityTableControls]::Headers($candidate.Hwnd,$Session.process.Id))}
+  try{$h=@([PLC Engineering Suite.Weinview.ProjectSecurityTableControls]::Headers($candidate.Hwnd,$Session.process.Id))}
   catch{continue}
   if($table){throw 'Account table is ambiguous.'}
   $table=$candidate;$headers=$h
@@ -77,7 +77,7 @@ function Read-WeinviewProjectSecurityRowEvidence($Session,$Page,[int]$Row) {
  $cells=@()
  for($column=0;$column -lt 16;$column++){
   if($column -eq 3){continue}
-  $cells+=@([PLCCode.Weinview.ProjectSecurityTableControls]::ReadNonPasswordCell($table.Hwnd,$Session.process.Id,$Row,$column))
+  $cells+=@([PLC Engineering Suite.Weinview.ProjectSecurityTableControls]::ReadNonPasswordCell($table.Hwnd,$Session.process.Id,$Row,$column))
  }
  return @{page='用户密码';mode='unknown';row=$Row;headers=$headers;cells=$cells;password_column_queried=$false;account_values_verified=$false}
 }

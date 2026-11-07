@@ -149,7 +149,7 @@ function Close-WeinviewOwnedUploadEditor($Receipt) {
  $process=Get-WeinviewUploadOwned $Receipt
  if($Receipt.backend -cne 'easybuilder-editor' -or [string]::IsNullOrWhiteSpace([string]$Receipt.new_document) -or [string]$Receipt.new_document -cnotmatch '^EBProject[0-9]+$'){throw 'Exact unsaved Editor document identity required.'}
  if((Hash ([string]$Receipt.bootstrap_path)) -cne [string]$Receipt.bootstrap_sha256){throw 'Private Editor bootstrap changed; preserve session.'}
- $native=New-Object PLCCode.Weinview.NativeControls($process.Id,[long]$Receipt.start_utc_ticks,[string]$Receipt.exe_path,1500)
+ $native=New-Object PLC Engineering Suite.Weinview.NativeControls($process.Id,[long]$Receipt.start_utc_ticks,[string]$Receipt.exe_path,1500)
  $main=@($native.EnumTopWindows()|Where-Object {$_.Hwnd -eq [long]$Receipt.main_hwnd -and $_.Visible -and $_.Class -ceq 'EasyBuilderPro' -and $_.Title -ceq [string]$Receipt.main_title -and $_.Title -match (': '+[regex]::Escape([string]$Receipt.new_document)+'(?: -|$)')})
  if($main.Count -ne 1 -or !($main[0].Enabled)){throw 'Owned unsaved Editor main window changed; preserve session.'}
  $views=@($native.EnumChildControls($main[0].Hwnd)|Where-Object {$_.Hwnd -eq [long]$Receipt.document_view_hwnd -and $_.Id -eq 59665 -and $_.Class -ceq 'AfxFrameOrView140u' -and $_.Visible})
@@ -246,7 +246,7 @@ function Invoke-WeinviewNativeFieldUpload($Arguments,$Installation) {
    $receipt=@{schema=1;kind='weinview-owned-native-upload';backend='easybuilder-editor';pid=$s.process.Id;exe_path=$exe;start_utc_ticks=$s.process.StartTime.ToUniversalTime().Ticks.ToString();main_hwnd=[long]$s.main.Hwnd;main_title=[string]$s.main.Title;document_view_hwnd=[long]$views[0].Hwnd;dialog_hwnd=[long]$dialog.Hwnd;upload_dialog_opened=$true;model_key=$model.key;native_model=[string]$new.native_model;new_document=[string]$new.new_document;bootstrap_path=$bootstrap;bootstrap_sha256=$startupSha;source_template_path=$startup;source_template_sha256=$startupSha;state='configured';cxob_path=$output;target_ip=$null;native_upload_performed=$false;device_transfer_verified=$false}
    $field=Get-WeinviewUploadControl ([IntPtr]$dialog.Hwnd) 2662 'Edit'
    if(-not [WeinviewUploadUi]::SetWindowText($field,$output) -or (Get-WeinviewUploadText $field) -cne $output){throw 'Original CXOB output readback differs.'}
-   $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($s.process.Id,$s.process.StartTime.ToUniversalTime().Ticks,$exe)
+   $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($s.process.Id,$s.process.StartTime.ToUniversalTime().Ticks,$exe)
    $combo=Get-WeinviewUploadControl ([IntPtr]$dialog.Hwnd) 1301 'ComboBox'
    $selected=[string]$property.ComboSelected($combo)
    if($selected -cne [string]$new.native_model){throw 'Original upload model selection differs from the newly created document.'}
@@ -269,7 +269,7 @@ function Invoke-WeinviewNativeFieldUpload($Arguments,$Installation) {
  $field=Get-WeinviewUploadControl $dialog $(if($editor){2662}else{1020}) 'Edit'
  if((Get-WeinviewUploadText $field) -cne $receipt.cxob_path){throw 'Configured CXOB output changed.'}
  if($editor){
-  $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($process.Id,$process.StartTime.ToUniversalTime().Ticks,[string]$receipt.exe_path)
+  $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($process.Id,$process.StartTime.ToUniversalTime().Ticks,[string]$receipt.exe_path)
   $combo=Get-WeinviewUploadControl $dialog 1301 'ComboBox'
   if([string]$property.ComboSelected($combo) -cne [string]$receipt.native_model){throw 'Configured original upload model changed.'}
  }
@@ -324,7 +324,7 @@ function Invoke-WeinviewNativeFieldUpload($Arguments,$Installation) {
   $leave=Get-WeinviewUploadControl $dialog 2 'Button'
   [void][WeinviewUploadUi]::SendMessage($leave,0xF5,[IntPtr]::Zero,[IntPtr]::Zero)
   if($editor){
-   $ownedNative=New-Object PLCCode.Weinview.NativeControls($process.Id,[long]$receipt.start_utc_ticks,[string]$receipt.exe_path,1500)
+   $ownedNative=New-Object PLC Engineering Suite.Weinview.NativeControls($process.Id,[long]$receipt.start_utc_ticks,[string]$receipt.exe_path,1500)
    $null=WaitFor {if(!@($ownedNative.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'}).Count){return $true}} 5
   }else{Start-Sleep -Milliseconds 300}
   $receipt.state=$observed.state

@@ -24,8 +24,8 @@ function Read-WeinviewOriginalModelLabel($Session) {
  }
  . (Join-Path $PSScriptRoot 'PlcConfigurationCandidate.ps1')
  . (Join-Path $PSScriptRoot 'NativeRibbonAction.ps1')
- $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
- $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($Session.native)
+ $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($Session.native)
  $readbackPath=[string]$Session.output_path;$readbackSha=Hash $readbackPath;$dialog=$null
  try {
  $entry=Open-WeinviewSystemParametersRibbon $Session $semantic
@@ -148,7 +148,7 @@ function New-WeinviewOriginalModelDocument($Session,$Model,[string]$Orientation,
   } 8
   $qt=@($Session.native.EnumChildControls($wizard.Hwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})
   if($qt.Count -ne 1){throw 'Unique original model picker root required'}
-  $picker=[PLCCode.Weinview.ModelCreationControls]::new($Session.native,$Session.main.Hwnd,$wizard.Hwnd,$qt[0].Hwnd,$Session.process.Id)
+  $picker=[PLC Engineering Suite.Weinview.ModelCreationControls]::new($Session.native,$Session.main.Hwnd,$wizard.Hwnd,$qt[0].Hwnd,$Session.process.Id)
   $wizardPending=$true
   $choice=$picker.Select([string]$Model.name,[string]$Model.group,(Join-Path $PSScriptRoot 'QtElementBridge.exe'))
   $nativeName=[string]$choice.Name
@@ -233,7 +233,7 @@ function Invoke-WeinviewModelCreation($Arguments,$Installation,[string]$Output) 
   $edit=@($s.native.EnumChildControls($dialogs[0].Hwnd)|Where-Object {$_.Id -eq 1001 -and $_.Class -ceq 'Edit' -and $_.Visible -and $_.Enabled})
   if($edit.Count -eq 1 -and $s.native.GetControlText($edit[0].Hwnd,4096) -ceq $preset){return $dialogs[0]}
  } 8
- $filename=[PLCCode.Weinview.ModelSaveControls]::SetFilename($s.native,$save.Hwnd,$s.main.Hwnd,$Output,$preset)
+ $filename=[PLC Engineering Suite.Weinview.ModelSaveControls]::SetFilename($s.native,$save.Hwnd,$s.main.Hwnd,$Output,$preset)
  WritePrivateJson ($prefix+'.filename.json') $filename
  $s.native.ClickButton($save.Hwnd,1,'保存(&S)')
  $s.main=WaitFor {

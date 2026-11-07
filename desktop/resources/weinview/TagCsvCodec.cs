@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class TagRow {
   public string name {get;set;}
   public string device {get;set;}

@@ -47,8 +47,8 @@ function Invoke-WeinviewBitSwitchAddition($Session,[ValidateSet('Apply')][string
   if($r[0] -lt 0 -or $r[1] -lt 0 -or $r[2] -lt 20 -or $r[3] -lt 20 -or $r[0]+$r[2] -gt $Session.window_width -or $r[1]+$r[3] -gt $Session.window_height){throw 'Rectangle must fit the actual native selected window'}
   foreach($old in $occupied){if(Overlap $r $old){throw 'Bit-switch footprint overlaps existing/requested object'}};$occupied+=,@($r)
  }
- $n=$Session.native;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
-  $sem=[PLCCode.Weinview.NativeSemanticControls]::new($n);$results=@();$tagBindings=@();$appearanceColors=@();$appearanceShapes=@();$initialDirectoryRestore=$null
+ $n=$Session.native;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+  $sem=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($n);$results=@();$tagBindings=@();$appearanceColors=@();$appearanceShapes=@();$initialDirectoryRestore=$null
  function C([long]$h,[int]$id,[string]$class){return $n.FindUniqueControlWithoutLabel($h,$id,$class)}
  function Await([scriptblock]$test,[int]$seconds){$end=[DateTime]::UtcNow.AddSeconds($seconds);do{$v=& $test;if($v){return $v};Start-Sleep -Milliseconds 50}while([DateTime]::UtcNow -lt $end);throw 'New bit-switch bounded readiness timed out'}
  $bindingIndex=0
@@ -70,7 +70,7 @@ function Invoke-WeinviewBitSwitchAddition($Session,[ValidateSet('Apply')][string
   # the address widget displays a Tag name instead of a raw address type.
   # The native Tag picker below binds and verifies the full tag address.
   if(!$binding.tag_name){
-  $types=[PLCCode.Weinview.BitAddressTypeControls]::new($n,'新增 位状态切换开关/位状态指示灯');$found=Await {$values=@();foreach($qt in @($n.EnumChildControls($h)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$v=$types.InspectAny($h,$qt.Hwnd);if($v -and @($v.Items|Where-Object {$_ -ceq $binding.address_type}).Count -eq 1){$values+=$v}};if($values.Count -gt 1){throw 'Bit address type ambiguous'};if($values.Count -eq 1){return $values[0]}} 4
+  $types=[PLC Engineering Suite.Weinview.BitAddressTypeControls]::new($n,'新增 位状态切换开关/位状态指示灯');$found=Await {$values=@();foreach($qt in @($n.EnumChildControls($h)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$v=$types.InspectAny($h,$qt.Hwnd);if($v -and @($v.Items|Where-Object {$_ -ceq $binding.address_type}).Count -eq 1){$values+=$v}};if($values.Count -gt 1){throw 'Bit address type ambiguous'};if($values.Count -eq 1){return $values[0]}} 4
   if($found.Value -cne $binding.address_type){$found=$types.SelectExact($h,$found.Hwnd,$found.Value,$binding.address_type)}
   if($p.ComboSelected($deviceCombo.Hwnd) -cne $binding.device -or $found.Value -cne $binding.address_type){throw 'Native bit device/address type differs before address write'}
   }elseif($p.ComboSelected($deviceCombo.Hwnd) -cne $binding.device){throw 'Native bit device differs before Tag selection'}
@@ -109,7 +109,7 @@ function Invoke-WeinviewBitSwitchAddition($Session,[ValidateSet('Apply')][string
    $main=@($windows|Where-Object {$_.Hwnd -eq $Session.main.Hwnd -and $_.Visible -and $_.Enabled});if($main.Count -eq 1){return $true}
   } 4
   $null=$n.EnumTopWindows()
-  $scene=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$actualBefore.screen,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
+  $scene=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$actualBefore.screen,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
   $frame=$scene.CapturePlacement()
   if(!$frame){throw 'Fresh owned placement geometry required'};$r=@($o.rect);$scene.PlaceNewObject($frame,[int]$r[0],[int]$r[1]);$scene.EndPlacement()
   $afterDirectory=Get-WeinviewWindowDirectory $Session;$newRows=@($afterDirectory.rows|Where-Object {$_.object_id -cnotin $oldIds});$expectedPrefix=if($isLamp){'^BL_[0-9]+$'}else{'^TS_[0-9]+$'};if($newRows.Count -ne 1 -or $newRows[0].kind -cne 'Bit' -or $newRows[0].object_id -cnotmatch $expectedPrefix -or @($afterDirectory.rows).Count -ne $oldIds.Count+1){throw 'Exactly one native identity matching selected bit mode required'}

@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Accessibility;
-using PLCCode.Weinview.Research;
+using PLC Engineering Suite.Weinview.Research;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class NativeAddressReplaceControls {
   [DllImport("oleacc.dll")] static extern int AccessibleObjectFromWindow(IntPtr hwnd,uint objectId,ref Guid iid,out IAccessible value);
   [DllImport("oleacc.dll")] static extern int AccessibleChildren(IAccessible parent,int start,int count,[Out,MarshalAs(UnmanagedType.LPArray,SizeParamIndex=2)] object[] children,out int obtained);

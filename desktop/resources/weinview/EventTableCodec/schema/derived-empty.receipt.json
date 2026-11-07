@@ -1,8 +1,8 @@
 {
   "operation": "delete",
-  "base": "D:\\plccode\\evidence\\weinview-integration-20261002\\research\\eventlog-reboot-read-r1\\NativeEvents-before.xls",
+  "base": "D:\\plceng\\evidence\\weinview-integration-20261002\\research\\eventlog-reboot-read-r1\\NativeEvents-before.xls",
   "base_sha256": "774C520B28B6C69C810BB14DAFCE90C39CD582320DDC1015A20E17241DAE65CA",
-  "output": "D:\\plccode\\tools\\weinview-bridge\\EventTableCodec\\schema\\derived-empty.xls",
+  "output": "D:\\plceng\\tools\\weinview-bridge\\EventTableCodec\\schema\\derived-empty.xls",
   "output_sha256": "DFDB0BDB21BA870BD46042514DDCF4C5CE0C4BF4F871850F9BDE1C3D961783B7",
   "old_data_rows": 1,
   "new_data_rows": 0,

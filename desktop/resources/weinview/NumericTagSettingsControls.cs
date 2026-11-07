@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using Accessibility;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class NumericTagSettingsControls {
   readonly NativeControls native;
   [StructLayout(LayoutKind.Sequential)] struct Rect { public int Left, Top, Right, Bottom; }

@@ -27,4 +27,4 @@ Runtime密码、用户权限、起始画面及通信需实际配置。不要自�
 
 ## 依据
 
-本机各版本Siemens PublicAPI XML和当前桥接实现；V21 `Siemens.Engineering.WinCCUnified.xml`的HmiButtonEventType与HmiIOField.IOFieldType。产品证据：`docs/hmi-compile-batching-20260924.md`，`evidence/eigen-plccode-comparison-20260925/comparison.md`。修改后的成品验证状态以本次整改记录为准，不由文档自证。
+本机各版本Siemens PublicAPI XML和当前桥接实现；V21 `Siemens.Engineering.WinCCUnified.xml`的HmiButtonEventType与HmiIOField.IOFieldType。产品证据：`docs/hmi-compile-batching-20260924.md`，`evidence/eigen-plceng-comparison-20260925/comparison.md`。修改后的成品验证状态以本次整改记录为准，不由文档自证。

@@ -33,8 +33,8 @@ function Invoke-WeinviewWindowButtonAddition($Session,[ValidateSet('Apply')][str
   if($r[0] -lt 0 -or $r[1] -lt 0 -or $r[2] -lt 20 -or $r[3] -lt 20 -or $r[0]+$r[2] -gt $Session.window_width -or $r[1]+$r[3] -gt $Session.window_height){throw 'Rectangle must fit the actual native selected window'}
   foreach($old in $occupied){if(Overlap $r $old){throw 'Button footprint overlaps existing/requested object'}};$occupied+=,@($r)
  }
- $n=$Session.native;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
-  $sem=[PLCCode.Weinview.NativeSemanticControls]::new($n);$results=@();$appearanceColors=@();$appearanceShapes=@();$initialDirectoryRestore=$null
+ $n=$Session.native;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+  $sem=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($n);$results=@();$appearanceColors=@();$appearanceShapes=@();$initialDirectoryRestore=$null
  function C([long]$h,[int]$id,[string]$class){return $n.FindUniqueControlWithoutLabel($h,$id,$class)}
  function Await([scriptblock]$test,[int]$seconds){$end=[DateTime]::UtcNow.AddSeconds($seconds);do{$v=& $test;if($v){return $v};Start-Sleep -Milliseconds 50}while([DateTime]::UtcNow -lt $end);throw 'New window-button bounded readiness timed out'}
  try{foreach($o in $objects){
@@ -48,7 +48,7 @@ function Invoke-WeinviewWindowButtonAddition($Session,[ValidateSet('Apply')][str
   if($cmt){
    if((@($p.TabNames((C $h 12320 'SysTabControl32').Hwnd)) -join '|') -cne '一般属性|安全|图片|标签'){throw 'Observed cMT new-function four-tab profile required'}
    $qt=@($n.EnumChildControls($h)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Title -ceq 'EasyBuilder Pro' -and $_.Visible -and $_.Enabled});if($qt.Count -ne 1){throw 'Unique original cMT function General page required'}
-   $targets=[PLCCode.Weinview.FunctionWindowTargetControls]::new($n,'新增 功能键',(-not [bool]$Session.owned_semantic_background))
+   $targets=[PLC Engineering Suite.Weinview.FunctionWindowTargetControls]::new($n,'新增 功能键',(-not [bool]$Session.owned_semantic_background))
    $qtBridge=Join-Path $BridgeRoot 'QtElementBridge.exe'
    $initial=$n.InvokeQtElement([long]$Session.main.Hwnd,$qtBridge,'function-read')|ConvertFrom-Json
    if($importAction){
@@ -102,7 +102,7 @@ function Invoke-WeinviewWindowButtonAddition($Session,[ValidateSet('Apply')][str
    $main=@($windows|Where-Object {$_.Hwnd -eq $Session.main.Hwnd -and $_.Visible -and $_.Enabled});if($main.Count -eq 1){return $true}
   } 4
   $null=$n.EnumTopWindows()
-  $scene=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$actualBefore.screen,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
+  $scene=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$actualBefore.screen,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
   $frame=$scene.CapturePlacement()
   if(!$frame){throw 'Fresh owned placement geometry required'};$r=@($o.rect);$scene.PlaceNewObject($frame,[int]$r[0],[int]$r[1]);$scene.EndPlacement()
   $afterDirectory=Get-WeinviewWindowDirectory $Session;$newRows=@($afterDirectory.rows|Where-Object {$_.object_id -cnotin $oldIds});if($newRows.Count -ne 1 -or $newRows[0].kind -cne 'Macro' -or @($afterDirectory.rows).Count -ne $oldIds.Count+1){throw 'Exactly one new physical FK identity required'}

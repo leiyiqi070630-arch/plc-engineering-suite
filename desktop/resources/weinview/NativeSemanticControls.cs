@@ -60,7 +60,7 @@ internal class OwnedMsaaAction {
   t.acc.accDoDefaultAction(t.child);return state;
  }
 }
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class NativeSemanticControls {
   readonly NativeControls native;
   [System.Runtime.InteropServices.DllImport("user32.dll")]static extern uint GetWindowThreadProcessId(System.IntPtr h,out uint p);

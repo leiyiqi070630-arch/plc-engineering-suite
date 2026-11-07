@@ -43,7 +43,7 @@ IEC_RESERVED_IDENTIFIERS = {
 # This is the deliberately bounded type set for generated probe values.  A
 # live signature may expose a derived/vendor type, but the generator cannot
 # invent a valid literal for it.  Such a port is rejected before any POU is
-# created, exactly like PLCCode rejects an unimplemented pattern.
+# created, exactly like PLC Engineering Suite rejects an unimplemented pattern.
 SCALAR_TYPES = {
     "BOOL", "BYTE", "WORD", "DWORD", "LWORD", "SINT", "USINT",
     "INT", "UINT", "DINT", "UDINT", "LINT", "ULINT", "REAL", "LREAL",
@@ -933,7 +933,7 @@ def validate_signature_request(signature, input_values=None, inout_values=None,
     """Validate one live signature and all generated parameter values.
 
     The result is intentionally data-only so the resident bridge can return
-    the same path/expected/actual/example/remediation contract as PLCCode.
+    the same path/expected/actual/example/remediation contract as PLC Engineering Suite.
     No default is accepted for InOut or output operands; input defaults are
     generated only for the bounded scalar set above and are still type-checked.
     ``allow_qualified_symbols`` is opt-in for native graph writers: it admits

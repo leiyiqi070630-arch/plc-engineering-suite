@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Accessibility;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class CompileLogNode {public string Path {get;set;}public int Role {get;set;}public string Name {get;set;}}
  // 421 compile export log: five index:0 links, List role33, ListItem role34.
  // Read-only, no Value/State/Action/Sort/full-tree traversal. External watchdog required.

@@ -68,9 +68,9 @@ function Invoke-WeinviewCommonObjectsAddition($Session,[ValidateSet('Apply')][st
  if($BeforeSnapshot){Assert-WeinviewAdditionSnapshots $BeforeSnapshot.screen_snapshot $beforeScreen 0}
  $before=[pscustomobject]@{screen_snapshot=$beforeScreen;alarm_displays=@();source_sha256=$SourceSha256}
  $items=@(Assert-WeinviewCommonObjectsInputs $Objects @($beforeScreen.objects).Count ([int]$Session.window_width) ([int]$Session.window_height))
- $n=$Session.native;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
- $sem=[PLCCode.Weinview.NativeSemanticControls]::new($n)
- $scene=if($Session.window_number){[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)}else{[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)}
+ $n=$Session.native;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $sem=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($n)
+ $scene=if($Session.window_number){[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)}else{[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)}
  function WaitTextNewDialog{
   $end=[DateTime]::UtcNow.AddSeconds(6)
   do{$dialogs=@($n.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'});if($dialogs.Count -gt 1 -or @($dialogs|Where-Object {$_.Title -cne '新增 文字/批注'}).Count){throw 'Unexpected modal after Text entry; preserve it.'};if($dialogs.Count -eq 1 -and $dialogs[0].Enabled){return $dialogs[0]};Start-Sleep -Milliseconds 50}while([DateTime]::UtcNow -lt $end)
@@ -94,7 +94,7 @@ function Invoke-WeinviewCommonObjectsAddition($Session,[ValidateSet('Apply')][st
     if($o.kind -ceq 'rectangle'){
      $journal.entry=Invoke-WeinviewRectangleRibbon $Session $sem;$palette=$journal.entry.palette;$journal.dialog=$palette;$journal.phase='owned_modeless_rectangle_drawing'
      $windowNumber=if($Session.window_number){[int]$Session.window_number}else{10};$windowName=if($Session.window_name){[string]$Session.window_name}else{'WINDOW_010'}
-     $drawingScene=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,$windowNumber,$windowName,[long]$palette.Hwnd,[int]$Session.window_width,[int]$Session.window_height)
+     $drawingScene=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,$windowNumber,$windowName,[long]$palette.Hwnd,[int]$Session.window_width,[int]$Session.window_height)
      $ordinaryScene=$scene;try{$scene=$drawingScene;$placement=CaptureTextPlacement}finally{$scene=$ordinaryScene}
      $drawing=$drawingScene.DrawTwoPointRectangle($placement,$o.rect[0],$o.rect[1],$o.rect[2],$o.rect[3]);$journal['drawing']=$drawing
      Start-Sleep -Milliseconds 250;$drawingScene.EndPlacement();Start-Sleep -Milliseconds 100;$drawingScene.CloseObservedDrawingPanel();$journal.phase='read_new_rectangle_identity'

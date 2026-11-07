@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class ModelSaveControls {
   [DllImport("user32.dll")] static extern IntPtr GetParent(IntPtr h);
   [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();

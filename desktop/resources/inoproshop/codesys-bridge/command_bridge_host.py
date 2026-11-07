@@ -9,7 +9,7 @@ import os
 import traceback
 from bounded_bridge_host import BoundedBridgeHost
 
-HOST_KEY = 'PLCCode.CommandBridgeHost.v1'
+HOST_KEY = 'PLC Engineering Suite.CommandBridgeHost.v1'
 _HOST = None
 
 
@@ -35,7 +35,7 @@ class CommandExecutor(object):
         self.error = None
         self.closed = False
         if domain.GetData(HOST_KEY) is not None:
-            raise RuntimeError('another PLC Code command bridge already owns this IDE')
+            raise RuntimeError('another PLC Engineering Suite command bridge already owns this IDE')
         domain.SetData(HOST_KEY, self)
 
     def ExecuteFile(self, source):

@@ -13,7 +13,7 @@ function Invoke-WeinviewTrendRibbon($Session,$Semantic) {
    if($dialogs[0].Enabled){$fields=@($Session.native.EnumChildControls($dialogs[0].Hwnd));if(@($fields|Where-Object {$_.Visible -and $_.Enabled -and $_.Id -eq 12320 -and $_.Class -ceq 'SysTabControl32'}).Count -eq 1 -and @($fields|Where-Object {$_.Visible -and $_.Enabled -and $_.Id -eq 1097 -and $_.Class -ceq 'ComboBox'}).Count -eq 1){return $dialogs[0]}}
   }
  } 6
- $identity=[PLCCode.Weinview.TrendRibbonControls]::RequireDialog($Session.native,$dialog.Hwnd,$Session.main.Hwnd,'新增 趋势图')
+ $identity=[PLC Engineering Suite.Weinview.TrendRibbonControls]::RequireDialog($Session.native,$dialog.Hwnd,$Session.main.Hwnd,'新增 趋势图')
  return [pscustomobject]@{tab_entry=$tab;semantic_items=$items;entry=$entry;dialog=$dialog;dialog_identity=$identity;native_entry_verified=$true;global_input=$false;layout_reset=$false}
 }
 function Invoke-WeinviewTrendRibbonOcr($Session,$Semantic,[ValidateSet('趋势图')][string]$Label='趋势图') {
@@ -25,7 +25,7 @@ function Invoke-WeinviewTrendRibbonOcr($Session,$Semantic,[ValidateSet('趋势�
  if([DateTime]::UtcNow -ge $totalDeadline){throw 'Ribbon readiness total deadline exceeded (15 seconds).'} 
  $path=Join-Path ([IO.Path]::GetDirectoryName($Session.output_path)) ([IO.Path]::GetFileNameWithoutExtension($Session.output_path)+'.ribbon-'+[guid]::NewGuid().ToString('N')+'.png')
  $projectSha=(Get-FileHash -LiteralPath $Session.output_path -Algorithm SHA256).Hash
- $proof=[PLCCode.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$path)
+ $proof=[PLC Engineering Suite.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$path)
  if(!$proof.Accepted){throw 'Owned Trend ribbon render unavailable; no input.'}
  Add-Type -AssemblyName System.Runtime.WindowsRuntime
  [Windows.Storage.StorageFile,Windows.Storage,ContentType=WindowsRuntime]|Out-Null
@@ -55,7 +55,7 @@ function Invoke-WeinviewTrendRibbonOcr($Session,$Semantic,[ValidateSet('趋势�
   }
   if([DateTime]::UtcNow -ge $totalDeadline){throw 'Ribbon readiness total deadline exceeded before click.'}
   Activate-WeinviewObjectRibbonMain $Session
-   $click=[PLCCode.Weinview.TrendRibbonControls]::ClickTrend($Session.native,$proof,$matches[0].x,$matches[0].y,$matches[0].label)
+   $click=[PLC Engineering Suite.Weinview.TrendRibbonControls]::ClickTrend($Session.native,$proof,$matches[0].x,$matches[0].y,$matches[0].label)
   return [pscustomobject]@{screenshot_path=$proof.Path;screenshot_sha256=$proof.Hash;ocr_label=$matches[0].label;ribbon_hwnd=$proof.Hwnd;fallback='fresh_owned_ribbon_ocr';proof=$proof;native_click=$click;foreground_verified=$true;global_input=$false;layout_reset=$false;readiness_attempts=$attempts}
  }finally{if($bitmap){$bitmap.Dispose()};$stream.Dispose()}
 }

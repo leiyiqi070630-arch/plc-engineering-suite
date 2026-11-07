@@ -1,4 +1,4 @@
-//! PLC Code 引擎入口 crate。
+//! PLC Engineering Suite 引擎入口 crate。
 //!
 //! 对外只暴露 [`run`]，由 `main.rs` 调用；内部按职责拆分到 `app`（命令分发与 bridge）
 //! 与 `conversation` / `legacy` / `raw` / `v0`（会话与协议适配）模块。

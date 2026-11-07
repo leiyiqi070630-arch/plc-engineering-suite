@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Accessibility;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class ObjectSecurityClassControls {
   readonly NativeControls native;
   [DllImport("oleacc.dll")] static extern int AccessibleObjectFromWindow(IntPtr h,uint id,ref Guid iid,out IAccessible a);

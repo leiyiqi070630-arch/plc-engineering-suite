@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class TagQtControls {
   [DllImport("user32.dll")]static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);
   [DllImport("user32.dll")]static extern IntPtr GetForegroundWindow();

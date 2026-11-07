@@ -10,11 +10,11 @@ try{
  function HashGuard {if((Get-FileHash -LiteralPath $ProjectPath -Algorithm SHA256).Hash -ine $ExpectedSha256){throw 'Project hash changed during dialog read'}}
  HashGuard
  Add-Type -AssemblyName Accessibility
- if(!('PLCCode.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'NumericAddressTypeControls.cs'),(Join-Path $PSScriptRoot 'FunctionWindowTargetControls.cs'),(Join-Path $PSScriptRoot 'BitAddressTypeControls.cs'),(Join-Path $PSScriptRoot 'ObjectSecurityClassControls.cs') -ReferencedAssemblies 'System.dll','Accessibility'}
- if(!('PLCCode.Weinview.Research.NativePropertyCandidate' -as [type]) -or !('PLCCode.Weinview.NumericAddressTypeControls' -as [type])){throw 'Joint native/property/address-type dependencies required'}
- if(!('PLCCode.Weinview.FunctionWindowTargetControls' -as [type])){throw 'Joint native/function-window dependencies required'}
- if(!('PLCCode.Weinview.NumericTagSettingsControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NumericTagSettingsControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
- $n=[PLCCode.Weinview.NativeControls]::new($i.Pid,$i.CreationTicks,$i.Exe,800);$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($i.Pid,$i.CreationTicks,$i.Exe)
+ if(!('PLC Engineering Suite.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'NumericAddressTypeControls.cs'),(Join-Path $PSScriptRoot 'FunctionWindowTargetControls.cs'),(Join-Path $PSScriptRoot 'BitAddressTypeControls.cs'),(Join-Path $PSScriptRoot 'ObjectSecurityClassControls.cs') -ReferencedAssemblies 'System.dll','Accessibility'}
+ if(!('PLC Engineering Suite.Weinview.Research.NativePropertyCandidate' -as [type]) -or !('PLC Engineering Suite.Weinview.NumericAddressTypeControls' -as [type])){throw 'Joint native/property/address-type dependencies required'}
+ if(!('PLC Engineering Suite.Weinview.FunctionWindowTargetControls' -as [type])){throw 'Joint native/function-window dependencies required'}
+ if(!('PLC Engineering Suite.Weinview.NumericTagSettingsControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NumericTagSettingsControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ $n=[PLC Engineering Suite.Weinview.NativeControls]::new($i.Pid,$i.CreationTicks,$i.Exe,800);$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($i.Pid,$i.CreationTicks,$i.Exe)
  function DialogGuard {
   $m=@($n.EnumTopWindows()|Where-Object {$_.Class -ceq 'EasyBuilderPro' -and $_.Visible -and $_.Title.Contains([IO.Path]::GetFileNameWithoutExtension($ProjectPath))});if($m.Count -ne 1){throw 'Unique owned project main required'}
   $ds=@($n.EnumTopWindows()|Where-Object {$_.Class -ceq '#32770' -and $_.Visible -and $_.Enabled});if($ds.Count -ne 1 -or $ds[0].Hwnd -ne $DialogHwnd){throw 'Unique actual owned modal required'};return $ds[0]
@@ -22,8 +22,8 @@ try{
  function ReadSecurityClassPage {
   $tab=$n.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32');if(@($p.TabNames($tab.Hwnd)|Where-Object {$_ -ceq '安全'}).Count -ne 1){throw 'Object does not expose an original Security tab'}
   $p.SelectTabExact($tab.Hwnd,'安全')
-  if(!('PLCCode.Weinview.ObjectSecurityClassControls' -as [type])){throw 'Joint native/security class dependencies required'}
-  return ([PLCCode.Weinview.ObjectSecurityClassControls]::new($n)).ReadClass($DialogHwnd)
+  if(!('PLC Engineering Suite.Weinview.ObjectSecurityClassControls' -as [type])){throw 'Joint native/security class dependencies required'}
+  return ([PLC Engineering Suite.Weinview.ObjectSecurityClassControls]::new($n)).ReadClass($DialogHwnd)
  }
  $d=DialogGuard
  if($d.Title -ceq '项目选单的属性'){
@@ -37,7 +37,7 @@ try{
   if($ReadSecurityClass){$r.security_class=ReadSecurityClassPage};return
  }
  if($d.Title -ceq '趋势图的属性'){
-  if(!('PLCCode.Weinview.TrendRibbonControls' -as [type])){throw 'Joint native Trend channel reader required'}
+  if(!('PLC Engineering Suite.Weinview.TrendRibbonControls' -as [type])){throw 'Joint native Trend channel reader required'}
   $main=@($n.EnumTopWindows()|Where-Object {$_.Class -ceq 'EasyBuilderPro' -and $_.Visible -and $_.Title.Contains([IO.Path]::GetFileNameWithoutExtension($ProjectPath))});if($main.Count -ne 1){throw 'Unique owned Trend main required'};$mainHwnd=[long]$main[0].Hwnd
   function TrendControl([int]$id,[string]$class){$current=DialogGuard;if($current.Title -cne '趋势图的属性'){throw 'Trend property title changed'};$controls=@($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Id -eq $id -and $_.Class -ceq $class -and $_.Visible -and $_.Enabled});if($controls.Count -ne 1){throw ('Finite Trend control not unique/interactive: '+$id)};return $controls[0]}
   function TrendInteger([int]$id){$value=0;$raw=$n.GetControlText((TrendControl $id 'Edit').Hwnd,64);if(![int]::TryParse($raw,[ref]$value)){throw ('Actual Trend integer required: '+$id)};return [int]$value}
@@ -57,9 +57,9 @@ try{
   $range=TrendCheckbox 1688 '取自寄存器';$minimum=TrendRange 1297;$maximum=TrendRange 1298;$widthText=$p.ComboSelected((TrendControl 1299 'ComboBox').Hwnd);$width=0;if(![int]::TryParse($widthText,[ref]$width) -or $width -le 0){throw 'Actual Trend positive line width integer required'}
   $channelControl=TrendCheckbox 1689 '启用'
   $channelYAxisEvidence=$null
-   if($isCmt){$observed=@([PLCCode.Weinview.TrendRibbonControls]::ReadObservedChannels($n,$DialogHwnd,$mainHwnd,'趋势图的属性'));$labels=[string[]]@($observed|ForEach-Object {$_.label});$types=[string[]]@($observed|ForEach-Object {$_.data_type});$r.sampling_channels_enabled_evidence=[ordered]@{channels=@($observed|ForEach-Object {[pscustomobject]@{row=[int]$_.row;label=[string]$_.label;data_type=[string]$_.data_type;enabled=[bool]$_.enabled}});all_enabled=(@($observed|Where-Object {!$_.enabled}).Count -eq 0)}
-   $ranges=@([PLCCode.Weinview.TrendRibbonControls]::ReadChannelRanges($n,$DialogHwnd,$mainHwnd,'趋势图的属性',$labels,$types));$minimum=[double]$ranges[0].minimum;$maximum=[double]$ranges[0].maximum
-   $p.SelectTabExact($tab.Hwnd,'Y 轴');$axes=@([PLCCode.Weinview.TrendRibbonControls]::ReadChannelAxes($n,$DialogHwnd,$mainHwnd,'趋势图的属性',$labels,$types))
+   if($isCmt){$observed=@([PLC Engineering Suite.Weinview.TrendRibbonControls]::ReadObservedChannels($n,$DialogHwnd,$mainHwnd,'趋势图的属性'));$labels=[string[]]@($observed|ForEach-Object {$_.label});$types=[string[]]@($observed|ForEach-Object {$_.data_type});$r.sampling_channels_enabled_evidence=[ordered]@{channels=@($observed|ForEach-Object {[pscustomobject]@{row=[int]$_.row;label=[string]$_.label;data_type=[string]$_.data_type;enabled=[bool]$_.enabled}});all_enabled=(@($observed|Where-Object {!$_.enabled}).Count -eq 0)}
+   $ranges=@([PLC Engineering Suite.Weinview.TrendRibbonControls]::ReadChannelRanges($n,$DialogHwnd,$mainHwnd,'趋势图的属性',$labels,$types));$minimum=[double]$ranges[0].minimum;$maximum=[double]$ranges[0].maximum
+   $p.SelectTabExact($tab.Hwnd,'Y 轴');$axes=@([PLC Engineering Suite.Weinview.TrendRibbonControls]::ReadChannelAxes($n,$DialogHwnd,$mainHwnd,'趋势图的属性',$labels,$types))
    $optionControls=@($n.EnumChildControls($DialogHwnd));$hideControls=@($optionControls|Where-Object {$_.Id -eq 1332 -and $_.Class -ceq 'Button'});$alignmentControls=@($optionControls|Where-Object {$_.Id -eq 1370 -and $_.Class -ceq 'ComboBox'})
    if($hideControls.Count -gt 1 -or $alignmentControls.Count -gt 1){throw 'Trend Y axis option controls are ambiguous.'}
    if($hideControls.Count -eq 1 -and $hideControls[0].Title -cne '通道数据不显示时隐藏通道 Y 刻度'){throw 'Actual Trend Y axis hide option label changed.'}
@@ -92,7 +92,7 @@ try{
   $tab=$n.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')
   if((@($p.TabNames($tab.Hwnd)) -join '|') -cne '图片|安全|轮廓'){throw 'Observed existing Picture property tabs required.'}
   $rect=& (Join-Path $PSScriptRoot 'NativeRectangleCandidate.ps1') -Action Read -IdentityPath $IdentityPath -DialogHwnd $DialogHwnd -ProjectPath $ProjectPath|ConvertFrom-Json
-  if(!('PLCCode.Weinview.NativeResourceReuseControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeResourceReuseControls.cs') -ReferencedAssemblies 'System.dll','System.Drawing.dll','Accessibility.dll'}
+  if(!('PLC Engineering Suite.Weinview.NativeResourceReuseControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeResourceReuseControls.cs') -ReferencedAssemblies 'System.dll','System.Drawing.dll','Accessibility.dll'}
   . (Join-Path $PSScriptRoot 'NativeResourceReuseOperation.ps1')
   $manager=$null
   try{
@@ -152,7 +152,7 @@ try{
  if($cmtFunction){
   if((@($p.TabNames((C 12320 'SysTabControl32').Hwnd)) -join '|') -cne '一般属性|安全|图片|标签|轮廓'){throw 'Observed cMT existing function five-tab profile required'}
   $qt=@($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Title -ceq 'EasyBuilder Pro' -and $_.Visible -and $_.Enabled});if($qt.Count -ne 1){throw 'Unique cMT function General page required'}
-  $tc=[PLCCode.Weinview.FunctionWindowTargetControls]::new($n);$cmtType=$tc.InspectCmtFunctionType($DialogHwnd,$qt[0].Hwnd)
+  $tc=[PLC Engineering Suite.Weinview.FunctionWindowTargetControls]::new($n);$cmtType=$tc.InspectCmtFunctionType($DialogHwnd,$qt[0].Hwnd)
   if($cmtType -ceq '窗口'){$main=@($n.EnumTopWindows()|Where-Object {$_.Class -ceq 'EasyBuilderPro' -and $_.Visible});if($main.Count -ne 1){throw 'Unique cMT editor required'};$cmtNavigation=$n.InvokeQtElement($main[0].Hwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'),'function-read')|ConvertFrom-Json;$description=$cmtNavigation.Description}
   else{$cmtAccountImport=$tc.InspectCmtAccountImport($DialogHwnd,$qt[0].Hwnd);$description=$cmtAccountImport.Description}
  }else{$description=Text 1174 'Edit'}
@@ -168,20 +168,20 @@ try{
   # only a reason to inspect the original Address page, never Tag proof itself.
   $directAddress=($addressEdits.Count -eq 1 -and [bool]$addressEdits[0].Enabled)
   if(!$directAddress){
-   $addressDialog=([PLCCode.Weinview.NumericTagSettingsControls]::new($n)).OpenAddress($DialogHwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'))
+   $addressDialog=([PLC Engineering Suite.Weinview.NumericTagSettingsControls]::new($n)).OpenAddress($DialogHwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'))
    try{
    $userTag=$n.FindUniqueControl($addressDialog,1560,'Button','用户自定义标签');$tagState=$n.GetCheckboxState($userTag.Hwnd)
    if($tagState -notin @(0,1)){throw 'Native numeric User-defined Tag state unavailable'}
    if($tagState -ne 1){throw 'Disabled numeric address editor without native User-defined Tag selection'}
    if($tagState -eq 1){
-    $selectors=@();$tagSelector=[PLCCode.Weinview.NumericAddressTypeControls]::new($n,'地址')
+    $selectors=@();$tagSelector=[PLC Engineering Suite.Weinview.NumericAddressTypeControls]::new($n,'地址')
     foreach($qt in @($n.EnumChildControls($addressDialog)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$snapshot=$tagSelector.InspectAddressTagDisplayAny($addressDialog,$qt.Hwnd);if($snapshot){$selectors+=,$snapshot}}
     if($selectors.Count -ne 1){throw 'Unique native numeric Tag selector required'}
     $nativeTagDisplay=[string]$selectors[0].NativeValue
-    if(!$TagEvidence -or !('PLCCode.Weinview.TagCsvCodec' -as [type])){if(!('PLCCode.Weinview.TagCsvCodec' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'TagCsvCodec.cs') -ReferencedAssemblies 'System.dll'};if(!$TagEvidence){throw 'Same-project native Tag CSV required for bound numeric read'}}
+    if(!$TagEvidence -or !('PLC Engineering Suite.Weinview.TagCsvCodec' -as [type])){if(!('PLC Engineering Suite.Weinview.TagCsvCodec' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'TagCsvCodec.cs') -ReferencedAssemblies 'System.dll'};if(!$TagEvidence){throw 'Same-project native Tag CSV required for bound numeric read'}}
     $csv=[string]$TagEvidence.native_csv_path;$csvHash=[string]$TagEvidence.tags_sha256
     if(!$csv -or !(Test-Path -LiteralPath $csv -PathType Leaf) -or $csvHash -notmatch '^[a-fA-F0-9]{64}$' -or (Get-FileHash -LiteralPath $csv -Algorithm SHA256).Hash -ine $csvHash){throw 'Bound numeric Tag CSV evidence missing or changed'}
-    $rows=[PLCCode.Weinview.TagCsvCodec]::Read($csv);[PLCCode.Weinview.TagCsvCodec]::AssertSame([PLCCode.Weinview.TagRow[]]$TagEvidence.tags,[PLCCode.Weinview.TagRow[]]$rows)
+    $rows=[PLC Engineering Suite.Weinview.TagCsvCodec]::Read($csv);[PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame([PLC Engineering Suite.Weinview.TagRow[]]$TagEvidence.tags,[PLC Engineering Suite.Weinview.TagRow[]]$rows)
     $matches=@($rows|Where-Object {$nativeDisplay=if([string]::IsNullOrEmpty([string]$_.comment)){[string]$_.name}else{([string]$_.name)+' ('+([string]$_.comment)+')'};$nativeDisplay -ceq $nativeTagDisplay});if($matches.Count -ne 1){throw ('Native numeric Tag display absent or ambiguous in same-project CSV: '+$nativeTagDisplay)};$tagRow=$matches[0];$tagName=[string]$tagRow.name
     $confirmed=$tagSelector.ConfirmAddressTagDisplay($addressDialog,$selectors[0].Hwnd,$tagName,$nativeTagDisplay)
     if($n.GetCheckboxState($userTag.Hwnd) -ne 1 -or !$confirmed -or $confirmed.Value -cne $tagName){throw 'Native numeric Tag selector changed during read'}
@@ -201,10 +201,10 @@ try{
     }
    }
    $null=DialogGuard
-   ([PLCCode.Weinview.NumericTagSettingsControls]::new($n)).RestorePropertyFocus($DialogHwnd,$addressDialog)
+   ([PLC Engineering Suite.Weinview.NumericTagSettingsControls]::new($n)).RestorePropertyFocus($DialogHwnd,$addressDialog)
   }
   if($tagRow){$a.data=@{device=[string]$tagRow.device;address_type=[string]$tagRow.address_type;address=[string]$tagRow.address;tag_name=$tagName;input_enabled=$false;native_tag_csv_sha256=$csvHash};$state=$n.GetCheckboxState((C 1206 'Button').Hwnd);if($state -notin @(0,1)){throw 'Numeric input checkbox state invalid'};$a.data.input_enabled=($state -eq 1)}
-  else{$tc=[PLCCode.Weinview.NumericAddressTypeControls]::new($n);$end=[DateTime]::UtcNow.AddSeconds(3);$found=@()
+  else{$tc=[PLC Engineering Suite.Weinview.NumericAddressTypeControls]::new($n);$end=[DateTime]::UtcNow.AddSeconds(3);$found=@()
   do{$found=@();$qts=@($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled});if($qts.Count -gt 8){throw 'Numeric Qt count bound exceeded'}
    foreach($q in $qts){$value=$tc.InspectAny($DialogHwnd,$q.Hwnd);if($value){$found+=$value}}
    if($found.Count -gt 1){throw 'Numeric address-type combo ambiguous'};if($found.Count -eq 1){break};Start-Sleep -Milliseconds 50
@@ -226,19 +226,19 @@ try{
   $bitDirect=($bitAddressEdits.Count -eq 1 -and [bool]$bitAddressEdits[0].Enabled)
   $bitTagRow=$null;$bitTagName=$null
   if(!$bitDirect){
-   $addressDialog=([PLCCode.Weinview.NumericTagSettingsControls]::new($n)).OpenAddress($DialogHwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'))
+   $addressDialog=([PLC Engineering Suite.Weinview.NumericTagSettingsControls]::new($n)).OpenAddress($DialogHwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'))
    try{
     $userTag=$n.FindUniqueControl($addressDialog,1560,'Button','用户自定义标签')
     if($n.GetCheckboxState($userTag.Hwnd) -ne 1){throw 'Disabled bit address editor without native User-defined Tag selection'}
-    $selectors=@();$tagSelector=[PLCCode.Weinview.NumericAddressTypeControls]::new($n,'地址')
+    $selectors=@();$tagSelector=[PLC Engineering Suite.Weinview.NumericAddressTypeControls]::new($n,'地址')
     foreach($qt in @($n.EnumChildControls($addressDialog)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$snapshot=$tagSelector.InspectAddressTagDisplayAny($addressDialog,$qt.Hwnd);if($snapshot){$selectors+=,$snapshot}}
     if($selectors.Count -ne 1){throw 'Unique native bit Tag selector required'}
     $nativeTagDisplay=[string]$selectors[0].NativeValue
     if(!$TagEvidence){throw 'Same-project native Tag CSV required for bound bit read'}
-    if(!('PLCCode.Weinview.TagCsvCodec' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'TagCsvCodec.cs') -ReferencedAssemblies 'System.dll'}
+    if(!('PLC Engineering Suite.Weinview.TagCsvCodec' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'TagCsvCodec.cs') -ReferencedAssemblies 'System.dll'}
     $csv=[string]$TagEvidence.native_csv_path;$csvHash=[string]$TagEvidence.tags_sha256
     if(!$csv -or !(Test-Path -LiteralPath $csv -PathType Leaf) -or $csvHash -notmatch '^[A-Fa-f0-9]{64}$' -or (Get-FileHash -LiteralPath $csv -Algorithm SHA256).Hash -ine $csvHash){throw 'Bound bit Tag CSV evidence missing or changed'}
-    $rows=[PLCCode.Weinview.TagCsvCodec]::Read($csv);[PLCCode.Weinview.TagCsvCodec]::AssertSame([PLCCode.Weinview.TagRow[]]$TagEvidence.tags,[PLCCode.Weinview.TagRow[]]$rows)
+    $rows=[PLC Engineering Suite.Weinview.TagCsvCodec]::Read($csv);[PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame([PLC Engineering Suite.Weinview.TagRow[]]$TagEvidence.tags,[PLC Engineering Suite.Weinview.TagRow[]]$rows)
     $matches=@($rows|Where-Object {$display=if([string]::IsNullOrEmpty([string]$_.comment)){[string]$_.name}else{([string]$_.name)+' ('+([string]$_.comment)+')'};$display -ceq $nativeTagDisplay})
     if($matches.Count -ne 1){throw 'Native bit Tag display absent or ambiguous in same-project CSV'}
     $bitTagRow=$matches[0];$bitTagName=[string]$bitTagRow.name
@@ -258,12 +258,12 @@ try{
     }
    }
    $null=DialogGuard
-   ([PLCCode.Weinview.NumericTagSettingsControls]::new($n)).RestorePropertyFocus($DialogHwnd,$addressDialog)
+   ([PLC Engineering Suite.Weinview.NumericTagSettingsControls]::new($n)).RestorePropertyFocus($DialogHwnd,$addressDialog)
   }
   if($bitTagRow){$device=[string]$bitTagRow.device;$addressType=[string]$bitTagRow.address_type;$bitAddress=[string]$bitTagRow.address}
   else{
   if(!$device -or @($p.ComboItems((C 1646 'ComboBox').Hwnd)|Where-Object {$_ -ceq $device}).Count -ne 1){throw 'Actual native bit device absent from project choices'}
-  $tc=[PLCCode.Weinview.BitAddressTypeControls]::new($n,$d.Title);$found=@();foreach($qt in @($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$v=$tc.InspectAny($DialogHwnd,$qt.Hwnd);if($v){$found+=$v}}
+  $tc=[PLC Engineering Suite.Weinview.BitAddressTypeControls]::new($n,$d.Title);$found=@();foreach($qt in @($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$v=$tc.InspectAny($DialogHwnd,$qt.Hwnd);if($v){$found+=$v}}
   if($found.Count -ne 1){$r.status='unsupported';$r.unsupported_reason='bit-address-type-ambiguous';return}
   $addressType=[string]$found[0].Value
   if($device -ceq 'Local HMI' -and $addressType -cne 'LB'){$r.status='unsupported';$r.unsupported_reason='bit-local-type-not-LB';return}

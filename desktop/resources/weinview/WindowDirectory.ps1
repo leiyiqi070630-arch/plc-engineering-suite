@@ -1,6 +1,6 @@
 ﻿# Dot-source only. Caller owns GUI lifecycle and serial execution.
 function Initialize-WeinviewDirectoryTypes {
- if(-not ('PLCCode.Weinview.Research.WindowTreeControls' -as [type])){
+ if(-not ('PLC Engineering Suite.Weinview.Research.WindowTreeControls' -as [type])){
   Add-Type -AssemblyName Accessibility
   Add-Type -Path @((Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'WindowTreeControls.cs')) -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)
  }
@@ -10,7 +10,7 @@ function Get-WeinviewDirectoryBinding($Session){
  $id=Get-Content -LiteralPath $Session.identity_path -Raw -Encoding UTF8|ConvertFrom-Json
  if([IO.Path]::GetFullPath($id.Project) -ine [IO.Path]::GetFullPath($Session.project_path) -or $id.Exe -ine $Session.exe_path){throw 'Directory session project/exe mismatch'}
  $main=if($Session.main.Hwnd){[long]$Session.main.Hwnd}else{[long]$Session.main}
- $tree=[PLCCode.Weinview.Research.WindowTreeControls]::new([int]$id.Pid,[long]$id.CreationTicks,[string]$id.Exe,$main,$false)
+ $tree=[PLC Engineering Suite.Weinview.Research.WindowTreeControls]::new([int]$id.Pid,[long]$id.CreationTicks,[string]$id.Exe,$main,$false)
  $children=@($Session.native.EnumChildControls($main))
  $bars=@($children|Where-Object {$_.Title -ceq '目录树' -and $_.Class -like 'BCGPControlBar:*'})
  $leaves=@();foreach($candidate in $bars){$descendants=@($Session.native.EnumChildControls($candidate.Hwnd));$nested=@($bars|Where-Object {$_.Hwnd -ne $candidate.Hwnd -and $_.Hwnd -in @($descendants.Hwnd)});if($nested.Count -eq 0){$leaves+=$candidate}}

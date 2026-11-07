@@ -38,7 +38,7 @@ function Assert-WeinviewSimulationAlarmArguments($Arguments,[string]$BridgeRoot,
    $currentWindow=Read-WeinviewCmtAlarmWindow $context
   }finally{Set-WeinviewCmtAlarmVisibility $registered $initialWindows $initialWindows.diagnoser.Visible $initialWindows.main.Visible}
  }else{$context=Get-WeinviewValuesSession $root $Arguments.session_id}
- $metadataPath=Under ($context.source+'.plccode-compile.json') $root
+ $metadataPath=Under ($context.source+'.plceng-compile.json') $root
  $metadata=Read-WeinviewSimulationJson $metadataPath;$metadataKeys=@($metadata.PSObject.Properties.Name)
  $required=@('schema','kind','project_path','project_sha256','artifact_path','artifact_sha256','artifact_bytes','compile_scope','error_count','warning_count','normal_main_exit_verified','source_path','source_sha256','created_utc')
  if($metadataKeys.Count -ne 14 -or @($required|Where-Object {$_ -cnotin $metadataKeys}).Count -or $metadata.schema -ne 1 -or $metadata.kind -cne 'weinview-owned-whole-compile' -or $metadata.compile_scope -cne 'whole_project' -or $metadata.error_count -ne 0 -or $metadata.normal_main_exit_verified -ne $true -or ($metadata.warning_count -isnot [int] -and $metadata.warning_count -isnot [long]) -or $metadata.warning_count -lt 0 -or $metadata.created_utc -isnot [string] -or !$metadata.created_utc){throw 'Original whole-project compile metadata required.'}
@@ -104,15 +104,15 @@ function Get-WeinviewAlarmLatestEvent($Events,[string]$Message,[int]$Category) {
  return $found[-1]
 }
 function Read-WeinviewAlarmRuntimeFrame($Binding,[string]$ImagePath) {
- $context=$Binding.context;$native=New-Object PLCCode.Weinview.NativeControls([int]$context.gui.pid,[long]$context.gui.creation_utc_ticks,[string]$context.gui.exe_path,1000)
- [PLCCode.Weinview.RuntimeAlarmControls]::PrepareCallerDpi()
+ $context=$Binding.context;$native=New-Object PLC Engineering Suite.Weinview.NativeControls([int]$context.gui.pid,[long]$context.gui.creation_utc_ticks,[string]$context.gui.exe_path,1000)
+ [PLC Engineering Suite.Weinview.RuntimeAlarmControls]::PrepareCallerDpi()
  $tops=@($native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Enabled})
  if(@($native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'}).Count){throw 'Unknown owned runtime modal; no input.'}
- $canvases=@();foreach($top in $tops){foreach($child in @($native.EnumChildControls($top.Hwnd))){if($top.Class -ceq 'fltk' -and $child.Visible -and $child.Enabled -and $child.Class -ceq 'fltk' -and [PLCCode.Weinview.RuntimeAlarmControls]::Is800Canvas($child.Hwnd,[int]$context.gui.pid)){$canvases+=@{main=$top;canvas=$child}}}}
+ $canvases=@();foreach($top in $tops){foreach($child in @($native.EnumChildControls($top.Hwnd))){if($top.Class -ceq 'fltk' -and $child.Visible -and $child.Enabled -and $child.Class -ceq 'fltk' -and [PLC Engineering Suite.Weinview.RuntimeAlarmControls]::Is800Canvas($child.Hwnd,[int]$context.gui.pid)){$canvases+=@{main=$top;canvas=$child}}}}
  if($canvases.Count -ne 1){throw 'Unique actual original800x480 fltk runtime canvas required.'}
- $main=$canvases[0].main;$canvas=$canvases[0].canvas;$capture=[PLCCode.Weinview.RuntimeAlarmControls]::Capture($canvas.Hwnd,[int]$context.gui.pid,$ImagePath)
+ $main=$canvases[0].main;$canvas=$canvases[0].canvas;$capture=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::Capture($canvas.Hwnd,[int]$context.gui.pid,$ImagePath)
  if(!$capture.accepted){throw 'Owned runtime PrintWindow capture was not accepted.'}
- return @{captured_utc=[DateTime]::UtcNow.ToString('o');gui_identity=$context.gui;com_identity=$context.com;main_hwnd=$main.Hwnd;canvas_hwnd=$canvas.Hwnd;canvas_client_bounds=@(0,0,800,480);image_path=$ImagePath;image_sha256=(Hash $ImagePath);capture=$capture;msaa_canvas=[PLCCode.Weinview.RuntimeAlarmControls]::Msaa($canvas.Hwnd,[int]$context.gui.pid);uia_canvas=[PLCCode.Weinview.RuntimeAlarmControls]::Uia($canvas.Hwnd,[int]$context.gui.pid);msaa_main=[PLCCode.Weinview.RuntimeAlarmControls]::Msaa($main.Hwnd,[int]$context.gui.pid);method=$null;message=$null;al_rect=@($Binding.actual.rect);target=$null;tokens=@();semantic_matches=@()}
+ return @{captured_utc=[DateTime]::UtcNow.ToString('o');gui_identity=$context.gui;com_identity=$context.com;main_hwnd=$main.Hwnd;canvas_hwnd=$canvas.Hwnd;canvas_client_bounds=@(0,0,800,480);image_path=$ImagePath;image_sha256=(Hash $ImagePath);capture=$capture;msaa_canvas=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::Msaa($canvas.Hwnd,[int]$context.gui.pid);uia_canvas=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::Uia($canvas.Hwnd,[int]$context.gui.pid);msaa_main=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::Msaa($main.Hwnd,[int]$context.gui.pid);method=$null;message=$null;al_rect=@($Binding.actual.rect);target=$null;tokens=@();semantic_matches=@()}
 }
 function Find-WeinviewAlarmNativeRow($Frame,[string]$Message) {
  if($Frame.msaa_canvas.truncated -or $Frame.uia_canvas.truncated -or ($Frame.msaa_canvas.provider_available -and $Frame.msaa_canvas.error) -or ($Frame.uia_canvas.provider_available -and $Frame.uia_canvas.error)){throw 'Incomplete actual runtime canvas tree; cannot prove a unique row.'}
@@ -121,7 +121,7 @@ function Find-WeinviewAlarmNativeRow($Frame,[string]$Message) {
   foreach($node in @($entry.data.rows)){
    if($node.name -cne $Message -and $node.value -cne $Message){continue}
    if($entry.method -ceq 'native_msaa_row' -and ([int]$node.state -band 0x18001)){throw 'Actual named alarm row unavailable; no OCR substitution.'}
-   $bounds=[PLCCode.Weinview.RuntimeAlarmControls]::ToClientBounds($Frame.canvas_hwnd,[int]$Frame.gui_identity.pid,[int[]]$node.bounds)
+   $bounds=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::ToClientBounds($Frame.canvas_hwnd,[int]$Frame.gui_identity.pid,[int[]]$node.bounds)
    if($bounds[0] -lt $al[0] -or $bounds[1] -lt $al[1] -or $bounds[2] -gt $al[0]+$al[2] -or $bounds[3] -gt $al[1]+$al[3]){continue}
    $key=$bounds -join ',';if(!$dedup.ContainsKey($key)){$dedup[$key]=$true;$matches+=@{method=$entry.method;node=$node;label=$Message;bounds=$bounds;x=[int](($bounds[0]+$bounds[2])/2);y=[int](($bounds[1]+$bounds[3])/2)}}
   }
@@ -175,7 +175,7 @@ function Invoke-WeinviewSimulationAlarmAck($Arguments,$Installation,[string]$Bri
  if($binding.is_cmt){return (Invoke-WeinviewCmtSimulationAlarmAck $Arguments $Installation $BridgeRoot $binding)}
  if(!$Installation.profile_421 -or $Installation.signature_status -cne 'Valid'){throw 'Signed pinned421 installation required.'}
  $converter=Join-Path ([IO.Path]::GetDirectoryName($Installation.exe_path)) 'EasyConverter.exe'
- $mutex=New-Object Threading.Mutex($false,'Local\PLCCode.Weinview.OfflineSimulation.421');$locked=$false;$record=$null;$journal=$null;$click=$null
+ $mutex=New-Object Threading.Mutex($false,'Local\PLC Engineering Suite.Weinview.OfflineSimulation.421');$locked=$false;$record=$null;$journal=$null;$click=$null
  try{
   try{$locked=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{$locked=$true};if(!$locked){throw 'weinview_simulation_busy: Another lifecycle/value/alarm operation is active.'}
   $binding=Assert-WeinviewSimulationAlarmArguments $Arguments $BridgeRoot
@@ -204,7 +204,7 @@ function Invoke-WeinviewSimulationAlarmAck($Arguments,$Installation,[string]$Bri
   Write-WeinviewSimulationJson $intent @{session_id=$Arguments.session_id;compile_metadata_path=$binding.metadata_path;compile_metadata_sha256=$binding.metadata_sha256;alarm_snapshot_path=$binding.snapshot_path;alarm_snapshot_sha256=$binding.snapshot_sha256;gui_identity=$binding.context.gui;row_evidence=$frame;latest_before=$latestBefore;confirmation_value=$Arguments.confirmation_value;confirmation_signed16=$binding.confirmation_signed16;output_address=$binding.output_address;input_performed=$false;native_ack_verified=$false;repeat_input=$false;global_input=$false}
   $intentSha=Hash $intent;$record.phase='single_row_input_pending';$record.input_performed=$null;Write-WeinviewSimulationJson $journal $record
   $captured=[DateTime]::Parse($frame.captured_utc).ToUniversalTime();$target=$frame.target;$gui=$binding.context.gui
-  $click=[PLCCode.Weinview.RuntimeAlarmControls]::Click($frame.canvas_hwnd,$frame.main_hwnd,[int]$gui.pid,[long]$gui.creation_utc_ticks,$gui.exe_path,$gui.exe_sha256,[int]$target.x,[int]$target.y,[int[]]$frame.al_rect,[int[]]$target.bounds,$frame.image_path,$frame.image_sha256,$captured.Ticks)
+  $click=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::Click($frame.canvas_hwnd,$frame.main_hwnd,[int]$gui.pid,[long]$gui.creation_utc_ticks,$gui.exe_path,$gui.exe_sha256,[int]$target.x,[int]$target.y,[int[]]$frame.al_rect,[int[]]$target.bounds,$frame.image_path,$frame.image_sha256,$captured.Ticks)
   $record.click_evidence=$click;$record.input_performed=$true;$record.phase='after_values';Write-WeinviewSimulationJson $journal $record
   $afterValues=Invoke-WeinviewSimulationValues $valueArguments $Installation;$record.after_values=$afterValues
   $word=@($afterValues.items)[0];if(@($word.observed_values).Count -ne 2 -or $word.value -ne $binding.confirmation_signed16 -or @($word.observed_values|Where-Object {$_ -ne $binding.confirmation_signed16}).Count){throw 'Single row input posted, but actual dual-frame confirmation output did not match; outcome possible, no retry.'}
@@ -233,18 +233,18 @@ function Invoke-WeinviewSimulationAlarmAck($Arguments,$Installation,[string]$Bri
 }
 
 function Initialize-WeinviewCmtAlarmTypes([string]$BridgeRoot) {
- if(!('PLCCode.Weinview.CmtObjectValuesControls' -as [type])){
+ if(!('PLC Engineering Suite.Weinview.CmtObjectValuesControls' -as [type])){
   Add-Type -AssemblyName Accessibility
   Add-Type -Path @((Join-Path $BridgeRoot 'NativeControls.cs'),(Join-Path $BridgeRoot 'NativePropertyCandidate.cs'),(Join-Path $BridgeRoot 'EasyWatchValuesControls.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll'
  }
- if(!('PLCCode.Weinview.RuntimeAlarmControls' -as [type])){
+ if(!('PLC Engineering Suite.Weinview.RuntimeAlarmControls' -as [type])){
   $wpf='C:\Windows\Microsoft.NET\Framework64\v4.0.30319\WPF'
   Add-Type -Path (Join-Path $BridgeRoot 'RuntimeAlarmControls.cs') -ReferencedAssemblies @('System.dll','System.Drawing.dll','Accessibility.dll',(Join-Path $wpf 'UIAutomationClient.dll'),(Join-Path $wpf 'UIAutomationTypes.dll'),(Join-Path $wpf 'WindowsBase.dll'))
  }
 }
 function Set-WeinviewCmtAlarmVisibility($Session,$Windows,[bool]$ShowDiagnoser,[bool]$ShowMain) {
  $viewer=@($Session.processes|Where-Object {[IO.Path]::GetFileName($_.exe_path) -ceq 'cMTViewer.exe'})[0]
- [PLCCode.Weinview.RuntimeAlarmControls]::CmtVisibility($Windows.main.Hwnd,$Windows.diagnoser.Hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,$viewer.exe_path,$viewer.exe_sha256,$ShowMain,$ShowDiagnoser)
+ [PLC Engineering Suite.Weinview.RuntimeAlarmControls]::CmtVisibility($Windows.main.Hwnd,$Windows.diagnoser.Hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,$viewer.exe_path,$viewer.exe_sha256,$ShowMain,$ShowDiagnoser)
 }
 function Convert-WeinviewCmtAlarmWindowSample($Observation) {
  $raw=ConvertTo-Json -InputObject $Observation.tree -Depth 4 -Compress
@@ -252,7 +252,7 @@ function Convert-WeinviewCmtAlarmWindowSample($Observation) {
 }
 function Read-WeinviewCmtAlarmWindow($Context) {
  $viewer=$Context.viewer;$windows=$Context.windows
- return (Convert-WeinviewCmtAlarmWindowSample ([PLCCode.Weinview.RuntimeAlarmControls]::CmtCurrentWindow($windows.main.Hwnd,$windows.diagnoser.Hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,$viewer.exe_path,$viewer.exe_sha256)))
+ return (Convert-WeinviewCmtAlarmWindowSample ([PLC Engineering Suite.Weinview.RuntimeAlarmControls]::CmtCurrentWindow($windows.main.Hwnd,$windows.diagnoser.Hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,$viewer.exe_path,$viewer.exe_sha256)))
 }
 function Get-WeinviewCmtAlarmSharedHash([string]$Path) {
  $stream=New-Object IO.FileStream($Path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite);$algorithm=[Security.Cryptography.SHA256]::Create()
@@ -299,15 +299,15 @@ function Assert-WeinviewCmtAlarmTransition($Before,$After,$LatestBefore,$LatestA
 function Read-WeinviewCmtAlarmRuntimeFrame($Binding,[string]$ImagePath) {
  $context=$Binding.context;$viewer=$context.viewer;$windows=$context.windows
  Set-WeinviewCmtAlarmVisibility $context.session $windows $false $true
- $captureNative=New-Object PLCCode.Weinview.NativeControls([int]$viewer.pid,[long]$viewer.creation_utc_ticks,[string]$viewer.exe_path,1500)
+ $captureNative=New-Object PLC Engineering Suite.Weinview.NativeControls([int]$viewer.pid,[long]$viewer.creation_utc_ticks,[string]$viewer.exe_path,1500)
  $null=$captureNative.ActivateOwnedTopLevel($windows.main.Hwnd,'Qt5QWindowOwnDCIcon')
- $capture=[PLCCode.Weinview.RuntimeAlarmControls]::CmtCapture($windows.main.Hwnd,$windows.diagnoser.Hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,$viewer.exe_path,$viewer.exe_sha256,$ImagePath)
- $msaa=[PLCCode.Weinview.RuntimeAlarmControls]::Msaa($windows.main.Hwnd,[int]$viewer.pid)
- return @{captured_utc=[DateTime]::UtcNow.ToString('o');gui_identity=$viewer;com_identity=$context.com;main_hwnd=$windows.main.Hwnd;canvas_hwnd=$windows.main.Hwnd;canvas_client_bounds=@(0,0,800,480);image_path=$ImagePath;image_sha256=(Hash $ImagePath);capture=$capture;msaa_canvas=$msaa;uia_canvas=[PLCCode.Weinview.RuntimeAlarmControls]::Uia($windows.main.Hwnd,[int]$viewer.pid);msaa_main=$msaa;method=$null;message=$null;al_rect=@($Binding.actual.rect);target=$null;tokens=@();semantic_matches=@()}
+ $capture=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::CmtCapture($windows.main.Hwnd,$windows.diagnoser.Hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,$viewer.exe_path,$viewer.exe_sha256,$ImagePath)
+ $msaa=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::Msaa($windows.main.Hwnd,[int]$viewer.pid)
+ return @{captured_utc=[DateTime]::UtcNow.ToString('o');gui_identity=$viewer;com_identity=$context.com;main_hwnd=$windows.main.Hwnd;canvas_hwnd=$windows.main.Hwnd;canvas_client_bounds=@(0,0,800,480);image_path=$ImagePath;image_sha256=(Hash $ImagePath);capture=$capture;msaa_canvas=$msaa;uia_canvas=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::Uia($windows.main.Hwnd,[int]$viewer.pid);msaa_main=$msaa;method=$null;message=$null;al_rect=@($Binding.actual.rect);target=$null;tokens=@();semantic_matches=@()}
 }
 function Invoke-WeinviewCmtSimulationAlarmAck($Arguments,$Installation,[string]$BridgeRoot,$Binding) {
  . (Join-Path $BridgeRoot 'HistoryFileOperation.ps1')
- $mutex=New-Object Threading.Mutex($false,'Local\PLCCode.Weinview.OfflineSimulation.421');$locked=$false;$record=$null;$journal=$null
+ $mutex=New-Object Threading.Mutex($false,'Local\PLC Engineering Suite.Weinview.OfflineSimulation.421');$locked=$false;$record=$null;$journal=$null
  try{
   try{$locked=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{$locked=$true};if(!$locked){throw 'weinview_simulation_busy: Another lifecycle/value/alarm operation is active.'}
   $binding=Assert-WeinviewSimulationAlarmArguments $Arguments $BridgeRoot $Installation
@@ -333,7 +333,7 @@ function Invoke-WeinviewCmtSimulationAlarmAck($Arguments,$Installation,[string]$
   Write-WeinviewSimulationJson $intent @{session_id=$Arguments.session_id;compile_metadata_path=$binding.metadata_path;compile_metadata_sha256=$binding.metadata_sha256;alarm_snapshot_path=$binding.snapshot_path;alarm_snapshot_sha256=$binding.snapshot_sha256;gui_identity=$binding.context.viewer;row_evidence=$frame;latest_before=$latestBefore;confirmation_value=$Arguments.confirmation_value;confirmation_signed16=$binding.confirmation_signed16;output_address=$binding.output_address;input_performed=$false;native_ack_verified=$false;repeat_input=$false;global_input=$false;current_window_samples=$record.current_window_samples}
   $intentSha=Hash $intent;$record.phase='single_row_input_pending';$record.input_performed=$null;Write-WeinviewSimulationJson $journal $record
   $viewer=$binding.context.viewer;$windows=$binding.context.windows;$target=$frame.target;$captured=[DateTime]::Parse($frame.captured_utc).ToUniversalTime()
-  $input=[PLCCode.Weinview.RuntimeAlarmControls]::CmtClick($windows.main.Hwnd,$windows.diagnoser.Hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,$viewer.exe_path,$viewer.exe_sha256,$binding.window_number,$binding.current_window.tree.window_name,[int]$target.x,[int]$target.y,[int[]]$frame.al_rect,[int[]]$target.bounds,$frame.image_path,$frame.image_sha256,$captured.Ticks)
+  $input=[PLC Engineering Suite.Weinview.RuntimeAlarmControls]::CmtClick($windows.main.Hwnd,$windows.diagnoser.Hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,$viewer.exe_path,$viewer.exe_sha256,$binding.window_number,$binding.current_window.tree.window_name,[int]$target.x,[int]$target.y,[int[]]$frame.al_rect,[int[]]$target.bounds,$frame.image_path,$frame.image_sha256,$captured.Ticks)
   $click=$input.click;$record.click_evidence=$click;$record.current_window_at_input=Convert-WeinviewCmtAlarmWindowSample $input.window;$record.input_performed=$true;$record.phase='after_values';Write-WeinviewSimulationJson $journal $record
   Set-WeinviewCmtAlarmVisibility $binding.context.session $windows $true $true
   $afterValues=Invoke-WeinviewCmtObjectValues $valueArguments $Installation $binding.root;$record.after_values=$afterValues

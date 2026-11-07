@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "ok": true,
-  "helper": "F:\\plccode\\.local\\cache\\cmt-event-db-freeze\\dist\\EventTableCodec\\EventTableCodec.exe",
+  "helper": "F:\\plceng\\.local\\cache\\cmt-event-db-freeze\\dist\\EventTableCodec\\EventTableCodec.exe",
   "helper_sha256": "D9287F4DFA02A8945DF5DBC026852DDB4A3A523EC6A7EFD3DC5745F02653B91E",
   "checks": [
     {

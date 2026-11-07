@@ -1,8 +1,8 @@
-# PLC Code Engine
+# PLC Engineering Suite Engine
 
 工业 PLC agent 引擎：把自然语言需求变成**可编译、可回读、可运行验证**的 PLC 工程产物。
 
-- 入口：`plccode-engine`（CLI / REPL / bridge 三种模式）
+- 入口：`plceng-engine`（CLI / REPL / bridge 三种模式）
 - 语言：Rust（workspace，edition 2021，target `x86_64-pc-windows-msvc`）
 - 通信：JSON-Lines over stdio（与桌面端）、MCP（与外部编辑器）
 - 版本：0.1.0
@@ -10,9 +10,9 @@
 ## 1. 三种使用形态
 
 ```bash
-plccode-engine                                  # 交互 REPL
-plccode-engine --output-format json prompt "…"  # 单次提问
-plccode-engine bridge                           # 桌面端用的长驻 JSON-Lines 会话
+plceng-engine                                  # 交互 REPL
+plceng-engine --output-format json prompt "…"  # 单次提问
+plceng-engine bridge                           # 桌面端用的长驻 JSON-Lines 会话
 ```
 
 其余只读命令：`--help`、`version`、`status`、`sandbox`、`doctor`、`agents`、`mcp`、`skills`、
@@ -25,8 +25,8 @@ plccode-engine bridge                           # 桌面端用的长驻 JSON-Lin
 
 | crate | 职责 |
 | --- | --- |
-| `plccode-engine` | 入口、参数分发、生命周期 |
-| `plccode-cli` | REPL、live turn、渲染、状态诊断、会话存储、bridge 客户端 |
+| `plceng-engine` | 入口、参数分发、生命周期 |
+| `plceng-cli` | REPL、live turn、渲染、状态诊断、会话存储、bridge 客户端 |
 | `runtime` | 会话运行时、MCP server/stdio、帧协议、超时控制 |
 | `tools` | **PLC 工具集**（四层结构见 `docs/02`） |
 | `api` | 模型 API 客户端：流式解析、上下文审计、多模态附件预算 |
@@ -73,8 +73,8 @@ tool_dispatch/        工具名 → 实现的路由
 
 ```bash
 cargo check                     # 语法与依赖
-cargo run -p plccode-engine -- --help
-cargo build --release -p plccode-engine
+cargo run -p plceng-engine -- --help
+cargo build --release -p plceng-engine
 ```
 
 发布产物需要同时携带：`execute_tool.exe`（工具执行器）、`TiaOpennessBridge.exe`（.NET Openness 桥）、

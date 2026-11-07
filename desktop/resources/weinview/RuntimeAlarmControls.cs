@@ -1,5 +1,5 @@
 ﻿using System;using System.Collections.Generic;using System.Drawing;using System.Drawing.Imaging;using System.IO;using System.Runtime.InteropServices;using Accessibility;using System.Windows.Automation;
-namespace PLCCode.Weinview { public static class RuntimeAlarmControls {
+namespace PLC Engineering Suite.Weinview { public static class RuntimeAlarmControls {
  [StructLayout(LayoutKind.Sequential)]struct R{public int l,t,r,b;}
  [DllImport("user32.dll")][return:MarshalAs(UnmanagedType.Bool)]static extern bool PrintWindow(IntPtr h,IntPtr dc,uint flags);
  [DllImport("user32.dll")]static extern bool GetClientRect(IntPtr h,out R r);

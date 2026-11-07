@@ -26,16 +26,16 @@ function Find-WeinviewRecipeViewRibbonCaption($Ocr,$Proof) {
 }
 
 function Invoke-WeinviewRecipeViewRibbon($Session,$Semantic) {
- if(-not ('PLCCode.Weinview.RecipeViewRibbonControls' -as [type])){throw 'RecipeViewRibbonControls must be loaded with native controls.'}
+ if(-not ('PLC Engineering Suite.Weinview.RecipeViewRibbonControls' -as [type])){throw 'RecipeViewRibbonControls must be loaded with native controls.'}
  $null=Invoke-WeinviewObjectRibbon $Session $Semantic '资料/历史'
  $path=Join-Path ([IO.Path]::GetDirectoryName($Session.output_path)) ('recipe-view-ribbon-'+[guid]::NewGuid().ToString('N')+'.png')
  $projectSha=(Get-FileHash -LiteralPath $Session.output_path -Algorithm SHA256).Hash
- $proof=[PLCCode.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$path)
+ $proof=[PLC Engineering Suite.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$path)
  if(!$proof.Accepted){throw 'Owned Recipe View ribbon render unavailable; no input.'}
- $items=@([PLCCode.Weinview.ObjectRibbonControls]::ReadOrInvokeOwned($Session.native,$proof,[NullString]::Value))
+ $items=@([PLC Engineering Suite.Weinview.ObjectRibbonControls]::ReadOrInvokeOwned($Session.native,$proof,[NullString]::Value))
  $semanticMatches=@($items|Where-Object {$_.name -ceq '配方检视' -and $_.action})
  if($semanticMatches.Count -gt 1){throw 'Native Recipe View semantic action ambiguous.'}
- if($semanticMatches.Count -eq 1){$entry=[PLCCode.Weinview.ObjectRibbonControls]::ReadOrInvokeOwned($Session.native,$proof,'配方检视')}
+ if($semanticMatches.Count -eq 1){$entry=[PLC Engineering Suite.Weinview.ObjectRibbonControls]::ReadOrInvokeOwned($Session.native,$proof,'配方检视')}
  else {
   Add-Type -AssemblyName System.Runtime.WindowsRuntime
   [Windows.Storage.StorageFile,Windows.Storage,ContentType=WindowsRuntime]|Out-Null
@@ -52,7 +52,7 @@ function Invoke-WeinviewRecipeViewRibbon($Session,$Semantic) {
   if(!$engine){throw 'Native Chinese OCR unavailable for Recipe View ribbon.'}
   $scaled=Get-WeinviewScaledRibbonOcr $proof $engine $await
   $caption=Find-WeinviewRecipeViewRibbonCaption $scaled $proof
-  $entry=[PLCCode.Weinview.RecipeViewRibbonControls]::ClickRecipeView($Session.native,$proof,$caption.x,$caption.y,$caption.label)
+  $entry=[PLC Engineering Suite.Weinview.RecipeViewRibbonControls]::ClickRecipeView($Session.native,$proof,$caption.x,$caption.y,$caption.label)
  }
  $dialog=WaitFor {$all=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'});if($all.Count -gt 1){throw 'Recipe View modal ambiguous.'};if($all.Count -eq 1 -and $all[0].Enabled){return $all[0]}} 6
  if($dialog.Title -cnotmatch '配方检视'){throw 'Original Recipe View property title not identified; preserve modal.'}

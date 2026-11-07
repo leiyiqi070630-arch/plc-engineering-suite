@@ -11,14 +11,14 @@ name = "commands"
 version = "0.1.0"
 
 [[package]]
-name = "plccode-cli"
+name = "plceng-cli"
 version = "0.1.0"
 dependencies = [
- "plccode-engine",
+ "plceng-engine",
 ]
 
 [[package]]
-name = "plccode-engine"
+name = "plceng-engine"
 version = "0.1.0"
 
 [[package]]

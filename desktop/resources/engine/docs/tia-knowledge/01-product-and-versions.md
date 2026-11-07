@@ -29,7 +29,7 @@ Sources (all press.siemens.com):
 - V20: `/pressrelease/tia-portal-version-20-enabling-peak-performance-and-efficiency`
 - V21: `/pressrelease/tia-portal-v21-combines-engineering-efficiency-higher-plant-availability`
 
-## Relevance to PLC Code routes
+## Relevance to PLC Engineering Suite routes
 
 - **V21 is the current leading edge**; its headline features are the SIMATIC SD text format + Git version-control integration (see [05](05-simatic-sd.md)).
 - Version sensitivity is high: the Openness assemblies, SimaticML schema, and SD capabilities **can change with every major version**, so confirm any per-version conclusion against that version's official documentation.

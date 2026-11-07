@@ -5,9 +5,9 @@ using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
 using Accessibility;
-using PLCCode.Weinview;
+using PLC Engineering Suite.Weinview;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class NativeResourceReuseControls {
   [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h,out uint pid);
   [DllImport("user32.dll")] static extern bool IsChild(IntPtr parent,IntPtr child);

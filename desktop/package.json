@@ -1,7 +1,7 @@
 {
-  "name": "plc-code-desktop",
+  "name": "plc-engineering-suite-desktop",
   "version": "2.1.13",
-  "plccodeBuildChannel": "stable",
+  "plcengBuildChannel": "stable",
   "description": "Industrial PLC engineering desktop app (Electron + Rust agent engine)",
   "author": {
     "name": "leiyiqi070630-arch"

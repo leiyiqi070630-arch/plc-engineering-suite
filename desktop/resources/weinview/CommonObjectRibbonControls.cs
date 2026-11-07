@@ -1,5 +1,5 @@
 ﻿using System;using System.IO;using System.Drawing;using System.Drawing.Imaging;using System.Collections.Generic;using System.Runtime.InteropServices;using System.Security.Cryptography;using Accessibility;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  using System.Drawing.Drawing2D;
  public sealed class CommonTextRibbonEvidence {
   public string method,image_path,image_sha256,a_template_path,a_template_sha256,drawing_template_path,drawing_template_sha256;
@@ -115,7 +115,7 @@ namespace PLCCode.Weinview {
    var point=new Point{x=capture.Left+result.rectangle_bounds[0]+result.rectangle_bounds[2]/2,y=capture.Top+result.rectangle_bounds[1]+result.rectangle_bounds[3]/2};if(!ScreenToClient(new IntPtr(capture.Hwnd),ref point)||point.x<0||point.y<0||point.x>32767||point.y>32767)throw new Exception("Owned rectangle glyph center conversion failed");long lp=(point.y<<16)|point.x;result.lparam=lp;result.messages=new uint[]{0x201,0x202};
    if(!PostMessageW(new IntPtr(capture.Hwnd),0x201,new UIntPtr(1),new IntPtr(lp))||!PostMessageW(new IntPtr(capture.Hwnd),0x202,UIntPtr.Zero,new IntPtr(lp)))throw new Exception("Single owned Rectangle entry click failed; no retry");result.click_posted=true;n.EnumTopWindows();return result;
   }
-  public static object InspectRectanglePalette(NativeControls n,PLCCode.Weinview.Research.NativePropertyCandidate p,long main,long palette){
+  public static object InspectRectanglePalette(NativeControls n,PLC Engineering Suite.Weinview.Research.NativePropertyCandidate p,long main,long palette){
    int dialogs=0;bool exactMain=false,exactPalette=false;foreach(var w in n.EnumTopWindows()){if(w.Visible&&w.Class=="#32770"){dialogs++;if(w.Hwnd==palette&&w.Title=="属性"&&w.Enabled)exactPalette=true;}if(w.Hwnd==main&&w.Class=="EasyBuilderPro"&&w.Visible&&w.Enabled)exactMain=true;}
    if(dialogs!=1||!exactMain||!exactPalette||GetWindow(new IntPtr(palette),4).ToInt64()!=main)throw new Exception("Exact originally owned modeless palette/main required");
    foreach(var c in n.EnumChildControls(palette))if(c.Visible&&(c.Class=="SysTabControl32"||(c.Class=="Button"&&(c.Id==1||c.Id==2))))throw new Exception("Drawing palette must have no tabs/OK/Cancel");

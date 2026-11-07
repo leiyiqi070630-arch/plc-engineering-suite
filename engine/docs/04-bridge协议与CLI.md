@@ -1,24 +1,24 @@
 # 04 · bridge 协议与 CLI
 
-引擎有两种使用方式：**CLI 交互**（`plccode` 本体）和 **bridge 模式**（桌面端用的 JSON-Lines 协议）。
+引擎有两种使用方式：**CLI 交互**（`plceng` 本体）和 **bridge 模式**（桌面端用的 JSON-Lines 协议）。
 主程序只走 bridge；CLI 是本工程拿自描述产物的入口。
 
 ## 1. CLI 命令集（`--help` 实测）
 
 ```text
-plccode [--model MODEL] [--allowedTools TOOL[,TOOL...]]           交互 REPL
-plccode [--model MODEL] [--output-format text|json] prompt TEXT    单次提问后退出
-plccode --resume [SESSION.jsonl|session-id|latest] [/status] ...   检查/维护已存会话
-plccode help | version | status | sandbox | doctor
-plccode acp [serve]                     ACP/Zed 集成（当前不支持）
-plccode dump-manifests [--manifests-dir PATH]
-plccode bootstrap-plan
-plccode agents                          列出内置 agent
-plccode mcp                             列出 MCP 服务器
-plccode skills                          列出技能
-plccode system-prompt [--cwd PATH] [--date YYYY-MM-DD]   ★ 直接导出系统提示词
-plccode init                            生成 CLAUDE.md
-plccode export [PATH] [--session SESSION] [--output PATH]
+plceng [--model MODEL] [--allowedTools TOOL[,TOOL...]]           交互 REPL
+plceng [--model MODEL] [--output-format text|json] prompt TEXT    单次提问后退出
+plceng --resume [SESSION.jsonl|session-id|latest] [/status] ...   检查/维护已存会话
+plceng help | version | status | sandbox | doctor
+plceng acp [serve]                     ACP/Zed 集成（当前不支持）
+plceng dump-manifests [--manifests-dir PATH]
+plceng bootstrap-plan
+plceng agents                          列出内置 agent
+plceng mcp                             列出 MCP 服务器
+plceng skills                          列出技能
+plceng system-prompt [--cwd PATH] [--date YYYY-MM-DD]   ★ 直接导出系统提示词
+plceng init                            生成 CLAUDE.md
+plceng export [PATH] [--session SESSION] [--output PATH]
 ```
 
 关键 flag：
@@ -32,15 +32,15 @@ plccode export [PATH] [--session SESSION] [--output PATH]
 --allowedTools TOOLS               限制可用工具（可重复/逗号分隔）
 ```
 
-`plccode system-prompt` 是本次工程梳理最重要的一条命令：**不需要凭据、不做网络请求，直接把内置提示词打印出来**。
-内置提示词可用 `plccode-engine system-prompt` 导出。
+`plceng system-prompt` 是本次工程梳理最重要的一条命令：**不需要凭据、不做网络请求，直接把内置提示词打印出来**。
+内置提示词可用 `plceng-engine system-prompt` 导出。
 
 ## 2. bridge 模式（桌面端协议）
 
 ### 2.1 启动
 
 ```bash
-plccode-engine.exe [--model M] [--permission-mode P] [--reasoning-effort E] bridge
+plceng-engine.exe [--model M] [--permission-mode P] [--reasoning-effort E] bridge
 ```
 
 - 子进程 `stdio: pipe`，`windowsHide: true`。
@@ -108,7 +108,7 @@ __SYSTEM_PROMPT_DYNAMIC_BOUNDARY__
 
 - **标记之前（内置）**：`# System`、`# Doing tasks`、`# Executing actions with care`、`# Sub-agent teams`，
   以及开头的身份定义：
-  > You are PLC Code — a seasoned, expert PLC and automation engineer. … You design, generate, inspect,
+  > You are PLC Engineering Suite — a seasoned, expert PLC and automation engineer. … You design, generate, inspect,
   > verify, diagnose, and repair real industrial-control programs. Start producing the requested result
   > immediately from route-appropriate knowledge; compile/import/lint and tool diagnostics are feedback
   > for fast repair, not prerequisites for beginning.
@@ -116,7 +116,7 @@ __SYSTEM_PROMPT_DYNAMIC_BOUNDARY__
   `# Runtime config`、`# Agents`。这一段随 cwd 变化 —— 本工程采集时指向 `D:\codex工作目录`，
   因此包含该目录的 `CLAUDE.md` / `AGENTS.md` 内容，**不代表引擎内置**。
 
-## 4. 内置 agent 与技能（`plccode agents` / `plccode skills` 实测）
+## 4. 内置 agent 与技能（`plceng agents` / `plceng skills` 实测）
 
 7 个 agent（全部 Read-only 语义）：
 

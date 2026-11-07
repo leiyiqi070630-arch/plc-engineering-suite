@@ -136,7 +136,7 @@ Reading: NO contact A1 conducting energizes coil MyValue.
 - `<Part Name="TON" Version="1.0">` carries a **`Version` attribute**; child `<Instance>` (single instance `Scope="GlobalVariable"` + `<Component Name="<instance DB name>"/>`; multi-instance uses `Scope="LocalVariable"` pointing at a static member).
 - Child `<TemplateValue Name="time_type" Type="Type">Time</TemplateValue>` (time type Time/LTime).
 - Pins **`IN`/`PT`/`Q`/`ET`** (uppercase).
-- ⚠️ **`IN` must be fed by some contact's `out`, not directly Powerrail→IN** (TIA rejects that generated shape — plccode-engine's own `xml_builder.rs` encodes this lesson).
+- ⚠️ **`IN` must be fed by some contact's `out`, not directly Powerrail→IN** (TIA rejects that generated shape — plceng-engine's own `xml_builder.rs` encodes this lesson).
 
 **TOF/TP/TONR**: same `Part Name="TOF"/"TP"/"TONR"` + Instance + `time_type` template, IEC pins (TP/TOF=IN/PT/Q/ET, TONR adds R); TON/TP already seen in real export, structure consistent.
 
@@ -171,7 +171,7 @@ Hard constraints most easily gotten wrong when generating FlgNet, and that cause
 - **Add / Mul must carry `Card`, Sub / Div do not.** In real exports every Add (15/15) and Mul (16/16) has `<TemplateValue Name="Card" Type="Cardinality">N</TemplateValue>` as the **first child** (N = input count, variadic); Sub (0/9) and Div (0/4) are always binary and never carry Card. Omitting Card on Add/Mul means TIA cannot rebuild the box input count → import failure.
 - **Minor (legal but not the only form)**: `SrcType` has two legal forms, `TemplateValue` (typed) and `AutomaticTyped`; `Convert`/`Move` often carry `DisabledENO="true"` (when ENO has no downstream), and omitting it is also legal; the `out` of comparators/InRange is a power-result pin, always wired downstream in real exports (Coil.in or the next box's pre), never left dangling or connected to IdentCon.
 
-> The plccode-engine generator (`xml_builder.rs`+`plan.rs`) applies all of the above: counters use a dedicated power-pin path (the pattern's `power_input_ports`), no longer emit a fake `en` (`enable_port: Option`), dynamic Card on Add/Mul, and Calc's `<Equation>`. TON/TP/comparators/Normalize/Scale_X/edge contacts/contact_coil+OR were **already correct** on audit. `CTD` has a constrained generator shape, status `guarded`; it must go through validate -> generate -> import -> compile -> readback, and must not be refused generation on the basis of old zero-sample text.
+> The plceng-engine generator (`xml_builder.rs`+`plan.rs`) applies all of the above: counters use a dedicated power-pin path (the pattern's `power_input_ports`), no longer emit a fake `en` (`enable_port: Option`), dynamic Card on Add/Mul, and Calc's `<Equation>`. TON/TP/comparators/Normalize/Scale_X/edge contacts/contact_coil+OR were **already correct** on audit. `CTD` has a constrained generator shape, status `guarded`; it must go through validate -> generate -> import -> compile -> readback, and must not be refused generation on the basis of old zero-sample text.
 
 ## Part names seen in the real corpus (instruction → XML name mapping, from 70 V18 exports)
 
@@ -181,7 +181,7 @@ By frequency: `Contact` `Coil` (`SCoil`/`RCoil`), `Move`, `O` (OR), comparison `
 ## Sources
 
 - **This repo's real V18 export library (70 projects, incl. TON/boxes/counters)**: `evidence/tia-lad-projects/exported-xml/*_V18/*.xml` (e.g. `ApriChiudiCancelloTemporizzato_V18`, `CANCELLO_S71200_V18` contain real TON). **Strongest local evidence; check here first when mining FlgNet.**
-- plccode-engine's own generator (same mechanism, encodes TON/box pins): `rust/crates/tools/src/tia_openness_tools/lad_patterns/{xml_builder.rs,instruction_catalog.rs}`
+- plceng-engine's own generator (same mechanism, encodes TON/box pins): `rust/crates/tools/src/tia_openness_tools/lad_patterns/{xml_builder.rs,instruction_catalog.rs}`
 - **Real TIA V16 Update4 export (boxes)**: `raw.githubusercontent.com/Jmeyer1292/block_diagram_z3/master/testdata/blocks/UserAdd.xml` (Add, with DocumentInfo header), `.../constants.xml` (OR)
 - MOVE/EQ generators: `raw.githubusercontent.com/eliasrhoden/tia-statemachine/main/{simatic_ML_format.md,demo/demo_FB.xml,graph2LAD.py}`
 - FB Call instance pattern: `dmcinfo.com/.../using-xml-templates-in-tia-openness` (real export snippet)

@@ -103,7 +103,7 @@ function Select-WeinviewExactDriverCandidate($Session,[long]$DialogHwnd,[string]
  $d=Get-WeinviewPlcCandidateDialog $Session $DialogHwnd
  $vendorControl=$Session.native.FindUniqueControlWithoutLabel($d.Hwnd,2160,'ComboBox')
  $list=$Session.native.FindUniqueControlWithoutLabel($d.Hwnd,2506,'ListBox')
- $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $vendors=@($property.ComboItems($vendorControl.Hwnd))
  if(!$vendors.Count -or $vendors.Count -gt 256){throw 'Bounded original vendor list required.'}
  $candidates=@()
@@ -132,7 +132,7 @@ function Invoke-WeinviewSerialSettingsCandidate($Session,[long]$DialogHwnd,[stri
  Assert-WeinviewPlcCandidateSession $Session
  if($Mode -cnotin @('Apply','Update','Readback','Inspect')){throw 'Unsupported serial settings mode.'}
  if($Mode -cin @('Apply','Update') -and !$RequestedSettings){throw 'At least one explicit serial field is required.'}
- $candidate=[PLCCode.Weinview.QtSerialSettingsCandidate]::new($Session.native)
+ $candidate=[PLC Engineering Suite.Weinview.QtSerialSettingsCandidate]::new($Session.native)
  try {
   if($Mode -cin @('Apply','Update')){
    $requested=[System.Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)

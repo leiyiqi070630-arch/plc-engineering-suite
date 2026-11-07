@@ -1,6 +1,6 @@
 ﻿using System;using System.IO;using System.Runtime.InteropServices;using System.Security.Cryptography;
 using System.Text;using Accessibility;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class TrendChannelRange { public int row; public string label; public double minimum; public double maximum; }
  public sealed class TrendChannelAxis { public int row; public string label; public string axis; }
  public sealed class TrendObservedChannel { public int row; public string label; public string data_type; public bool enabled; }

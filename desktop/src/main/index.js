@@ -22,7 +22,7 @@ require("path");
 require("fs");
 require("node:process");
 require("node:stream");
-const ENGINE_BIN = process.platform === "win32" ? "plccode-engine.exe" : "plccode-engine";
+const ENGINE_BIN = process.platform === "win32" ? "plceng-engine.exe" : "plceng-engine";
 const BRIDGE_BIN = process.platform === "win32" ? "TiaOpennessBridge.exe" : "TiaOpennessBridge";
 const EXECUTE_TOOL_BIN = process.platform === "win32" ? "execute_tool.exe" : "execute_tool";
 function cargoTargetRoot(v1) {
@@ -110,7 +110,7 @@ function locateEngine(v7, v8) {
       };
     }
   }
-  throw new Error("plccode-engine binary not found. Checked PLC_CODE_ENGINE_PATH, " + v12 + ", " + v14 + (v16 ? ", " + node_path.join(cargoTargetRoot(v16), "debug", ENGINE_BIN) + ", " + node_path.join(cargoTargetRoot(v16), "release", ENGINE_BIN) : " (no repo root found for a dev fallback either)"));
+  throw new Error("plceng-engine binary not found. Checked PLC_CODE_ENGINE_PATH, " + v12 + ", " + v14 + (v16 ? ", " + node_path.join(cargoTargetRoot(v16), "debug", ENGINE_BIN) + ", " + node_path.join(cargoTargetRoot(v16), "release", ENGINE_BIN) : " (no repo root found for a dev fallback either)"));
 }
 function locateExecuteTool(v19, v20) {
   const v21 = process.env.PLC_CODE_EXECUTE_TOOL_PATH;
@@ -1295,7 +1295,7 @@ async function nativeWorkspaceInput(v48, v49, v50, v51) {
   if (v55 && !v55.startsWith("..") && !node_path.isAbsolute(v55)) {
     return v53;
   }
-  const v56 = node_path.join(v48.root, ".plccode-imports", node_crypto.randomUUID());
+  const v56 = node_path.join(v48.root, ".plceng-imports", node_crypto.randomUUID());
   await promises.mkdir(v56, {
     recursive: true
   });
@@ -1452,7 +1452,7 @@ async function withSoftwareCreation(v85, v86) {
 }
 function readVerifiedWeinviewProject(v87) {
   try {
-    const v88 = node_path.join(v87, ".plccode-weinview-project.json");
+    const v88 = node_path.join(v87, ".plceng-weinview-project.json");
     const v89 = node_fs.lstatSync(v88);
     if (!v89.isFile() || v89.isSymbolicLink() || v89.size > 8192) {
       return null;
@@ -1534,7 +1534,7 @@ function applyVerifiedWeinviewModel(v109, v110, v111, v112, v113, v114) {
   const v115 = v114 ?? (v111.has_display && v113 > v112 ? "vertical" : "horizontal");
   const v116 = v111.installation_exe_path ?? v109.project.weinview?.installationExePath;
   const v117 = [v109.root, v109.stagingRoot].map(v118 => {
-    const v119 = node_path.join(v118, "plc-code.project.json");
+    const v119 = node_path.join(v118, "plc-engineering-suite.project.json");
     const v120 = JSON.parse(node_fs.readFileSync(v119, "utf8").replace(/^\uFEFF/, ""));
     if (v120.vendor !== "weinview" || v120.integration !== "weinview_native") {
       throw Error("工程路线发生变化，保留原配置");
@@ -2148,7 +2148,7 @@ function computerUseMcpConfig(v238) {
   const v239 = v238.resourcesPath ? node_path.join(v238.resourcesPath, "computer-use") : v238.repoRoot ? node_path.join(v238.repoRoot, "tools", "windows-computer-use") : "";
   const v240 = node_path.join(v239, "mcp", "server.mjs");
   if (!v239 || !node_fs.existsSync(v240) || !node_fs.existsSync(node_path.join(v239, "scripts", "windows-uia.ps1"))) {
-    throw new Error("Computer Use 组件缺失，请重新安装 PLCCode。");
+    throw new Error("Computer Use 组件缺失，请重新安装 PLC Engineering Suite。");
   }
   return {
     computer_use: {
@@ -2375,7 +2375,7 @@ class ComputerUseIndicator {
       }
       v274 = new electron.BrowserWindow({
         ...v273.bounds,
-        title: "PLCCode Computer Use Indicator",
+        title: "PLC Engineering Suite Computer Use Indicator",
         frame: false,
         transparent: true,
         backgroundColor: "#00000000",
@@ -3130,7 +3130,7 @@ function formatEngineSupportReport(v441, v442, v443) {
     engine: v444(v442?.enginePath),
     workingDirectory: v444(v442?.cwd)
   };
-  return "PLC Code 会话故障诊断（用户主动发送）\n报告编号：" + v441 + "\n" + JSON.stringify(v451, null, 2);
+  return "PLC Engineering Suite 会话故障诊断（用户主动发送）\n报告编号：" + v441 + "\n" + JSON.stringify(v451, null, 2);
 }
 class EngineSupportReports {
   constructor(v452, v453) {
@@ -3501,7 +3501,7 @@ function stripInjectedContext(v526) {
   }
   return v526.slice(v527 + INJECTED_CONTEXT_MARKER.length).replace(/^[\r\n \t]+/, "");
 }
-const INTERNAL_MARKERS = ["PLC Code runtime instructions:", "PLC Code general chat instructions:", "This session is being continued from a previous conversation", "<summary>"];
+const INTERNAL_MARKERS = ["PLC Engineering Suite runtime instructions:", "PLC Engineering Suite general chat instructions:", "This session is being continued from a previous conversation", "<summary>"];
 function looksInternal(v528) {
   return INTERNAL_MARKERS.some(v529 => v528.includes(v529));
 }
@@ -4657,7 +4657,7 @@ function registerViewerIpc(v819) {
     win: v820
   } = v819;
   const v821 = electron.app.isPackaged ? process.resourcesPath : node_path.join(electron.app.getAppPath(), "resources-demo5");
-  const v822 = node_path.join(v821, "viewer", "PlcCode Viewer.exe");
+  const v822 = node_path.join(v821, "viewer", "PlcEngineeringSuite Viewer.exe");
   const v823 = node_path.join(v821, "viewer-host.cjs");
   let v824;
   const v825 = new Set();
@@ -4680,7 +4680,7 @@ function registerViewerIpc(v819) {
       onContext: v837 => v838(v831(v837), v837),
       onInline: (v839, v840) => {
         if (v820.isDestroyed()) {
-          throw new Error("PLC Code 窗口已关闭");
+          throw new Error("PLC Engineering Suite 窗口已关闭");
         }
         v831(v839);
         return v830().requestInlineExplanation(v819.inlineAI(), v839.context, v840, v839.source);
@@ -4698,8 +4698,8 @@ function registerViewerIpc(v819) {
     const v843 = {
       ...Object.fromEntries(Object.entries(process.env).filter(([v844]) => v842.has(v844.toLowerCase()))),
       ...v836.env,
-      PLCCODE_VIEWER_HOST_PID: String(process.pid),
-      PLCCODE_VIEWER_PROFILE: node_path.join(v819.runtimeHome, "viewer-profiles", "host-" + process.pid)
+      PLCENG_VIEWER_HOST_PID: String(process.pid),
+      PLCENG_VIEWER_PROFILE: node_path.join(v819.runtimeHome, "viewer-profiles", "host-" + process.pid)
     };
     const v845 = node_child_process.spawn(v822, v841, {
       cwd: node_path.join(v821, "viewer"),
@@ -4746,7 +4746,7 @@ function registerViewerIpc(v819) {
   }, v852 => v852.connection.close());
   async function v838(v853, v854) {
     if (v820.isDestroyed()) {
-      throw new Error("PLC Code 窗口已关闭");
+      throw new Error("PLC Engineering Suite 窗口已关闭");
     }
     const v855 = v819.rootFor(v853);
     node_fs.mkdirSync(v855, {
@@ -5812,8 +5812,8 @@ function serializeCsv(v1155, v1156) {
     return "";
   }
 }
-const ConfigFileName = "plc-code.project.json";
-const SKIP_NAMES = new Set([".claude", ".plccode", ".plccode-agents", ".plccode", ".clawd-agents", ".clawhip", ".git", ".github", ".vscode", "node_modules", "target", "bin", "obj", ".vs", "__pycache__", ".venv", "venv", ConfigFileName].map(v1169 => v1169.toLowerCase()));
+const ConfigFileName = "plc-engineering-suite.project.json";
+const SKIP_NAMES = new Set([".claude", ".plceng", ".plceng-agents", ".plceng", ".clawd-agents", ".clawhip", ".git", ".github", ".vscode", "node_modules", "target", "bin", "obj", ".vs", "__pycache__", ".venv", "venv", ConfigFileName].map(v1169 => v1169.toLowerCase()));
 const REPO_SKIP_NAMES = new Set(["assets", "desktop", "docs", "lint_plc", "rust", "src", "tests", "ui"]);
 const STAGING_WALK_SKIP_NAMES = SKIP_NAMES;
 const SOURCE_EXTENSIONS = new Set([".st", ".scl", ".awl", ".stl", ".csv", ".xml"]);
@@ -6234,8 +6234,8 @@ function tiaVersion(v1268) {
     return "";
   }
 }
-const LOCK_FILE_NAME = ".plccode-tia-lock.json";
-const SCAN_FILE_NAME = ".plccode-tia-scan.json";
+const LOCK_FILE_NAME = ".plceng-tia-lock.json";
+const SCAN_FILE_NAME = ".plceng-tia-scan.json";
 const CURRENT_SCHEMA_VERSION = 1;
 function normalize(v1270) {
   let v1271 = (v1270 ?? "").trim();
@@ -6683,7 +6683,7 @@ const SOFTWARE_CHOICES = [{
   vendor: "威纶通",
   description: "画面设计、通信与报警 · 可接入已有工程或明确新建",
   canvas: "native",
-  workspaceFolderPrefix: "PLCCode-Weinview",
+  workspaceFolderPrefix: "PLC Engineering Suite-Weinview",
   requiresAsciiPath: true
 }, {
   id: "autoshop",
@@ -7215,9 +7215,9 @@ function statusText$1(v1524, v1525, v1526) {
   }
   switch (v1524) {
     case "None":
-      return "这台电脑上没有安装博途（TIA Portal），所以打开工程、导入、编译、下载、仿真这些需要博途的操作都用不了。\n这不是 PLC Code 出错，也没有可以安装的替代品——博途是西门子的软件，要用它就得先装它。\n不装也能干的事：写程序、离线检查（三菱 FX、西门子 S7-200），以及生成可导入博途的 XML / SCL / STL 源文件，交给装了博途的同事或另一台电脑导入。";
+      return "这台电脑上没有安装博途（TIA Portal），所以打开工程、导入、编译、下载、仿真这些需要博途的操作都用不了。\n这不是 PLC Engineering Suite 出错，也没有可以安装的替代品——博途是西门子的软件，要用它就得先装它。\n不装也能干的事：写程序、离线检查（三菱 FX、西门子 S7-200），以及生成可导入博途的 XML / SCL / STL 源文件，交给装了博途的同事或另一台电脑导入。";
     case "WithoutOpenness":
-      return "这台电脑装了博途，但没有一个版本带「TIA Portal Openness」接口选件，PLC Code 无法驱动它。\n怎么办：重新运行对应版本的博途安装程序，在选件里勾上 Openness，装完后重新诊断。\n在那之前，离线生成与检查程序照常可用。";
+      return "这台电脑装了博途，但没有一个版本带「TIA Portal Openness」接口选件，PLC Engineering Suite 无法驱动它。\n怎么办：重新运行对应版本的博途安装程序，在选件里勾上 Openness，装完后重新诊断。\n在那之前，离线生成与检查程序照常可用。";
     case "Unknown":
       return "未能检测博途安装状态，可用性无法判定。\n可在 设置 → TIA 连接 → 运行整机环境检查 查看完整结论。";
     default:
@@ -7521,7 +7521,7 @@ function itemTitle(v1624) {
     case "account-scope":
       return "这台电脑上的其它 Windows 账号";
     case "profile-storage":
-      return "PLC Code 把这个账号的数据放在哪";
+      return "PLC Engineering Suite 把这个账号的数据放在哪";
     case "plcsim-standard":
       return "随博途版本的 S7-PLCSIM 仿真器";
     case "plcsim-advanced":
@@ -7551,7 +7551,7 @@ function detailText(v1625, v1626) {
     case "TIA_PORTAL_INSTALLED":
       return "已安装，可用。";
     case "TIA_PORTAL_NOT_INSTALLED":
-      return "这台电脑上没有装博途。博途是西门子的软件，PLC Code 装不了它，也没有替代品。";
+      return "这台电脑上没有装博途。博途是西门子的软件，PLC Engineering Suite 装不了它，也没有替代品。";
     case "TIA_PORTAL_INVENTORY_UNREADABLE":
       return "读不到西门子的安装信息，装没装无法确认。";
     case "OPENNESS_REGISTERED":
@@ -7579,43 +7579,43 @@ function detailText(v1625, v1626) {
     case "WHITELIST_WITHOUT_PORTAL":
       return "没有博途，也就没有白名单要过。";
     case "ACCOUNT_ELEVATED":
-      return "PLC Code 当前以管理员身份运行，需要管理员的步骤可以直接做，不会再弹确认。";
+      return "PLC Engineering Suite 当前以管理员身份运行，需要管理员的步骤可以直接做，不会再弹确认。";
     case "ACCOUNT_CAN_ELEVATE":
-      return "当前账号是这台电脑的管理员。PLC Code 本身**故意**不以管理员身份运行，所以少数需要管理员的步骤会各弹一次 Windows 确认窗口，点「是」即可。";
+      return "当前账号是这台电脑的管理员。PLC Engineering Suite 本身**故意**不以管理员身份运行，所以少数需要管理员的步骤会各弹一次 Windows 确认窗口，点「是」即可。";
     case "ACCOUNT_NOT_ADMINISTRATOR":
       return "当前账号不是管理员。已经登记信任并具备 Openness 用户组权限时，普通账号也可连接。需要补做登记时，Windows 会要求管理员账号和密码，请管理这台电脑的人协助。写程序和生成导入文件不受影响。";
     case "ACCOUNT_ELEVATION_BLOCKED_BY_POLICY":
-      return "当前账号不是管理员，而且这台电脑被设置成**直接拒绝**普通账号的提权请求——连「让管理员来输一下密码」的框都不会弹出来。\n同样**不代表 PLC Code 用不了**：不需要管理员的部分完全不受影响。";
+      return "当前账号不是管理员，而且这台电脑被设置成**直接拒绝**普通账号的提权请求——连「让管理员来输一下密码」的框都不会弹出来。\n同样**不代表 PLC Engineering Suite 用不了**：不需要管理员的部分完全不受影响。";
     case "ACCOUNT_RIGHTS_UNREADABLE":
     case "ACCOUNT_ADMIN_MEMBERSHIP_UNREADABLE":
       return "读不到当前账号的权限，所以「需要管理员的那些步骤在这台电脑上做不做得了」这件事没测到。";
     case "WHITELIST_NEEDS_ADMINISTRATOR":
-      return "请先检查目标版本是否已信任当前连接程序。若已信任，无需再次登记；若缺失或失效，当前账号需要管理员协助。PLC Code 当前会在连接前检查登记，不能靠等待博途弹窗跳过。";
+      return "请先检查目标版本是否已信任当前连接程序。若已信任，无需再次登记；若缺失或失效，当前账号需要管理员协助。PLC Engineering Suite 当前会在连接前检查登记，不能靠等待博途弹窗跳过。";
     case "TIA_PROCESS_NONE_RUNNING":
       return "现在没有博途 / PLCSIM 在运行，不存在「连不上正在开着的那个」的问题。";
     case "TIA_PROCESS_SAME_USER":
-      return "正在运行的西门子程序都属于当前这个 Windows 账号，PLC Code 够得着。";
+      return "正在运行的西门子程序都属于当前这个 Windows 账号，PLC Engineering Suite 够得着。";
     case "TIA_PROCESS_FOREIGN_OWNER":
-      return "正在运行的博途属于**另一个 Windows 账号**，或者它是以管理员身份启动的而 PLC Code 不是。Windows 有意把两者隔开：没有那份权限的程序，连去问一句都不行，更别说连上去。\n所以 PLC Code 连不上现在开着的这个博途，反复重试、重启 PLC Code、重新授权都没有用——卡住的地方在两个 Windows 账号之间，不在这两个程序里面。";
+      return "正在运行的博途属于**另一个 Windows 账号**，或者它是以管理员身份启动的而 PLC Engineering Suite 不是。Windows 有意把两者隔开：没有那份权限的程序，连去问一句都不行，更别说连上去。\n所以 PLC Engineering Suite 连不上现在开着的这个博途，反复重试、重启 PLC Engineering Suite、重新授权都没有用——卡住的地方在两个 Windows 账号之间，不在这两个程序里面。";
     case "TIA_PROCESS_PARTLY_FOREIGN_OWNER":
-      return "有一部分正在运行的西门子程序不属于当前账号，PLC Code 够不着它们；属于当前账号的那些不受影响。";
+      return "有一部分正在运行的西门子程序不属于当前账号，PLC Engineering Suite 够不着它们；属于当前账号的那些不受影响。";
     case "TIA_PROCESS_OWNER_UNREADABLE":
       return "读不到正在运行的博途 / PLCSIM 属于谁。";
     case "ACCOUNT_SCOPE_SINGLE_USER":
       return "这台电脑上只有当前这一个 Windows 账号，没有任何东西是和别人共用的。";
     case "ACCOUNT_SCOPE_SHARED_MACHINE":
-      return "这台电脑上还有别的 Windows 账号。这不是故障，是一条提醒：三样东西的作用范围不一样。\n· 博途对连接程序的信任登记是**整机**的——谁登记一次，所有账号都受益；但它认程序的具体位置和版本，所以另一个账号用的若是另一份安装，仍要各自登记一次。\n· 让仿真器失控的「以管理员身份运行」标记是**每个账号各一份**——你这边清干净了，同事那边可能照样坏着。\n· PLC Code 自己的设置是每个账号各一份；对话记录跟着工程目录走，所以两个账号共用同一个工程目录时，对话记录也是共用的。";
+      return "这台电脑上还有别的 Windows 账号。这不是故障，是一条提醒：三样东西的作用范围不一样。\n· 博途对连接程序的信任登记是**整机**的——谁登记一次，所有账号都受益；但它认程序的具体位置和版本，所以另一个账号用的若是另一份安装，仍要各自登记一次。\n· 让仿真器失控的「以管理员身份运行」标记是**每个账号各一份**——你这边清干净了，同事那边可能照样坏着。\n· PLC Engineering Suite 自己的设置是每个账号各一份；对话记录跟着工程目录走，所以两个账号共用同一个工程目录时，对话记录也是共用的。";
     case "ACCOUNT_SCOPE_UNREADABLE":
       return "读不到这台电脑上有哪些 Windows 账号。";
     case "PROFILE_LOCAL":
-      return "当前账号的 Windows 配置文件就在本机，PLC Code 的设置和记录不会离开这台电脑。";
+      return "当前账号的 Windows 配置文件就在本机，PLC Engineering Suite 的设置和记录不会离开这台电脑。";
     case "PROFILE_ROAMING":
-      return "当前账号用的是**漫游配置文件**：每次注销，Windows 都会把配置文件复制到公司服务器上，好让它跟着你换电脑。\nPLC Code 的窗口设置和缓存放在 Windows **不参与复制**的那个目录里，不占用漫游额度；只有一份很小的账号级配置文件在配置文件里，会一起被复制走。对话记录和生成的文件都放在工程目录旁边，不进配置文件。";
+      return "当前账号用的是**漫游配置文件**：每次注销，Windows 都会把配置文件复制到公司服务器上，好让它跟着你换电脑。\nPLC Engineering Suite 的窗口设置和缓存放在 Windows **不参与复制**的那个目录里，不占用漫游额度；只有一份很小的账号级配置文件在配置文件里，会一起被复制走。对话记录和生成的文件都放在工程目录旁边，不进配置文件。";
     case "PROFILE_STORAGE_UNKNOWN":
     case "PROFILE_STORAGE_UNREADABLE":
       return "读不到当前账号的配置文件是不是会同步到服务器。";
     case "PLCSIM_STANDARD_READY":
-      return "已安装且可驱动；V16/V17 由 PLC Code 自带的 WCF 边车驱动，V18 及以上走官方 gRPC 接口。";
+      return "已安装且可驱动；V16/V17 由 PLC Engineering Suite 自带的 WCF 边车驱动，V18 及以上走官方 gRPC 接口。";
     case "PLCSIM_STANDARD_VERSION_GAP":
       return "有博途版本没有配套的仿真器。仿真器必须与工程的博途版本一致，别的版本顶不上。";
     case "PLCSIM_STANDARD_NOT_INSTALLED":
@@ -7623,7 +7623,7 @@ function detailText(v1625, v1626) {
     case "PLCSIM_STANDARD_NO_DRIVABLE_RUNTIME":
       return "装了 S7-PLCSIM，但这些安装里找不到能驱动的仿真运行时：V18 及以上走 resources\\bin 里的 gRPC 接口，V16/V17 走安装目录下 Bin 里的老运行时，两种都没找到——通常是装漏了或装坏了，修复安装即可。";
     case "PLCSIM_LEGACY_WCF_SIDECAR_MISSING":
-      return "**不是版本不支持，也不是西门子那边的问题**：V16/V17 的 S7-1200/1500 是能仿真的，由 PLC Code 自带的一个程序（PlcSimLegacyWcfSidecar.exe）驱动，真机已经验证过（V16 启动→下载→运行→读值）。现在西门子那边一切正常，缺的是 PLC Code 自己的这个文件——重装或修复 PLC Code 就行，别去重装博途或仿真器。";
+      return "**不是版本不支持，也不是西门子那边的问题**：V16/V17 的 S7-1200/1500 是能仿真的，由 PLC Engineering Suite 自带的一个程序（PlcSimLegacyWcfSidecar.exe）驱动，真机已经验证过（V16 启动→下载→运行→读值）。现在西门子那边一切正常，缺的是 PLC Engineering Suite 自己的这个文件——重装或修复 PLC Engineering Suite 就行，别去重装博途或仿真器。";
     case "PLCSIM_STANDARD_INVENTORY_UNREADABLE":
       return "读不到仿真器的安装信息。";
     case "PLCSIM_ADVANCED_INSTALLED":
@@ -7652,7 +7652,7 @@ function detailText(v1625, v1626) {
     case "ADMIN_FLAGS_CLEAR":
       return "没有 PLCSIM / 博途 程序被标记为「以管理员身份运行」。";
     case "ADMIN_FLAGS_PRESENT":
-      return "有 PLCSIM / 博途 程序被 Windows 强制以管理员身份启动。PLC Code 没有管理员身份，于是能把仿真器启起来，却停不掉、也控制不了——看起来就像仿真器不听指挥。";
+      return "有 PLCSIM / 博途 程序被 Windows 强制以管理员身份启动。PLC Engineering Suite 没有管理员身份，于是能把仿真器启起来，却停不掉、也控制不了——看起来就像仿真器不听指挥。";
     case "ADMIN_FLAGS_UNREADABLE":
       return "读不到 Windows 兼容性设置。";
     case "NET_FRAMEWORK_OK":
@@ -7702,20 +7702,20 @@ function actionText(v1627, v1628) {
       return "在连接诊断中检查当前程序的授权。确实缺失时，请管理员点击“一键授权连接程序”。登记后重新检查并读取工程；授权成功不等于全部连接条件已经满足。";
     case "TIA_PROCESS_FOREIGN_OWNER":
     case "TIA_PROCESS_PARTLY_FOREIGN_OWNER":
-      return "关掉博途再正常打开一次——用你自己的账号双击打开，**不要**用「以管理员身份运行」，也不要从别的账号打开。博途本来就不需要管理员权限。如果是别人登录在这台电脑上开着博途，只能由他那边关。另外：**不要**为了「对齐」而把 PLC Code 以管理员身份启动，那会换来一个更糟的问题——以管理员身份运行的程序反而完全操作不了博途的窗口。";
+      return "关掉博途再正常打开一次——用你自己的账号双击打开，**不要**用「以管理员身份运行」，也不要从别的账号打开。博途本来就不需要管理员权限。如果是别人登录在这台电脑上开着博途，只能由他那边关。另外：**不要**为了「对齐」而把 PLC Engineering Suite 以管理员身份启动，那会换来一个更糟的问题——以管理员身份运行的程序反而完全操作不了博途的窗口。";
     case "PROFILE_ROAMING":
-      return "通常什么都不用做。如果公司限制漫游配置文件的大小，或者你不希望 PLC Code 的配置文件离开这台电脑，把环境变量 PLC_CODE_CONFIG_HOME 设成本地磁盘上的一个目录，PLC Code 就会改放在那里。";
+      return "通常什么都不用做。如果公司限制漫游配置文件的大小，或者你不希望 PLC Engineering Suite 的配置文件离开这台电脑，把环境变量 PLC_CODE_CONFIG_HOME 设成本地磁盘上的一个目录，PLC Engineering Suite 就会改放在那里。";
     case "OPENNESS_GROUP_MISSING":
       return "重新运行博途安装程序，勾选 Openness 选件；别手工建同名的空组，那不管用。";
     case "OPENNESS_OPTION_NOT_INSTALLED":
       return "重新运行对应版本的博途安装程序，加装「TIA Portal Openness」选件。";
     case "TIA_PORTAL_NOT_INSTALLED":
-      return "需要装博途。在那之前，PLC Code 仍可离线生成并检查程序源文件，你自己手工导入即可。";
+      return "需要装博途。在那之前，PLC Engineering Suite 仍可离线生成并检查程序源文件，你自己手工导入即可。";
     case "PLCSIM_STANDARD_NOT_INSTALLED":
     case "PLCSIM_STANDARD_NO_DRIVABLE_RUNTIME":
       return "用你常用的那个博途版本的安装介质加装或修复 S7-PLCSIM（V16 起都能仿真）。仿真器必须是那个版本自己的，别的版本顶不上。";
     case "PLCSIM_LEGACY_WCF_SIDECAR_MISSING":
-      return "重装或修复 PLC Code（多半是安装目录被拷漏了一部分）。**不要**去重装博途或 S7-PLCSIM——那边是好的。";
+      return "重装或修复 PLC Engineering Suite（多半是安装目录被拷漏了一部分）。**不要**去重装博途或 S7-PLCSIM——那边是好的。";
     case "PLCSIM_STANDARD_VERSION_GAP":
       return "要么给缺的版本装上配套仿真器，要么把想仿真的工程放在已有仿真器的版本上。";
     case "PLCSIM_ADVANCED_NOT_INSTALLED":
@@ -7760,7 +7760,7 @@ function statusText(v1629) {
 function tierText(v1630) {
   switch (v1630) {
     case "product-can-fix":
-      return "PLC Code 自己能修";
+      return "PLC Engineering Suite 自己能修";
     case "user-can-fix":
       return "需要你动手";
     case "needs-it-administrator":
@@ -8070,7 +8070,7 @@ function parseAdminFlagDoctor(v1693) {
     }
     v1706 = "ok";
   } else if (v1702 > 0) {
-    v1705 = "发现 " + v1700 + " 个 PLCSIM / 博途 程序被 Windows 标记为「以管理员身份运行」，其中 " + v1702 + " 个可以在这里一键取消。带这个标记时 Windows 会强制以管理员启动它们，PLC Code 能把仿真器启起来，却停不掉也控制不了。";
+    v1705 = "发现 " + v1700 + " 个 PLCSIM / 博途 程序被 Windows 标记为「以管理员身份运行」，其中 " + v1702 + " 个可以在这里一键取消。带这个标记时 Windows 会强制以管理员启动它们，PLC Engineering Suite 能把仿真器启起来，却停不掉也控制不了。";
     v1706 = "warn";
   } else {
     v1705 = "发现 " + v1700 + " 个 PLCSIM / 博途 程序被 Windows 标记为「以管理员身份运行」，但没有一条可以自动取消——请按下面每条给出的原因处理。";
@@ -8378,7 +8378,7 @@ function applyInoproshopStatusEnv(v1780) {
     if (v1788 != null) {
       v1789.push("ready=" + v1788);
     }
-    const v1790 = process.env.CODESYS_ROUTE_DISPOSABLE_ROOT ?? node_path.join(process.env.LOCALAPPDATA ?? "", "PLC Code", "codesys-bridge", "vendor-experiments");
+    const v1790 = process.env.CODESYS_ROUTE_DISPOSABLE_ROOT ?? node_path.join(process.env.LOCALAPPDATA ?? "", "PLC Engineering Suite", "codesys-bridge", "vendor-experiments");
     v1789.push("disposableRoot=" + v1790);
     v1789.push("probedAt=" + Date.now());
     const v1791 = v1789.join(", ");
@@ -8870,7 +8870,7 @@ function applyProjectVerification(v1928, v1929) {
   const v1930 = JSON.parse(v1929);
   const v1931 = v1930.data;
   const v1932 = v1931?.project;
-  const v1933 = v1930.ok === true && v1930.verified === true && v1930.status === "ok" && v1930.backend === "tia-openness-bridge" && v1930.action === "get_project_status" && v1930.bridgeSchema === "plc-code.tia-openness-bridge.result.v1" && v1932?.isOpen === true && typeof v1932.name === "string" && !!v1932.name && typeof v1932.path === "string" && !!v1932.path && typeof v1931.processId === "number" && v1931.processId > 0 && tiaVersion(v1931.version) === tiaVersion(v1928.version) && tiaVersion(v1930.tiaVersion) === tiaVersion(v1928.version) && v1928.portals?.some(v1934 => v1934.id === v1931.processId && v1934.version === v1928.version) === true;
+  const v1933 = v1930.ok === true && v1930.verified === true && v1930.status === "ok" && v1930.backend === "tia-openness-bridge" && v1930.action === "get_project_status" && v1930.bridgeSchema === "plc-engineering-suite.tia-openness-bridge.result.v1" && v1932?.isOpen === true && typeof v1932.name === "string" && !!v1932.name && typeof v1932.path === "string" && !!v1932.path && typeof v1931.processId === "number" && v1931.processId > 0 && tiaVersion(v1931.version) === tiaVersion(v1928.version) && tiaVersion(v1930.tiaVersion) === tiaVersion(v1928.version) && v1928.portals?.some(v1934 => v1934.id === v1931.processId && v1934.version === v1928.version) === true;
   const v1935 = v1933 ? {
     ok: true,
     code: "TIA_PROJECT_READ_VERIFIED",
@@ -9007,29 +9007,29 @@ function shouldRememberDecline(v1959) {
 function elevationFailureMessage(v1960, v1961) {
   switch (v1960) {
     case "UserCancelled":
-      return "你在管理员窗口点了「否」，所以什么都没有改动。TIA 相关操作在授权之前会被拒绝，PLC Code 的其它功能照常可用（写程序、检查、生成导入文件都不需要授权）。随时可以在 设置 → TIA 连接 里点「一键信任连接程序」补做。";
+      return "你在管理员窗口点了「否」，所以什么都没有改动。TIA 相关操作在授权之前会被拒绝，PLC Engineering Suite 的其它功能照常可用（写程序、检查、生成导入文件都不需要授权）。随时可以在 设置 → TIA 连接 里点「一键信任连接程序」补做。";
     case "BlockedByPolicy":
-      return "这台电脑禁止了以管理员身份启动程序（由 Windows 组策略或软件限制策略设定），所以管理员窗口根本没能弹出来——这不是你的操作问题，也不是 PLC Code 出错。\n可行的替代：请这台电脑的管理员（或 IT）用管理员身份运行一次 设置 → TIA 连接 里那个按钮，或者由他们放行该策略；授权是一次性的，做完就一直有效，直到 PLC Code 下次更新。\n在那之前，PLC Code 仍可离线生成并检查程序、生成可导入博途的文件，由你自己在博途里手工导入。";
+      return "这台电脑禁止了以管理员身份启动程序（由 Windows 组策略或软件限制策略设定），所以管理员窗口根本没能弹出来——这不是你的操作问题，也不是 PLC Engineering Suite 出错。\n可行的替代：请这台电脑的管理员（或 IT）用管理员身份运行一次 设置 → TIA 连接 里那个按钮，或者由他们放行该策略；授权是一次性的，做完就一直有效，直到 PLC Engineering Suite 下次更新。\n在那之前，PLC Engineering Suite 仍可离线生成并检查程序、生成可导入博途的文件，由你自己在博途里手工导入。";
     case "Failed":
       {
         const v1962 = (v1961 ?? "").trim();
-        return "没能启动管理员授权，所以什么都没有改动。请确认 PLC Code 安装完整（连接程序随产品一起安装），然后在 设置 → TIA 连接 里重试。" + (v1962.length === 0 ? "" : "\n系统报告：" + v1962);
+        return "没能启动管理员授权，所以什么都没有改动。请确认 PLC Engineering Suite 安装完整（连接程序随产品一起安装），然后在 设置 → TIA 连接 里重试。" + (v1962.length === 0 ? "" : "\n系统报告：" + v1962);
       }
     default:
       return v1961 ?? "";
   }
 }
 function buildMessage(v1963, v1964, v1965 = "Unknown") {
-  const v1966 = ["PLC Code 用一个独立的连接程序与 TIA 博途通信。TIA 出于安全，只接受你**亲自授权过的**那一份。", ""];
+  const v1966 = ["PLC Engineering Suite 用一个独立的连接程序与 TIA 博途通信。TIA 出于安全，只接受你**亲自授权过的**那一份。", ""];
   switch (v1965) {
     case "FirstInstall":
-      v1966.push("这是安装后第一次使用，所以还没有授权过。现在授权一次，之后就一直有效，直到 PLC Code 下次更新（更新会换一份新的连接程序，那时会再问你一次）。这是 TIA 的安全机制，不是出错。");
+      v1966.push("这是安装后第一次使用，所以还没有授权过。现在授权一次，之后就一直有效，直到 PLC Engineering Suite 下次更新（更新会换一份新的连接程序，那时会再问你一次）。这是 TIA 的安全机制，不是出错。");
       break;
     case "AfterUpdate":
-      v1966.push("PLC Code 刚更新过，这个连接程序也跟着换成了新的一份，所以之前那次授权对它不再适用。这是 TIA 的安全机制，不是出错，重新授权一次可以一直用到下次更新。");
+      v1966.push("PLC Engineering Suite 刚更新过，这个连接程序也跟着换成了新的一份，所以之前那次授权对它不再适用。这是 TIA 的安全机制，不是出错，重新授权一次可以一直用到下次更新。");
       break;
     default:
-      v1966.push("PLC Code 每次更新，这个连接程序都会跟着换成新的一份，所以第一次使用、以及每次更新之后，都需要你授权一次。这是 TIA 的安全机制，不是出错，一次授权可以一直用到下次更新。");
+      v1966.push("PLC Engineering Suite 每次更新，这个连接程序都会跟着换成新的一份，所以第一次使用、以及每次更新之后，都需要你授权一次。这是 TIA 的安全机制，不是出错，一次授权可以一直用到下次更新。");
       break;
   }
   if (v1963.length > 0) {
@@ -9042,10 +9042,10 @@ function buildMessage(v1963, v1964, v1965 = "Unknown") {
     v1966.push(v1964);
   }
   v1966.push("");
-  v1966.push("点「去授权」后，Windows 会弹一次管理员确认窗口，请在那里点「是」。PLC Code 自己无法提权，这一步只能由你来点。");
-  v1966.push("授权窗口会一闪而过，所以成败不看窗口——授权完 PLC Code 会自己重新检查一遍，把真实结果告诉你。");
+  v1966.push("点「去授权」后，Windows 会弹一次管理员确认窗口，请在那里点「是」。PLC Engineering Suite 自己无法提权，这一步只能由你来点。");
+  v1966.push("授权窗口会一闪而过，所以成败不看窗口——授权完 PLC Engineering Suite 会自己重新检查一遍，把真实结果告诉你。");
   v1966.push("");
-  v1966.push("选「以后再说」后，PLC Code 的 TIA 工程操作会停在授权检查，不会反复尝试连接。写程序和离线文件检查仍可使用。当前产品需要登记连接程序，不能用“等博途弹窗”替代这一步。");
+  v1966.push("选「以后再说」后，PLC Engineering Suite 的 TIA 工程操作会停在授权检查，不会反复尝试连接。写程序和离线文件检查仍可使用。当前产品需要登记连接程序，不能用“等博途弹窗”替代这一步。");
   v1966.push("没有管理员权限时，请管理这台电脑的人协助完成一次授权。完成后还要检查 Windows 用户组并实际读取工程，才能确认连接成功。");
   return v1966.join("\n");
 }
@@ -9133,7 +9133,7 @@ function __resetBridgeTrustOrchestratorForTests() {
   installOccasionCache = null;
   currentInvite = null;
 }
-const ARTIFACT_DIR_NAME = ".plccode";
+const ARTIFACT_DIR_NAME = ".plceng";
 const ARTIFACT_FILE_NAME = "artifact-state.json";
 const ARTIFACT_SCHEMA_VERSION = 1;
 const SYNC_SYNCED = "Synced";
@@ -10152,7 +10152,7 @@ function artifactOpenCheckNotice(v2258) {
   }
   const v2259 = [];
   if (v2258.drifted > 0) {
-    v2259.push(v2258.drifted + " 个在 PLC Code 之外被修改，已按磁盘内容更新");
+    v2259.push(v2258.drifted + " 个在 PLC Engineering Suite 之外被修改，已按磁盘内容更新");
   }
   if (v2258.missing > 0) {
     v2259.push(v2258.missing + " 个在工程里找不到");
@@ -10607,7 +10607,7 @@ function readBuildIdentity(v2364) {
   try {
     const v2366 = JSON.parse(node_fs.readFileSync(node_path.join(v2364.getAppPath(), "package.json"), "utf8"));
     if (v2366 && typeof v2366 === "object") {
-      const v2367 = v2366.plccodeBuildChannel;
+      const v2367 = v2366.plcengBuildChannel;
       if (v2367 === "stable" || v2367 === "demo" || v2367 === "demo2" || v2367 === "demo5" || v2367 === "development") {
         v2365 = v2367;
       }
@@ -10619,12 +10619,12 @@ function readBuildIdentity(v2364) {
   });
 }
 const DATA_NAMES = {
-  stable: "PLC Code Electron",
-  demo: "PLC Code DEMO",
-  demo2: "PLC Code DEMO2",
-  demo5: "PLC Code DEMO5",
-  development: "PLC Code Development",
-  unknown: "PLC Code Unclassified"
+  stable: "PLC Engineering Suite Electron",
+  demo: "PLC Engineering Suite DEMO",
+  demo2: "PLC Engineering Suite DEMO2",
+  demo5: "PLC Engineering Suite DEMO5",
+  development: "PLC Engineering Suite Development",
+  unknown: "PLC Engineering Suite Unclassified"
 };
 function configureBuildStorage(v2368, v2369) {
   if (v2369.channel === "stable") {
@@ -11567,10 +11567,10 @@ function packagedLocation() {
 }
 function resolveClaudeConfigDir(v2585) {
   if (electron.app.isPackaged) {
-    return node_path.join(process.resourcesPath, ".plccode");
+    return node_path.join(process.resourcesPath, ".plceng");
   }
   if (v2585) {
-    const v2586 = node_path.join(v2585, ".plccode");
+    const v2586 = node_path.join(v2585, ".plceng");
     if (node_fs.existsSync(v2586)) {
       return v2586;
     }
@@ -12401,13 +12401,13 @@ electron.app.whenReady().then(async () => {
     inlineAI: () => {
       const v2783 = accountStore?.current;
       if (!v2783?.isLoggedIn || !v2783.serverUrl.trim() || !v2783.token.trim()) {
-        throw new Error("请先在 PlcCode 登录，再使用行内解释");
+        throw new Error("请先在 PlcEngineeringSuite 登录，再使用行内解释");
       }
       const v2784 = modelSlotsForWire().filter(v2785 => v2785.enabled);
       const v2786 = settingsStore?.current.selectedModelKey.trim();
       const v2787 = v2784.find(v2788 => v2788.key === v2786)?.key || v2784.find(v2789 => v2789.key.toLowerCase().includes("flash"))?.key || v2784[0]?.key;
       if (!v2787) {
-        throw new Error("PlcCode 暂无可用模型，请先选择模型");
+        throw new Error("PlcEngineeringSuite 暂无可用模型，请先选择模型");
       }
       return {
         serverUrl: v2783.serverUrl,
@@ -12868,7 +12868,7 @@ electron.app.whenReady().then(async () => {
       };
     }
     if (!/^[\x00-\x7F]*$/.test(v2939)) {
-      v2939 = node_path.join(electron.app.getPath("documents"), "PLCCodeProjects");
+      v2939 = node_path.join(electron.app.getPath("documents"), "PLC Engineering SuiteProjects");
     }
     if (/^[\x00-\x7F]*$/.test(v2939)) {
       return {
@@ -13448,7 +13448,7 @@ electron.app.whenReady().then(async () => {
     const v3099 = tiaToolContext();
     if (!v3099) {
       return {
-        report: tiaStatusProbeFailure("安装包内缺少诊断程序，请修复 PLC Code 安装。"),
+        report: tiaStatusProbeFailure("安装包内缺少诊断程序，请修复 PLC Engineering Suite 安装。"),
         health: null
       };
     }

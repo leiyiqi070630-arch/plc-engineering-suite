@@ -111,7 +111,7 @@ function Activate-WeinviewExistingDocument($Session,$Window,$View) {
  # Legacy MDI activation must go through the editor's tab action. Sending
  # WM_MDIACTIVATE directly bypasses its tab handling and can crash CN421.
  Initialize-WeinviewDirectoryTypes
- $tree=[PLCCode.Weinview.Research.WindowTreeControls]::new([int]$Session.process.Id,[long]$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path,[long]$Session.main.Hwnd,$false)
+ $tree=[PLC Engineering Suite.Weinview.Research.WindowTreeControls]::new([int]$Session.process.Id,[long]$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path,[long]$Session.main.Hwnd,$false)
  $pattern='^\s*'+[regex]::Escape([string]$Window.number)+'\s*[-:]\s*'+[regex]::Escape([string]$Window.name)+'\s*\*?\s*$'
  $tabMatches=@();$observed=@()
  foreach($bar in @($Session.native.EnumChildControls($Session.main.Hwnd)|Where-Object {$_.Class -like 'BCGPTabWnd:*' -and $_.Visible -and $_.Enabled})){

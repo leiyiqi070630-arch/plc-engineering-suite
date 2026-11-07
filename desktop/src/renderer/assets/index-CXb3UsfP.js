@@ -23021,7 +23021,7 @@ const login$1 = {
 const update$1 = {
   titleForced: "需要更新到最新版本",
   titleOptional: "发现新版本",
-  detailForced: "为继续使用 PLC Code，请先更新到最新版本。更新将自动下载并重启应用。",
+  detailForced: "为继续使用 PLC Engineering Suite，请先更新到最新版本。更新将自动下载并重启应用。",
   detailOptional: "建议更新到最新版本以获得改进与修复。更新将自动下载并重启应用。",
   versionLine: "当前 {{current}}  →  最新 {{latest}}",
   downloading: "正在下载更新… {{percent}}%",
@@ -23612,7 +23612,7 @@ const composer$1 = {
       paused: "目标已暂停",
       complete: "目标已完成"
     },
-    computerUseHint: "让 PLC Code 操作桌面",
+    computerUseHint: "让 PLC Engineering Suite 操作桌面",
     planHint: "先梳理步骤，再执行",
     persistentGoalHint: "持续跟进要完成的目标",
     viewTasks: "查看计划与目标",
@@ -24333,7 +24333,7 @@ const login = {
 const update = {
   titleForced: "An update is required",
   titleOptional: "New version available",
-  detailForced: "To keep using PLC Code, please update to the latest version first. The update will download and restart the app automatically.",
+  detailForced: "To keep using PLC Engineering Suite, please update to the latest version first. The update will download and restart the app automatically.",
   detailOptional: "Update to the latest version for improvements and fixes. The update will download and restart the app automatically.",
   versionLine: "Current {{current}}  →  Latest {{latest}}",
   downloading: "Downloading update… {{percent}}%",
@@ -24924,7 +24924,7 @@ const composer = {
       paused: "Goal paused",
       complete: "Goal complete"
     },
-    computerUseHint: "Let PLC Code operate desktop apps",
+    computerUseHint: "Let PLC Engineering Suite operate desktop apps",
     planHint: "Plan the steps before execution",
     persistentGoalHint: "Keep working toward a saved goal",
     viewTasks: "View plan and goal",
@@ -25306,7 +25306,7 @@ const subscription = {
   historyUnavailable: "Daily usage is not available yet",
   historyUnavailableHint: "Your usage history will appear here when available.",
   noUsage: "No usage in this period",
-  noUsageHint: "Your daily usage will appear here when you start using PLC Code",
+  noUsageHint: "Your daily usage will appear here when you start using PLC Engineering Suite",
   chartTitle: "Relative usage over the last {{count}} days",
   historyScope: "Your highest-usage day in this period is shown as 100%.",
   choosePlan: "Choose your next level",
@@ -66065,7 +66065,7 @@ const chatHighlighter = tagHighlighter(PLC_TAG_STYLES.map(({
   tag: v14815,
   class: classNameForCssVar(v14816)
 })));
-function highlightPlcCode(v14817, v14818) {
+function highlightPlcEngineeringSuite(v14817, v14818) {
   const v14819 = v14818.parser.parse(v14817);
   const v14820 = [];
   let v14821 = 0;
@@ -99017,7 +99017,7 @@ function PlcHighlightedCode({
   language: v22752,
   code: v22753
 }) {
-  const v22754 = reactExports.useMemo(() => highlightPlcCode(v22753, v22752), [v22752, v22753]);
+  const v22754 = reactExports.useMemo(() => highlightPlcEngineeringSuite(v22753, v22752), [v22752, v22753]);
   return jsxRuntimeExports.jsx("code", {
     children: v22754.map((v22755, v22756) => v22755.className ? jsxRuntimeExports.jsx("span", {
       className: v22755.className,
@@ -99761,13 +99761,13 @@ function classifyElevation(v22921) {
 function elevationFailureMessage(v22922, v22923) {
   switch (v22922) {
     case "UserCancelled":
-      return "你在管理员窗口点了「否」，所以什么都没有改动。TIA 相关操作在授权之前会被拒绝，PLC Code 的其它功能照常可用（写程序、检查、生成导入文件都不需要授权）。随时可以在 设置 → TIA 连接 里点「一键信任连接程序」补做。";
+      return "你在管理员窗口点了「否」，所以什么都没有改动。TIA 相关操作在授权之前会被拒绝，PLC Engineering Suite 的其它功能照常可用（写程序、检查、生成导入文件都不需要授权）。随时可以在 设置 → TIA 连接 里点「一键信任连接程序」补做。";
     case "BlockedByPolicy":
-      return "这台电脑禁止了以管理员身份启动程序（由 Windows 组策略或软件限制策略设定），所以管理员窗口根本没能弹出来——这不是你的操作问题，也不是 PLC Code 出错。\n可行的替代：请这台电脑的管理员（或 IT）用管理员身份运行一次 设置 → TIA 连接 里那个按钮，或者由他们放行该策略；授权是一次性的，做完就一直有效，直到 PLC Code 下次更新。\n在那之前，PLC Code 仍可离线生成并检查程序、生成可导入博途的文件，由你自己在博途里手工导入。";
+      return "这台电脑禁止了以管理员身份启动程序（由 Windows 组策略或软件限制策略设定），所以管理员窗口根本没能弹出来——这不是你的操作问题，也不是 PLC Engineering Suite 出错。\n可行的替代：请这台电脑的管理员（或 IT）用管理员身份运行一次 设置 → TIA 连接 里那个按钮，或者由他们放行该策略；授权是一次性的，做完就一直有效，直到 PLC Engineering Suite 下次更新。\n在那之前，PLC Engineering Suite 仍可离线生成并检查程序、生成可导入博途的文件，由你自己在博途里手工导入。";
     case "Failed":
       {
         const v22924 = v22923.trim();
-        return "没能启动管理员授权，所以什么都没有改动。请确认 PLC Code 安装完整（连接程序随产品一起安装），然后在 设置 → TIA 连接 里重试。" + (v22924.length === 0 ? "" : "\n系统报告：" + v22924);
+        return "没能启动管理员授权，所以什么都没有改动。请确认 PLC Engineering Suite 安装完整（连接程序随产品一起安装），然后在 设置 → TIA 连接 里重试。" + (v22924.length === 0 ? "" : "\n系统报告：" + v22924);
       }
     default:
       return v22923 ?? "";
@@ -100151,7 +100151,7 @@ const SOFTWARE_CHOICES = [{
   vendor: "威纶通",
   description: "画面设计、通信与报警 · 可接入已有工程或明确新建",
   canvas: "native",
-  workspaceFolderPrefix: "PLCCode-Weinview",
+  workspaceFolderPrefix: "PLC Engineering Suite-Weinview",
   requiresAsciiPath: true
 }, {
   id: "autoshop",
@@ -101247,7 +101247,7 @@ function SessionSidebar({
     children: [jsxRuntimeExports.jsxs("div", {
       className: "session-sidebar__brand",
       children: [jsxRuntimeExports.jsx("span", {
-        children: "PLC Code"
+        children: "PLC Engineering Suite"
       }), jsxRuntimeExports.jsx("button", {
         type: "button",
         className: "session-sidebar__collapse",
@@ -109875,7 +109875,7 @@ function pillTooltip(v25258, v25259, v25260 = false) {
     case "None":
       return "这台电脑没有安装博途，因此 TIA 相关功能不可用；写程序、检查、生成导入文件不受影响。点击查看详情。";
     case "WithoutOpenness":
-      return "装了博途，但没装 Openness 接口选件，PLC Code 无法驱动它。点击查看详情。";
+      return "装了博途，但没装 Openness 接口选件，PLC Engineering Suite 无法驱动它。点击查看详情。";
     default:
       return "点击查看连接步骤、阻塞原因及修复办法，并实际读取工程验证连接。";
   }
@@ -110322,7 +110322,7 @@ function connectionSteps(v25378, v25379 = null) {
     id: "installation",
     title: "博途版本",
     state: !v25381 ? "unknown" : v25378.targetInstalled ? "ok" : "blocked",
-    detail: !v25381 ? "安装状态未能确认，请重新检查。" : v25378.targetInstalled ? v25380 + " 已安装。" : "未检测到 " + v25380 + "。请安装对应版本，或选择已安装的版本；PLC Code 不会自动升级工程。"
+    detail: !v25381 ? "安装状态未能确认，请重新检查。" : v25378.targetInstalled ? v25380 + " 已安装。" : "未检测到 " + v25380 + "。请安装对应版本，或选择已安装的版本；PLC Engineering Suite 不会自动升级工程。"
   }, {
     id: "api",
     title: "Openness 接口",
@@ -110334,7 +110334,7 @@ function connectionSteps(v25378, v25379 = null) {
     state: !v25378.groupChecked ? "unknown" : v25378.inGroup ? "ok" : "blocked",
     code: v25382?.code,
     action: !v25378.inGroup && v25382?.code === "OPENNESS_GROUP_NOT_A_MEMBER" ? "group" : undefined,
-    detail: v25378.inGroup ? "当前登录令牌已包含 Siemens TIA Openness 用户组。" : v25384 ? "账号已加入组，但当前登录尚未生效。保存所有工作后，注销 Windows 并重新登录；重复加组或只重开 PLC Code 都无效。" : v25385 ? "未找到 Siemens TIA Openness 用户组，请先修复对应版本的 Openness 安装。" : v25382?.code === "OPENNESS_GROUP_NOT_A_MEMBER" ? "已确认当前账号不在 Openness 组，可点击加入用户组；加入后必须注销 Windows 重新登录。" : "请先点击“检查连接”，区分账号未加组与已经加组但尚未重登；诊断清楚后才请求管理员授权。"
+    detail: v25378.inGroup ? "当前登录令牌已包含 Siemens TIA Openness 用户组。" : v25384 ? "账号已加入组，但当前登录尚未生效。保存所有工作后，注销 Windows 并重新登录；重复加组或只重开 PLC Engineering Suite 都无效。" : v25385 ? "未找到 Siemens TIA Openness 用户组，请先修复对应版本的 Openness 安装。" : v25382?.code === "OPENNESS_GROUP_NOT_A_MEMBER" ? "已确认当前账号不在 Openness 组，可点击加入用户组；加入后必须注销 Windows 重新登录。" : "请先点击“检查连接”，区分账号未加组与已经加组但尚未重登；诊断清楚后才请求管理员授权。"
   }, {
     id: "trust",
     title: "连接程序授权",
@@ -110417,7 +110417,7 @@ function connectionLabel(v25390) {
   };
 }
 function diagnosticSummary(v25392, v25393) {
-  const v25394 = ["PLC Code / TIA 连接诊断", "检查时间：" + (v25392.verification?.checkedAt || v25392.checkedAt || "未知"), "目标版本：" + (v25392.version || "未知")];
+  const v25394 = ["PLC Engineering Suite / TIA 连接诊断", "检查时间：" + (v25392.verification?.checkedAt || v25392.checkedAt || "未知"), "目标版本：" + (v25392.version || "未知")];
   if (v25392.probeOk !== true) {
     v25394.push("环境探测原始原因：" + v25392.message);
   }
@@ -110500,7 +110500,7 @@ function TiaEnvironmentCard({
       return;
     }
     if (!v25404?.bridgeExePath) {
-      v25412("未能确认安装包内的连接程序路径，请先重新检查连接；若仍失败，复制诊断排查 PLC Code 安装。");
+      v25412("未能确认安装包内的连接程序路径，请先重新检查连接；若仍失败，复制诊断排查 PLC Engineering Suite 安装。");
       return;
     }
     const v25423 = ++v25415.current;
@@ -110516,7 +110516,7 @@ function TiaEnvironmentCard({
       } else if (!v25424.ok || v25422 === "trust" && "verifiedAllTrusted" in v25424 && !v25424.verifiedAllTrusted) {
         v25412("errorMessage" in v25424 && typeof v25424.errorMessage === "string" && v25424.errorMessage ? v25424.errorMessage : "本次修复没有通过验证，请查看诊断并重试；未判定为连接成功。");
       } else if (v25422 === "group") {
-        v25412("已提交用户组修复。请保存所有工作，注销 Windows 并重新登录后再检查；只重开 PLC Code 或博途不会刷新 Windows 登录令牌。");
+        v25412("已提交用户组修复。请保存所有工作，注销 Windows 并重新登录后再检查；只重开 PLC Engineering Suite 或博途不会刷新 Windows 登录令牌。");
       } else {
         v25412("当前连接程序授权已复查通过，正在重新读取工程验证连接。");
       }
@@ -111276,7 +111276,7 @@ function SettingsOverlay({
         }), jsxRuntimeExports.jsxs("div", {
           className: "settings-nav__footer",
           children: [jsxRuntimeExports.jsx("strong", {
-            children: "PLC Code"
+            children: "PLC Engineering Suite"
           }), jsxRuntimeExports.jsx("span", {
             children: v25522?.version ?? "…"
           })]
@@ -111374,7 +111374,7 @@ function SettingsOverlay({
                 children: [jsxRuntimeExports.jsxs("div", {
                   "data-settings-section": "about",
                   children: [jsxRuntimeExports.jsx("strong", {
-                    children: "PLC Code"
+                    children: "PLC Engineering Suite"
                   }), jsxRuntimeExports.jsx("p", {
                     children: v25496("settings.updateCurrentVersion", {
                       version: v25522?.version ?? "…"
@@ -112072,7 +112072,7 @@ function AnnouncementModal({
         children: [jsxRuntimeExports.jsxs("div", {
           children: [jsxRuntimeExports.jsxs("div", {
             className: "announcement-modal__eyebrow",
-            children: ["PLC CODE ", jsxRuntimeExports.jsx("span", {
+            children: ["PLC ENGINEERING SUITE ", jsxRuntimeExports.jsx("span", {
               children: "/"
             }), " ", v25649(v25652 ? "announcement.important" : "announcement.title")]
           }), jsxRuntimeExports.jsx("h2", {
@@ -113353,7 +113353,7 @@ function describeEngineFailure(v25904, v25905, v25906) {
   const v25910 = v25905?.phase === "startup" ? "会话组件启动失败" : "会话组件异常退出";
   const v25911 = v25905?.system.startsWith("win32 ") && engineOsErrorCode(v25905.stderrTail) === 21 ? "会话组件访问的存储设备未就绪（Windows 错误 21）。请查看诊断中的失败目录并发送诊断，便于定位。" : null;
   const v25912 = v25908 ?? v25909[v25905?.errorCode ?? ""] ?? v25911 ?? v25910 + "，目前还不能确认原因。可发送诊断反馈给我们，也可尝试重新启动会话。";
-  const v25913 = ["PLC Code 会话诊断", v25912];
+  const v25913 = ["PLC Engineering Suite 会话诊断", v25912];
   if (v25905) {
     v25913.push("时间：" + v25905.occurredAt, "软件版本：" + v25905.appVersion, "系统：" + v25905.system, "阶段：" + (v25905.phase === "startup" ? "启动、尚未就绪" : "已就绪后退出"), "退出码：" + (v25907 ?? "未提供") + (v25907 !== null ? " (0x" + (v25907 >>> 0).toString(16).toUpperCase().padStart(8, "0") + ")" : ""));
     if (v25905.signal) {
@@ -113746,7 +113746,7 @@ class SessionController {
   turnReconcile = Promise.resolve();
   saveTaskPreferences() {
     try {
-      window.localStorage.setItem("plccode.task." + (this.resolvedSessionId || this.sessionKey), JSON.stringify({
+      window.localStorage.setItem("plceng.task." + (this.resolvedSessionId || this.sessionKey), JSON.stringify({
         workMode: this.workMode,
         computerUse: this.computerUse,
         goalMode: this.goalMode
@@ -114101,7 +114101,7 @@ class SessionController {
     this.requestedResumeId = v26014 ?? "";
     this.resolvedSessionId = v26014 ?? "";
     try {
-      const v26018 = JSON.parse(window.localStorage.getItem("plccode.task." + (this.resolvedSessionId || v26013)) || "{}");
+      const v26018 = JSON.parse(window.localStorage.getItem("plceng.task." + (this.resolvedSessionId || v26013)) || "{}");
       this.workMode = v26018.workMode === "plan" ? "plan" : "execute";
       this.goalMode = v26018.goalMode === true;
       this.computerUse = v26018.computerUse === true;

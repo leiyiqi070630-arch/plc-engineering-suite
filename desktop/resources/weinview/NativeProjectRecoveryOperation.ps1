@@ -30,7 +30,7 @@ function Complete-WeinviewRecoveryResult {
 }
 
 function Find-WeinviewRecoveryFileCaption($Proof) {
- $ocrPath=[PLCCode.Weinview.NativeSemanticControls]::CreateLeftRibbonOcrImage($Proof,700)
+ $ocrPath=[PLC Engineering Suite.Weinview.NativeSemanticControls]::CreateLeftRibbonOcrImage($Proof,700)
  Add-Type -AssemblyName System.Runtime.WindowsRuntime
  [Windows.Storage.StorageFile,Windows.Storage,ContentType=WindowsRuntime]|Out-Null
  [Windows.Storage.Streams.IRandomAccessStream,Windows.Storage.Streams,ContentType=WindowsRuntime]|Out-Null
@@ -70,29 +70,29 @@ function Open-WeinviewNativeFileDialog {
  param($Session,[string]$EvidencePrefix,[string[]]$ExactMenuNames,[ValidateSet('decompile','upload')][string]$EvidenceKind,[string]$ExpectedDialogTitle)
  if(!$Session.native -or !$Session.main -or !$Session.process){throw 'Owned EasyBuilder Pro session required.'}
  if(!$EvidencePrefix -or !$ExpectedDialogTitle -or !$ExactMenuNames -or $ExactMenuNames.Count -lt 1 -or @($ExactMenuNames|Where-Object {![string]$_}).Count){throw 'Exact native File menu and dialog identity required.'}
- if(-not ('PLCCode.Weinview.NativeRecoveryMenuControls' -as [type]) -or -not ('PLCCode.Weinview.NativeSemanticControls' -as [type])){throw 'Native recovery menu and existing ribbon controls must be loaded.'}
+ if(-not ('PLC Engineering Suite.Weinview.NativeRecoveryMenuControls' -as [type]) -or -not ('PLC Engineering Suite.Weinview.NativeSemanticControls' -as [type])){throw 'Native recovery menu and existing ribbon controls must be loaded.'}
  $null=$Session.native.ActivateOwnedMain($Session.main.Hwnd)
  if(@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'}).Count){throw 'Unexpected native modal before File menu entry.'}
- $semantic=New-Object PLCCode.Weinview.NativeSemanticControls($Session.native)
+ $semantic=New-Object PLC Engineering Suite.Weinview.NativeSemanticControls($Session.native)
  $proof=$semantic.CaptureRibbon($Session.main.Hwnd,($EvidencePrefix+'.file-ribbon.png'))
- $fileRows=@([PLCCode.Weinview.NativeRecoveryMenuControls]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,$null))
+ $fileRows=@([PLC Engineering Suite.Weinview.NativeRecoveryMenuControls]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,$null))
  $fileRows|ConvertTo-Json -Depth 5|Set-Content -LiteralPath ($EvidencePrefix+'.file-menu.json') -Encoding UTF8
  $fileMatch=@($fileRows|Where-Object {$_.name -ceq '文件' -and $_.action -and !($_.state -band 1)})
  if($fileMatch.Count -gt 1){throw 'Native File menu item duplicated.'}
- if($fileMatch.Count -eq 1){$null=[PLCCode.Weinview.NativeRecoveryMenuControls]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,'文件')}
- else{$caption=Find-WeinviewRecoveryFileCaption $proof;[PLCCode.Weinview.NativeRecoveryMenuControls]::ClickFileRibbon($Session.native,$proof,[int]$Session.process.Id,[double]$caption.x,[double]$caption.y)}
+ if($fileMatch.Count -eq 1){$null=[PLC Engineering Suite.Weinview.NativeRecoveryMenuControls]::ReadOrInvoke($proof.Hwnd,[int]$Session.process.Id,'文件')}
+ else{$caption=Find-WeinviewRecoveryFileCaption $proof;[PLC Engineering Suite.Weinview.NativeRecoveryMenuControls]::ClickFileRibbon($Session.native,$proof,[int]$Session.process.Id,[double]$caption.x,[double]$caption.y)}
  Start-Sleep -Milliseconds 250
  $candidateWindows=@($Session.native.EnumTopWindows())+@($Session.native.EnumChildControls($Session.main.Hwnd))
  $menus=@()
  foreach($window in $candidateWindows){
   if(!$window.Visible -or !$window.Enabled -or $window.Class -notlike '*Qt*'){continue}
-  try{$rows=@([PLCCode.Weinview.NativeRecoveryMenuControls]::ReadOrInvoke([long]$window.Hwnd,[int]$Session.process.Id,$null));$matched=@($rows|Where-Object {$_.name -cin $ExactMenuNames -and $_.action -and !($_.state -band 1)});if($matched.Count){$menus+=@{hwnd=[long]$window.Hwnd;class=$window.Class;rows=$rows;match=$matched}}}catch{}
+  try{$rows=@([PLC Engineering Suite.Weinview.NativeRecoveryMenuControls]::ReadOrInvoke([long]$window.Hwnd,[int]$Session.process.Id,$null));$matched=@($rows|Where-Object {$_.name -cin $ExactMenuNames -and $_.action -and !($_.state -band 1)});if($matched.Count){$menus+=@{hwnd=[long]$window.Hwnd;class=$window.Class;rows=$rows;match=$matched}}}catch{}
  }
  $menuPath=$EvidencePrefix+'.'+$EvidenceKind+'-menu.json'
  $menus|ConvertTo-Json -Depth 7|Set-Content -LiteralPath $menuPath -Encoding UTF8
  if($menus.Count -ne 1 -or @($menus[0].match).Count -ne 1){throw ('Exact enabled native '+$EvidenceKind+' menu item unavailable.')}
  $chosen=$menus[0]
- $null=[PLCCode.Weinview.NativeRecoveryMenuControls]::ReadOrInvoke([long]$chosen.hwnd,[int]$Session.process.Id,[string]$chosen.match[0].name)
+ $null=[PLC Engineering Suite.Weinview.NativeRecoveryMenuControls]::ReadOrInvoke([long]$chosen.hwnd,[int]$Session.process.Id,[string]$chosen.match[0].name)
  $deadline=[DateTime]::UtcNow.AddSeconds(10);$dialog=$null
  do{$matches=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'});if($matches.Count -eq 1){$dialog=$matches[0];break};if($matches.Count -gt 1){throw ('Multiple native modals after '+$EvidenceKind+' command.')};Start-Sleep -Milliseconds 100}while([DateTime]::UtcNow -lt $deadline)
  if(!$dialog -or $dialog.Title -cne $ExpectedDialogTitle){throw ('Expected native '+$ExpectedDialogTitle+' dialog did not appear.')}
@@ -112,9 +112,9 @@ function Open-WeinviewNativeRecoveryDialog {
 function Open-WeinviewNativeUploadDialog {
  param($Session,[string]$EvidencePrefix)
  if(!$Session.native -or !$Session.main -or !$Session.process -or !$EvidencePrefix){throw 'Owned EasyBuilder Pro upload session and evidence prefix required.'}
- if(-not ('PLCCode.Weinview.NativeRecoveryMenuControls' -as [type])){throw 'Native recovery accelerator controls must be loaded.'}
+ if(-not ('PLC Engineering Suite.Weinview.NativeRecoveryMenuControls' -as [type])){throw 'Native recovery accelerator controls must be loaded.'}
  if(@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'}).Count){throw 'Unexpected native modal before Upload accelerator entry.'}
- $command=[PLCCode.Weinview.NativeRecoveryMenuControls]::OpenUploadFromAccelerator([long]$Session.main.Hwnd,[int]$Session.process.Id,[string]$Session.process.Path)
+ $command=[PLC Engineering Suite.Weinview.NativeRecoveryMenuControls]::OpenUploadFromAccelerator([long]$Session.main.Hwnd,[int]$Session.process.Id,[string]$Session.process.Path)
  $deadline=[DateTime]::UtcNow.AddSeconds(10);$dialog=$null
  do{$matches=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'});if($matches.Count -eq 1){$dialog=$matches[0];break};if($matches.Count -gt 1){throw 'Multiple native modals after Upload accelerator command.'};Start-Sleep -Milliseconds 100}while([DateTime]::UtcNow -lt $deadline)
  if(!$dialog -or $dialog.Title -cne '上传 (HMI->PC)'){throw 'Expected native Upload dialog did not appear.'}

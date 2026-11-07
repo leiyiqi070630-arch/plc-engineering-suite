@@ -10,14 +10,14 @@
 }
 
 function Open-WeinviewRecipeDatabase($Session,[string]$EvidencePrefix,[bool]$RequireExport=$true) {
- $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($Session.native)
+ $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($Session.native)
  $tab=Invoke-WeinviewObjectRibbon $Session $semantic '资料/历史'
  $path=$EvidencePrefix+'.ribbon.png'
  if(Test-Path -LiteralPath $path){throw 'Fresh Recipe Database ribbon evidence required'}
  $projectSha=(Get-FileHash -LiteralPath $Session.output_path -Algorithm SHA256).Hash
- $proof=[PLCCode.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$path)
+ $proof=[PLC Engineering Suite.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$path)
  if(!$proof.Accepted){throw 'Owned Recipe Database ribbon render unavailable; no input.'}
- [PLCCode.Weinview.RecipeDatabaseControls]::Open($Session.native,$proof)
+ [PLC Engineering Suite.Weinview.RecipeDatabaseControls]::Open($Session.native,$proof)
  $dialog=Get-WeinviewRecipeDialog $Session '配方数据库'
  $buttons=@($Session.native.EnumChildControls($dialog.Hwnd)|Where-Object {$_.Visible -and $_.Class -ceq 'Button'})
  $required=@(@{id=11;title='导入...'},@{id=1;title='确定'},@{id=2;title='取消'})

@@ -72,7 +72,7 @@ function Get-WeinviewEventManager($Session) {
 }
 function Get-WeinviewEventCount($Session) {
  $dialog=Get-WeinviewEventManager $Session
- $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $text=$Session.native.GetControlText(($Session.native.FindUniqueControlWithoutLabel($dialog.Hwnd,1290,'Static')).Hwnd,64)
  if($text -notmatch '^(\d+) / 10000$'){throw 'Actual event count unreadable.'};$count=[int]$Matches[1]
  $combo=$Session.native.FindUniqueControlWithoutLabel($dialog.Hwnd,1292,'ComboBox')
@@ -127,7 +127,7 @@ function Read-WeinviewCmtEventHistoryGlobalState($Session) {
  $dialog=Get-WeinviewEventManager $Session
  $modals=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'})
  if($modals.Count -ne 1 -or $modals[0].Hwnd -ne $dialog.Hwnd){throw 'Unique actual cMT event manager required.'}
- $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $tab=$Session.native.FindUniqueControlWithoutLabel($dialog.Hwnd,12320,'SysTabControl32')
  $tabs=@($property.TabNames($tab.Hwnd))
  if($tabs.Count -ne 2 -or $tabs[0] -cne '事件' -or $tabs[1] -cne '历史/控制'){throw 'Observed cMT event/history tabs changed.'}
@@ -171,7 +171,7 @@ function Read-WeinviewEventHistoryRetentionState($Session) {
  Assert-WeinviewPlcCandidateSession $Session
  $dialog=Get-WeinviewEventManager $Session
  $profile=Get-WeinviewEventProfile $Session;$cmt=($profile.format -ceq 'native-event-v4-hw72')
- if($cmt){$property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$tab=$Session.native.FindUniqueControlWithoutLabel($dialog.Hwnd,12320,'SysTabControl32');$property.SelectTabExact($tab.Hwnd,'历史/控制')}
+ if($cmt){$property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$tab=$Session.native.FindUniqueControlWithoutLabel($dialog.Hwnd,12320,'SysTabControl32');$property.SelectTabExact($tab.Hwnd,'历史/控制')}
  $modals=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'})
  if($modals.Count -ne 1 -or $modals[0].Hwnd -ne $dialog.Hwnd){throw 'Unique event manager required for retention protection.'}
  $controls=@($Session.native.EnumChildControls($dialog.Hwnd)|Where-Object {$_.Id -eq 1895})
@@ -191,7 +191,7 @@ function Set-WeinviewEventHistoryHmi($Session,[bool]$HmiEnabled,$Before) {
  if($cmt){Assert-WeinviewCmtHistoryStoragePreservation $Before $fresh}
  $dialog=$fresh.native_evidence.dialog;$changed=($fresh.history_global_state.hmi_enabled -ne $HmiEnabled)
  if($changed){
-  if($cmt){$property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$tab=$Session.native.FindUniqueControlWithoutLabel($dialog.Hwnd,12320,'SysTabControl32');$property.SelectTabExact($tab.Hwnd,'历史/控制')}
+  if($cmt){$property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$tab=$Session.native.FindUniqueControlWithoutLabel($dialog.Hwnd,12320,'SysTabControl32');$property.SelectTabExact($tab.Hwnd,'历史/控制')}
   $wear=@{acknowledged=$false;notice=0;intent_path=$null}
   $Session.native.ClickButton($dialog.Hwnd,1744,$label);$readiness=@{since=$null}
   $observed=WaitFor {
@@ -243,7 +243,7 @@ function Open-WeinviewEvents($Session) {
  $null=$Session.native.EnumTopWindows()
  }
  if(@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'}).Count){throw 'Unexpected modal before event manager.'}
- $semantic=New-Object PLCCode.Weinview.NativeSemanticControls($Session.native)
+ $semantic=New-Object PLC Engineering Suite.Weinview.NativeSemanticControls($Session.native)
  $tab=Invoke-WeinviewObjectRibbon $Session $semantic '资料/历史';Start-Sleep -Milliseconds 150
  $entry=Invoke-WeinviewObjectRibbon $Session $semantic '事件登录'
  $Session.event_ribbon_evidence=@{tab=$tab;entry=$entry;pid_activation=$activated;global_input=$false;layout_reset=$false}
@@ -276,7 +276,7 @@ function Export-WeinviewEvents($Session,[string]$Prefix) {
  }else{
   $Session.native.ClickButton($dialog.Hwnd,2278,'导出...')
   $save=Get-WeinviewEventDialog $Session '另存为' $dialog.Hwnd
-  $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+  $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
   # The dialog can be visible before its standard file-type control is enabled.
   # Reobserve this exact owned dialog, retaining strict filter and identity checks.
   $comboAttempts=@();$filterDeadline=[DateTime]::UtcNow.AddSeconds(4)
@@ -346,7 +346,7 @@ function Import-WeinviewEvents($Session,$Candidate) {
  if((Hash $Candidate.path) -cne $Candidate.sha256 -or (Get-WeinviewEventCount $Session) -ne $Candidate.old_count -or !$Candidate.all_old_rows_preserved){throw 'Protected native replacement binding differs.'}
  $manager=Get-WeinviewEventManager $Session;$Session.native.ClickButton($manager.Hwnd,7,'导入...')
  $open=Get-WeinviewEventDialog $Session '打开' $manager.Hwnd
- $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  if($property.ComboSelected(($Session.native.FindUniqueControlWithoutLabel($open.Hwnd,1136,'ComboBox')).Hwnd) -cne 'Excel Files (*.xls)'){throw 'Exact native XLS import filter required.'}
  $edit=$Session.native.FindUniqueControlWithoutLabel($open.Hwnd,1148,'Edit');$Session.native.SetControlText($edit.Hwnd,$Candidate.path)
  if($Session.native.GetControlText($edit.Hwnd,32768) -cne $Candidate.path -or (Hash $Candidate.path) -cne $Candidate.sha256){throw 'Protected import path/hash differs.'}

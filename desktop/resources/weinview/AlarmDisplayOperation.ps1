@@ -18,7 +18,7 @@ function Assert-WeinviewAlarmDisplayProfile($Session,[string]$SourceSha256) {
  $identity=Get-Content -LiteralPath $Session.identity_path -Raw -Encoding UTF8|ConvertFrom-Json
  if($identity.Pid -ne $Session.process.Id -or [long]$identity.CreationTicks -ne $Session.process.StartTime.ToUniversalTime().Ticks -or [IO.Path]::GetFullPath($identity.Exe) -ine [IO.Path]::GetFullPath($Session.exe_path) -or [IO.Path]::GetFullPath($identity.Project) -ine [IO.Path]::GetFullPath($Session.output_path)){throw 'Exact PID/ticks/exe/project identity required'}
  if((Get-FileHash -LiteralPath $Session.exe_path -Algorithm SHA256).Hash -cne '59FB29D8A4AA96A3F2DAD7E59301E6EE7197C6D43AB1BF79C0F135BC1EAF8F86'){throw 'Known native6.10.02.421 executable required'}
- if(!('PLCCode.Weinview.AlarmDisplayDialogControls' -as [type])){throw 'Caller must jointly load AlarmDisplayDialogControls.cs with the existing native bridge classes'}
+ if(!('PLC Engineering Suite.Weinview.AlarmDisplayDialogControls' -as [type])){throw 'Caller must jointly load AlarmDisplayDialogControls.cs with the existing native bridge classes'}
 }
 
 function Assert-WeinviewAlarmDisplayInputs($Objects,$BeforeObjects=@(),[int]$CanvasWidth=65535,[int]$CanvasHeight=65535) {
@@ -46,7 +46,7 @@ function Assert-WeinviewAlarmDisplayInputs($Objects,$BeforeObjects=@(),[int]$Can
 
 function Get-WeinviewAlarmDisplayDialog($Session,[ValidateSet('新增 报警显示','报警显示的属性')][string]$Title) {
  $end=[DateTime]::UtcNow.AddSeconds(6)
- do{$all=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'});if($all.Count -gt 1 -or @($all|Where-Object {$_.Title -cne $Title}).Count){throw 'Unknown/ambiguous owned Alarm Display modal; preserve it'};if($all.Count -eq 1 -and $all[0].Enabled){$guard=[PLCCode.Weinview.AlarmDisplayDialogControls]::new($Session.native,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd);$guard.AssertDialog($all[0].Hwnd,$Title);return $all[0]};Start-Sleep -Milliseconds 50}while([DateTime]::UtcNow -lt $end)
+ do{$all=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'});if($all.Count -gt 1 -or @($all|Where-Object {$_.Title -cne $Title}).Count){throw 'Unknown/ambiguous owned Alarm Display modal; preserve it'};if($all.Count -eq 1 -and $all[0].Enabled){$guard=[PLC Engineering Suite.Weinview.AlarmDisplayDialogControls]::new($Session.native,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd);$guard.AssertDialog($all[0].Hwnd,$Title);return $all[0]};Start-Sleep -Milliseconds 50}while([DateTime]::UtcNow -lt $end)
  throw 'Exact Alarm Display native modal not ready; no entry replay'
 }
 
@@ -79,8 +79,8 @@ function Read-WeinviewAlarmDisplayDialog($Session,$Dialog,[string]$ObjectId) {
  $cmt=([IO.Path]::GetExtension([string]$Session.output_path) -ieq '.cmtp')
  $cmtOptions=if($cmt){[ordered]@{profile='weinview-cn421-cmt-alarm-options-v1';display_style=$null;use_object_heading=$null;heading_font_size=$null;title_enabled=$null;scroll_enabled=$null;ack_gesture=$null}}else{$null}
  if($title -ceq '报警显示的属性' -and $ObjectId -notmatch '^AL_[0-9]{1,5}$'){throw 'Exact actual AL directory ID required'}
- $guard=[PLCCode.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd);$guard.AssertDialog($Dialog.Hwnd,$title)
- $p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $guard=[PLC Engineering Suite.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd);$guard.AssertDialog($Dialog.Hwnd,$title)
+ $p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $h=$Dialog.Hwnd;$tab=$n.FindUniqueControlWithoutLabel($h,12320,'SysTabControl32');$expectedTabs=if($cmt){'一般属性|报警|排序|标题|安全|图片|字体'}else{'一般属性|报警|排序|安全|图片|字体'};if($title -ceq '报警显示的属性'){$expectedTabs+='|轮廓'}
  if((@($p.TabNames($tab.Hwnd)) -join '|') -cne $expectedTabs){throw 'Observed Alarm Display page profile changed'}
  function Tab([string]$name){$guard.AssertDialog($h,$title);$p.SelectTabExact($tab.Hwnd,$name);$guard.AssertDialog($h,$title)}
@@ -250,8 +250,8 @@ function Invoke-WeinviewAlarmDisplayConfigure($Session,$Configuration,[string]$S
   $actual=Read-WeinviewAlarmDisplayDialog $Session $dialog $Configuration.object_id
   if((Get-WeinviewAlarmDisplayPropertyHash $actual) -cne $Configuration.expected_properties_sha256){throw 'Fresh target AL properties changed before configuration'}
   if($changed){
-   $guard=[PLCCode.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)
-   $p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+   $guard=[PLC Engineering Suite.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)
+   $p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
    $h=$dialog.Hwnd;$tab=$n.FindUniqueControlWithoutLabel($h,12320,'SysTabControl32');$p.SelectTabExact($tab.Hwnd,'一般属性');$guard.AssertDialog($h,'报警显示的属性')
    if($ackChanged){
    $enable=$n.FindUniqueControl($h,1857,'Button','启用')
@@ -326,7 +326,7 @@ function Select-WeinviewAlarmDisplayWindow($Session,[int]$Number,[string]$Eviden
 
 function Open-WeinviewAlarmDisplayObject($Session,$Directory,$Row) {
  if($Row.object_id -cnotmatch '^AL_[0-9]{1,5}$' -or [int]$Directory.window_number -ne [int]$Session.window_number){throw 'Only exact actual AL row in selected window accepted'}
- $tree=[PLCCode.Weinview.Research.WindowTreeControls]::new([int]$Session.process.Id,[long]$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path,[long]$Session.main.Hwnd,$false)
+ $tree=[PLC Engineering Suite.Weinview.Research.WindowTreeControls]::new([int]$Session.process.Id,[long]$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path,[long]$Session.main.Hwnd,$false)
  $tree.OpenObjectAtObservedRow($Directory.tree_hwnd,$Row.semantic_path,$Row.raw_label,$Row.object_id,'AlarmDisplay')
  return Get-WeinviewAlarmDisplayDialog $Session '报警显示的属性'
 }
@@ -381,13 +381,13 @@ function Invoke-WeinviewAlarmDisplayAddition($Session,[ValidateSet('Apply')][str
  $before=[pscustomobject]@{screen_snapshot=$beforeScreen;alarm_displays=@();source_sha256=$SourceSha256}
  $requests=@(Assert-WeinviewAlarmDisplayInputs $Objects @() ([int]$Session.window_width) ([int]$Session.window_height))
 
- $n=$Session.native;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$sem=[PLCCode.Weinview.NativeSemanticControls]::new($n);$results=@();$initial=$null
+ $n=$Session.native;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$sem=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($n);$results=@();$initial=$null
  try{foreach($o in $requests){
   $firstAddition=($results.Count -eq 0);$directory=if($firstAddition){$beforeScreen.directory}else{Get-WeinviewWindowObjectInventory $Session};if(!$firstAddition -and !$initial){$initial=$directory.restore_context};$oldIds=@($directory.rows|ForEach-Object {$_.object_id})
   $tabEntry=Invoke-WeinviewAlarmDisplayRibbon $Session $sem '资料/历史';$entry=Invoke-WeinviewAlarmDisplayRibbon $Session $sem '报警显示'
   # The original modal and control identities permit writes.
   $d=Get-WeinviewAlarmDisplayDialog $Session '新增 报警显示';$initialFields=Read-WeinviewAlarmDisplayDialog $Session $d ([NullString]::Value);Assert-WeinviewAlarmDisplayDefaults $initialFields
-  $guard=[PLCCode.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd);$h=$d.Hwnd;$tab=$n.FindUniqueControlWithoutLabel($h,12320,'SysTabControl32')
+  $guard=[PLC Engineering Suite.Weinview.AlarmDisplayDialogControls]::new($n,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd);$h=$d.Hwnd;$tab=$n.FindUniqueControlWithoutLabel($h,12320,'SysTabControl32')
   $guard.AssertDialog($h,'新增 报警显示');$p.SelectTabExact($tab.Hwnd,'一般属性');$n.SetControlText(($n.FindUniqueControlWithoutLabel($h,1174,'Edit')).Hwnd,$o.description)
   if($n.GetControlText(($n.FindUniqueControlWithoutLabel($h,1174,'Edit')).Hwnd,512) -cne $o.description){throw 'New AL description immediate readback differs'}
   $guard.AssertDialog($h,'新增 报警显示');$p.SelectTabExact($tab.Hwnd,'字体');$size=$n.FindUniqueControlWithoutLabel($h,1439,'ComboBox');$p.SelectComboExact($size.Hwnd,[string]$o.font_size)
@@ -395,7 +395,7 @@ function Invoke-WeinviewAlarmDisplayAddition($Session,[ValidateSet('Apply')][str
   $expected=$initialFields|ConvertTo-Json -Depth 8 -Compress|ConvertFrom-Json;$expected.description=$o.description;$expected.font_size=[string]$o.font_size
   Close-WeinviewScreenDialog $Session $d $true
   $null=Set-WeinviewAlarmDisplayForeground $Session
-  $scene=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$before.screen_snapshot.screen,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
+  $scene=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$before.screen_snapshot.screen,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
   $frame=$scene.CapturePlacement()
   if(!$frame){throw 'Fresh owned canvas capture required'};$r=@($o.rect);$scene.PlaceNewObject($frame,$r[0],$r[1]);$scene.EndPlacement()
   $afterDirectory=Get-WeinviewWindowDirectory $Session;$new=@($afterDirectory.rows|Where-Object {$_.object_id -cnotin $oldIds})

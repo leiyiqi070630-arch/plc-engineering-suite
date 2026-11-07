@@ -102,7 +102,7 @@ const tools = [
   },
   {
     name: "windows_computer_use_snapshot",
-    description: "Capture a screenshot and UIA tree. All bounds and input coordinates use physical desktop pixels: add screenshot.bounds.x/y to image pixel coordinates. PLC Code and its screen indicator are deliberately excluded from screenshots, but remain visible to the user and can still cover/catch clicks on underlying apps. Their absence in an image is expected, not a broken capture or disconnected desktop. Target the external app by HWND/process and activate it before input.",
+    description: "Capture a screenshot and UIA tree. All bounds and input coordinates use physical desktop pixels: add screenshot.bounds.x/y to image pixel coordinates. PLC Engineering Suite and its screen indicator are deliberately excluded from screenshots, but remain visible to the user and can still cover/catch clicks on underlying apps. Their absence in an image is expected, not a broken capture or disconnected desktop. Target the external app by HWND/process and activate it before input.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -379,7 +379,7 @@ function stripImagePayload(result) {
   if (clone.screenshot?.base64) {
     clone.screenshot.base64 = `<${clone.screenshot.base64.length} base64 chars omitted>`;
     clone.screenshot.coordinateSpace = "physical_desktop_pixels";
-    clone.screenshot.captureExclusions = "PLC Code and its indicator are excluded from captured pixels, not hidden from the interactive desktop. UIA can still see PLC Code. Activate the external target before clicking.";
+    clone.screenshot.captureExclusions = "PLC Engineering Suite and its indicator are excluded from captured pixels, not hidden from the interactive desktop. UIA can still see PLC Engineering Suite. Activate the external target before clicking.";
   }
   return clone;
 }

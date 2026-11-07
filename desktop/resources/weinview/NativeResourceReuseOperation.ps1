@@ -12,7 +12,7 @@ function Get-WeinviewVisiblePictureCards($Session,$Manager) {
  foreach($number in $numbers){
   $index=[int]$number.Title
   if(!$seen.Add($index)){throw 'Duplicate visible native picture index.'}
-  $parent=[PLCCode.Weinview.NativeResourceReuseControls]::TileParent($Manager.Hwnd,$number.Hwnd)
+  $parent=[PLC Engineering Suite.Weinview.NativeResourceReuseControls]::TileParent($Manager.Hwnd,$number.Hwnd)
   $name=$Session.native.FindUniqueControlWithoutLabel($parent,2776,'Static')
   $states=$Session.native.FindUniqueControlWithoutLabel($parent,2775,'Static')
   $refs=$Session.native.FindUniqueControlWithoutLabel($parent,2779,'Static')
@@ -25,7 +25,7 @@ function Get-WeinviewSelectedProjectPictureCard($Session,$Manager) {
  # CN421 CCellDlg exposes generic MSAA children, without selected-item state.
  # The cards are identified by HWND/control IDs above. Read their native
  # selection border; do not traverse the blocking generic accessibility tree.
- $selected=@($cards|Where-Object {[PLCCode.Weinview.NativeResourceReuseControls]::IsPictureTileSelected($Manager.Hwnd,[long]$_.parent,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)})
+ $selected=@($cards|Where-Object {[PLC Engineering Suite.Weinview.NativeResourceReuseControls]::IsPictureTileSelected($Manager.Hwnd,[long]$_.parent,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)})
  if($selected.Count -ne 1){throw 'Exactly one native project picture card must have the selected border.'}
  return $selected[0]
 }
@@ -35,7 +35,7 @@ function Select-WeinviewProjectPictureCard($Session,$Manager,[int]$ProjectPictur
  if($target.Count -ne 1){throw 'Requested existing project picture card is not uniquely visible.'}
  $selected=Get-WeinviewSelectedProjectPictureCard $Session $Manager
  if($selected.index -ne $target[0].index){
-  [PLCCode.Weinview.NativeResourceReuseControls]::SelectPictureTileOnce($Manager.Hwnd,[long]$target[0].parent,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
+  [PLC Engineering Suite.Weinview.NativeResourceReuseControls]::SelectPictureTileOnce($Manager.Hwnd,[long]$target[0].parent,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
   $selected=WaitFor {try{$current=Get-WeinviewSelectedProjectPictureCard $Session $Manager;if($current.index -eq $ProjectPictureIndex){return $current}}catch{} } 6
  }
  if($selected.index -ne $ProjectPictureIndex -or $selected.name -cne $PictureName -or $selected.states -cne ('状态数 : '+$StateCount)){throw 'Native project picture selection differs after exact tile action.'}
@@ -58,7 +58,7 @@ function Invoke-WeinviewNativePictureLibrarySelection($Session,[long]$DialogHwnd
  if((Get-WeinviewResourceSha256 ([string]$Session.project_path)) -cne $ExpectedProjectSha256.ToUpperInvariant()){throw 'Project bytes changed before picture library selection.'}
  if($null -ne $Arguments.picture_index -and ($Arguments.picture_index -isnot [int] -or $Arguments.picture_index -lt 0 -or $Arguments.picture_index -gt 31)){throw 'Bounded picture index required.'}
  if($null -ne $Arguments.expected_states -and ($Arguments.expected_states -isnot [int] -or $Arguments.expected_states -lt 1 -or $Arguments.expected_states -gt 16)){throw 'Bounded picture state count required.'}
- $inspector=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
+ $inspector=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
  $manager=$null;$fileDialog=$null
  try{
   $Session.native.ClickButton($DialogHwnd,$LibraryButtonId,'图库...')
@@ -72,7 +72,7 @@ function Invoke-WeinviewNativePictureLibrarySelection($Session,[long]$DialogHwnd
   # path also selects an already loaded library without duplicating resources.
   # Do this once per manager, before matching picture names and indexes.
    $add=$Session.native.FindUniqueControlWithoutLabel($manager.Hwnd,2773,'Button')
-   [PLCCode.Weinview.NativeResourceReuseControls]::AddLibraryOnce($manager.Hwnd,$add.Hwnd,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
+   [PLC Engineering Suite.Weinview.NativeResourceReuseControls]::AddLibraryOnce($manager.Hwnd,$add.Hwnd,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
    $fileDialog=Wait-WeinviewResourceDialog $Session @($DialogHwnd,$manager.Hwnd) '打开'
    $filter=$Session.native.FindUniqueControlWithoutLabel($fileDialog.Hwnd,1136,'ComboBox')
    if($inspector.ComboSelected($filter.Hwnd) -cne 'picture library (*.flbx, *.flb)'){throw 'Native FLBX file chooser contract differs.'}
@@ -93,7 +93,7 @@ function Invoke-WeinviewNativePictureLibrarySelection($Session,[long]$DialogHwnd
   $projectBefore=@(Get-WeinviewVisiblePictureCards $Session $manager)
   $inspector.SelectTabExact($tabs.Hwnd,'图库')
   $copy=$Session.native.FindUniqueControlWithoutLabel($source[0].parent,2777,'Button')
-  [PLCCode.Weinview.NativeResourceReuseControls]::CopyPictureOnce($manager.Hwnd,$source[0].parent,$copy.Hwnd,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
+  [PLC Engineering Suite.Weinview.NativeResourceReuseControls]::CopyPictureOnce($manager.Hwnd,$source[0].parent,$copy.Hwnd,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
   $inspector.SelectTabExact($tabs.Hwnd,'工程文件')
   $projectAfter=@(Get-WeinviewVisiblePictureCards $Session $manager)
   $new=@($projectAfter|Where-Object {$_.name -ceq $Arguments.picture_name -and $_.states -ceq ('状态数 : '+$stateCount) -and $_.references -ceq '元件 : 0' -and $_.index -notin @($projectBefore|ForEach-Object index)})
@@ -137,8 +137,8 @@ function Invoke-WeinviewNativePictureApply($Session,$Arguments,[string]$Expected
  if(!$project -or [int]$Session.window_number -ne [int]$Arguments.window_number -or (Get-WeinviewResourceSha256 $project) -cne $ExpectedProjectSha256.ToUpperInvariant()){throw 'Selected project/window or current source hash differs.'}
  $library=[IO.Path]::GetFullPath($Arguments.library_path)
  if([IO.Path]::GetExtension($library) -ine '.flbx' -or (Get-WeinviewResourceSha256 $library) -cne $Arguments.expected_library_sha256.ToUpperInvariant()){throw 'Pinned FLBX library differs.'}
- if(-not ('PLCCode.Weinview.NativeResourceReuseControls' -as [type]) -or -not ('PLCCode.Weinview.Research.NativePropertyCandidate' -as [type])){throw 'Native picture controls are not loaded.'}
- $inspector=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
+ if(-not ('PLC Engineering Suite.Weinview.NativeResourceReuseControls' -as [type]) -or -not ('PLC Engineering Suite.Weinview.Research.NativePropertyCandidate' -as [type])){throw 'Native picture controls are not loaded.'}
+ $inspector=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
  $directory=Get-WeinviewWindowDirectory $Session
  $rows=@($directory.rows|Where-Object object_id -CEQ $Arguments.object_id)
  if($rows.Count -ne 1){throw 'Unique existing native object required for picture binding.'}
@@ -206,7 +206,7 @@ function Read-WeinviewNativePictureBinding($Session,$Arguments,[string]$Expected
  $projectExtension=[IO.Path]::GetExtension($project)
  if($projectExtension -inotmatch '^\.(cmtp|emtp)$' -or ($projectExtension -ieq '.emtp' -and $Arguments.object_id -cnotmatch '^GP_[0-9]{1,5}$')){throw 'Native picture binding read supports cMT objects or an existing MT .emtp GP Picture object.'}
  if([int]$Session.window_number -ne [int]$Arguments.window_number -or (Get-WeinviewResourceSha256 $project) -cne $ExpectedProjectSha256.ToUpperInvariant()){throw 'Selected saved project/window differs before binding read.'}
- $inspector=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
+ $inspector=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.exe_path)
  $dialog=$null;$manager=$null
  try {
   $directory=Get-WeinviewWindowDirectory $Session;$rows=@($directory.rows|Where-Object object_id -CEQ $Arguments.object_id)

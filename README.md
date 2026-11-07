@@ -44,7 +44,7 @@ imported  →  compiled  →  structure readback  →  runtime behaviour
                                 │ JSON-Lines over stdio
 ┌───────────────────────────────▼─────────────────────────────────────────┐
 │  agent 引擎（Rust workspace）                                            │
-│  plccode-cli · runtime · tools(310) · api · commands · plugins           │
+│  plceng-cli · runtime · tools(310) · api · commands · plugins           │
 │  工具四层：builtin_specs → inputs → tools → dispatch                     │
 └───────────────────────────────┬─────────────────────────────────────────┘
                                 │ 子进程 / IPC / 脚本
@@ -69,11 +69,11 @@ plc-engineering-suite/
 │
 ├─ engine/                      Rust workspace
 │  ├─ crates/
-│  │  ├─ plccode-cli/           CLI、REPL、live turn、渲染、诊断、会话
+│  │  ├─ plceng-cli/           CLI、REPL、live turn、渲染、诊断、会话
 │  │  ├─ runtime/               MCP server/stdio、会话运行时、帧协议
 │  │  ├─ tools/                 PLC 工具集（310 模块）
 │  │  ├─ api/                   模型客户端：流式、上下文审计、多模态预算
-│  │  └─ commands/ plugins/ telemetry/ win-proc-guard/ plccode-engine/
+│  │  └─ commands/ plugins/ telemetry/ win-proc-guard/ plceng-engine/
 │  ├─ spec/                     工具契约（32 份）
 │  └─ docs/                     引擎设计、模块划分、工具目录、协议
 │
@@ -89,10 +89,10 @@ plc-engineering-suite/
 
 | 构建 | 说明 |
 | --- | --- |
-| `PLC-Code-2.1.20-win32-x64.zip` | 当前版本：工业协议层、电气工作台、表格、会话检查点 |
-| `PLC-Code-2.1.13-win32-x64.zip` | 早期版本：核心 PLC 工具链与主题层 |
+| `PLC-Engineering-Suite-2.1.20-win32-x64.zip` | 当前版本：工业协议层、电气工作台、表格、会话检查点 |
+| `PLC-Engineering-Suite-2.1.13-win32-x64.zip` | 早期版本：核心 PLC 工具链与主题层 |
 
-解压后运行 `PLC Code.exe`，无需安装。
+解压后运行 `PLC Engineering Suite.exe`，无需安装。
 
 | 项 | 值 |
 | --- | --- |

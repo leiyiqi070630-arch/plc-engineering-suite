@@ -16,8 +16,8 @@ function Invoke-WeinviewPlcConfiguration($Session,[string]$Mode,[string]$DeviceN
   if($ExpectedPort -lt 1 -or $ExpectedPort -gt 65535){throw 'Existing TCP port 1..65535 required.'}
   $oldOctets=$ExpectedIpv4.Split('.');if($oldOctets.Count -ne 4){throw 'Canonical existing IPv4 required.'};foreach($o in $oldOctets){$v=0;if($o -notmatch '^(0|[1-9][0-9]{0,2})$' -or ![int]::TryParse($o,[ref]$v) -or $v -gt 255){throw 'Canonical existing IPv4 required.'}}
  }
- $semantic=New-Object PLCCode.Weinview.NativeSemanticControls($Session.native)
- $properties=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $semantic=New-Object PLC Engineering Suite.Weinview.NativeSemanticControls($Session.native)
+ $properties=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  function UntilPlc([scriptblock]$predicate){$deadline=[DateTime]::UtcNow.AddSeconds(30);do{$value=&$predicate;if($null -ne $value -and $value -ne $false){return $value};Start-Sleep -Milliseconds 100}while([DateTime]::UtcNow -lt $deadline);throw 'PLC semantic transition timed out.'}
  function CurrentDialog([string]$title,[int[]]$ids,[string]$allowedPredecessor=''){
   $d=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq '#32770'})
@@ -112,7 +112,7 @@ function Invoke-WeinviewPlcConfiguration($Session,[string]$Mode,[string]$DeviceN
   $beforeEndpoint=$null;$endpoint=$null
  }else{
   $ipQt=QtPage $ipDialog
-  $endpointReader=New-Object PLCCode.Weinview.QtModbusEndpointCandidate($Session.native)
+  $endpointReader=New-Object PLC Engineering Suite.Weinview.QtModbusEndpointCandidate($Session.native)
   $beforeEndpoint=$endpointReader.Read($ipDialog.Hwnd)
   if($Mode -ceq 'Update' -and $ExpectedIpv4 -and ($beforeEndpoint.Ip -cne $ExpectedIpv4 -or $beforeEndpoint.Port -ne $ExpectedPort)){throw 'Existing device endpoint differs; no update.'}
   if($Mode -cin @('Apply','Update')){
@@ -150,7 +150,7 @@ function Invoke-WeinviewPlcConfiguration($Session,[string]$Mode,[string]$DeviceN
      $item=$matches[0]
      $cleanup.attempted=$true
      if($item.title -ceq '设备设置'){
-      if($isSerial){([PLCCode.Weinview.QtSerialSettingsCandidate]::new($Session.native)).Confirm($ipDialog.Hwnd,$false)}
+      if($isSerial){([PLC Engineering Suite.Weinview.QtSerialSettingsCandidate]::new($Session.native)).Confirm($ipDialog.Hwnd,$false)}
       else {
       if(!$ipQt){throw 'Bound endpoint Qt page missing during failure cleanup'}
       $null=$semantic.Execute($ipQt,'client/index:0/index:0/index:0/index:4','取消',43,'Invoke')

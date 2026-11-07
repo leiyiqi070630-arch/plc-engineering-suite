@@ -3,7 +3,7 @@
 from System import AppDomain
 import scriptengine
 
-_host = AppDomain.CurrentDomain.GetData('PLCCode.CommandBridgeHost.v1')
+_host = AppDomain.CurrentDomain.GetData('PLC Engineering Suite.CommandBridgeHost.v1')
 if _host is None:
-    raise RuntimeError('PLC Code command bridge is not initialized')
+    raise RuntimeError('PLC Engineering Suite command bridge is not initialized')
 _host.frame_entry(scriptengine)

@@ -68,7 +68,7 @@ function Get-WeinviewRecipePython {
  return $python
 }
 function Read-WeinviewAssociatedRecipeCatalog([string]$ProjectPath,[string]$ProjectSha256,[string]$WorkspaceRoot,[string]$Prefix,[string]$PythonExe) {
- $recordPath=Join-Path $WorkspaceRoot '.plccode-weinview-project.json'
+ $recordPath=Join-Path $WorkspaceRoot '.plceng-weinview-project.json'
  if(!(Test-Path -LiteralPath $recordPath -PathType Leaf)){return $null}
  $record=Get-Content -LiteralPath $recordPath -Raw -Encoding UTF8|ConvertFrom-Json
  if($record.project_path -ine $ProjectPath -or $record.project_sha256 -ine $ProjectSha256){return $null}
@@ -128,9 +128,9 @@ function Resolve-WeinviewOwnedProjectOpenNotices($Session,[long]$MainHwnd) {
   if($dialogs.Count -eq 1){
    $dialog=$dialogs[0];$key=[string]$dialog.Hwnd+':'+$dialog.Title
    if($dialog.Title -ceq '工程文件迁移报告'){
-    if(!('PLCCode.Weinview.NativeSemanticControls' -as [type])){return}
+    if(!('PLC Engineering Suite.Weinview.NativeSemanticControls' -as [type])){return}
     if(!$actions.ContainsKey($key)){
-     $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($Session.native)
+     $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($Session.native)
      $notice=$semantic.TryCloseProjectMigrationReport($MainHwnd)
      if($notice){$script:projectOpenNotices+=@{kind='migration_report';details=$notice;warnings_reviewed=$false};$actions[$key]=$true;$handled=$true}
     }
@@ -163,12 +163,12 @@ function StartOwned([string]$exe,[string]$path,[bool]$ActivateForeground=$true,[
  if($NativeHostPort -lt 0 -or $NativeHostPort -gt 65535){Fail 'Native host port outside local TCP range.'}
  $hostScope=if($NativeHostPort){Enter-WeinviewNativeHostLaunch $exe $NativeHostPort}else{$null}
  try {
- $startupErrorDialogs=if($RecoverBootstrapCrash){[PLCCode.Weinview.NativeStartupRecovery]::ExistingDialogs()}else{@()}
+ $startupErrorDialogs=if($RecoverBootstrapCrash){[PLC Engineering Suite.Weinview.NativeStartupRecovery]::ExistingDialogs()}else{@()}
  $p = if($ActivateForeground){Start-Process -FilePath $exe -ArgumentList ('"'+$path+'"') -PassThru}else{Start-Process -FilePath $exe -ArgumentList ('"'+$path+'"') -WindowStyle Hidden -PassThru}
  $null=$p.Handle
  $ticks=$p.StartTime.ToUniversalTime().Ticks
  $script:own += @{pid=$p.Id;creation_utc_ticks=$ticks;exe_path=$exe}
- $native = New-Object PLCCode.Weinview.NativeControls($p.Id,$ticks,$exe,1500)
+ $native = New-Object PLC Engineering Suite.Weinview.NativeControls($p.Id,$ticks,$exe,1500)
  $script:pendingOwnedSession=@{process=$p;native=$native;main=$null;project_path=$path;native_host_port=$NativeHostPort}
  $script:stage='owned_input_idle'
  if(!$p.WaitForInputIdle(10000)){Fail 'Owned application did not reach bounded message-loop input idle.'}
@@ -177,7 +177,7 @@ function StartOwned([string]$exe,[string]$path,[bool]$ActivateForeground=$true,[
  try {$main=WaitFor {
   if($p.HasExited){Fail ('Owned application exited before document became ready; pid='+$p.Id+'; exit_code='+$p.ExitCode)}
   if($RecoverBootstrapCrash -and !$script:pendingOwnedSession.startup_error_acknowledged){
-   $startupError=[PLCCode.Weinview.NativeStartupRecovery]::Acknowledge($p.Id,$ticks,$exe,[long[]]$startupErrorDialogs)
+   $startupError=[PLC Engineering Suite.Weinview.NativeStartupRecovery]::Acknowledge($p.Id,$ticks,$exe,[long[]]$startupErrorDialogs)
    if($startupError){
     $script:pendingOwnedSession.startup_error_acknowledged=$startupError
     $null=$p.WaitForExit(3000)
@@ -370,7 +370,7 @@ function SaveEditedProject($s,[string]$path,[string]$initialHash,[int]$settleMil
    if($modal.Title -ceq '注意'){
     if(!$state.acknowledged -or !$state.migration_backup -or !(Test-Path -LiteralPath $state.migration_backup -PathType Leaf) -or (Hash $state.migration_backup) -cne $initialHash){Fail 'Unexpected migration backup overwrite notice; no acknowledgement.'}
     if(!(ReadyControls $s $modal @(@{id=65535;class='Static'},@{id=1;class='Button';label='替代'},@{id=2;class='Button';label='取消'},@{id=3;class='Button';label='另存为'}))){return $null}
-    $body=[PLCCode.Weinview.NativeControls]::NormalizeLF($s.native.GetControlText((Control $s $modal 65535 'Static').Hwnd,4096))
+    $body=[PLC Engineering Suite.Weinview.NativeControls]::NormalizeLF($s.native.GetControlText((Control $s $modal 65535 'Static').Hwnd,4096))
     if($body -cne ($state.migration_backup+" 已经存在 !`n`n是否要替代此项目 ?")){Fail 'Migration backup overwrite body/path differs.'}
     Button $s $modal 1 '替代';$state.overwrite_acked=$true;$state.overwrite_hwnd=$modal.Hwnd
     return $null
@@ -384,7 +384,7 @@ function SaveEditedProject($s,[string]$path,[string]$initialHash,[int]$settleMil
    if(!(ReadyControls $s $modal @(@{id=65535;class='Static'},@{id=2;class='Button';label='确定'}))){return $null}
    $body=$s.native.GetControlText((Control $s $modal 65535 'Static').Hwnd,4096)
    if(!$body){return $null}
-   $body=[PLCCode.Weinview.NativeControls]::NormalizeLF($body)
+   $body=[PLC Engineering Suite.Weinview.NativeControls]::NormalizeLF($body)
    if(!$body.StartsWith($prefix,[StringComparison]::Ordinal)){Fail 'Migration body differs from native backup notice.'}
    $observedBackup=$body.Substring($prefix.Length)
    if([IO.Path]::GetExtension($path) -inotmatch '^\.(emtp|cmtp)$' -or $observedBackup -inotmatch $backupPattern -or ($state.migration_backup -and $observedBackup -ine $state.migration_backup)){Fail 'Migration backup is not a same-project versioned file.'}
@@ -714,7 +714,7 @@ try {
     $stage='find_reopened_target';$targetReopened=Find-WeinviewNativeRawAddress $s $addressDialog $a $addressContract $true
     if([long]$sourceReopened.match_count -ne 0 -or [long]$targetReopened.match_count -ne ($targetCount+$sourceCount)){Fail 'Saved/reopened native address replacement counts differ.'}
     if($addressContract.range_enabled){Assert-WeinviewNativeRangeMatchMultiset $targetReopened.matches $addressApplied.after_matches}
-    [PLCCode.Weinview.NativeAddressReplaceControls]::Close($s.native,[long]$addressDialog.Hwnd,[int]$s.process.Id);$addressDialog=$null
+    [PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($s.native,[long]$addressDialog.Hwnd,[int]$s.process.Id);$addressDialog=$null
     $stage='close_reopened_address_replacement';CloseSession $s $output $saved $true
     if((Hash $projectInput) -cne $before -or (Hash $output) -cne $saved){Fail 'Address replacement final source/output hash invariant failed.'}
     $reopenVerified=$true
@@ -795,7 +795,7 @@ try {
     # The original-vendor whole-window clipboard step works in the owned background session.
     $batchNeedsForeground=(@($plan|Where-Object {$_.kind -cin @('screen_copy_objects','screen_move_objects','screen_duplicate','window_copy','labels_upsert','labels_bind')}).Count -gt 0)
     $batchAllowWindowless=(($hasCopySteps -or $hasAddressSteps) -and !$hasDuplicateSteps -and !$batchNeedsForeground)
-    $artifact=Under ([IO.Path]::ChangeExtension($output,$artifactExtension)) $root;$compileProvenance=Under ($artifact+'.plccode-compile.json') $root
+    $artifact=Under ([IO.Path]::ChangeExtension($output,$artifactExtension)) $root;$compileProvenance=Under ($artifact+'.plceng-compile.json') $root
     if($compileBatch){if($editorSessionMode){Assert-WeinviewEditorCompileArtifacts $editorSessionContext $artifact $compileProvenance}elseif(Test-Path -LiteralPath $compileProvenance){Fail 'Fresh adjacent batch compile provenance required.'}}
     $script:batchPreflightVerified=$false;$script:batchImportStarted=$false;$script:batchImportsCompleted=0
     $mutation='possible'
@@ -1431,9 +1431,9 @@ try {
      if($request.operation -ceq 'project_context_read'){$data.device_directory=@($directory.device_directory);$data.native_directory_verified=$true;$data.read_only_inspection=$true;$data.directory_ribbon_evidence=$directory.ribbon_evidence;$data.read_route='native_ui_csv';$data.tags_read=$true}
     }else{
      if($tagBefore.tags_sha256 -ine $a.expected_tags_sha256){Fail 'Stale native tag snapshot SHA; no CSV import.'}
-     [PLCCode.Weinview.TagRow[]]$expectedTags=[PLCCode.Weinview.TagCsvCodec]::Merge([PLCCode.Weinview.TagRow[]]$tagBefore.tags,$requestedRows)
+     [PLC Engineering Suite.Weinview.TagRow[]]$expectedTags=[PLC Engineering Suite.Weinview.TagCsvCodec]::Merge([PLC Engineering Suite.Weinview.TagRow[]]$tagBefore.tags,$requestedRows)
      $stage='verify_native_tag_devices';$nativeTagNames=@($a.tags|Where-Object {$_.row_format -ceq 'native_csv'}|ForEach-Object {[string]$_.name});$deviceProof=Assert-WeinviewTagDeviceBindings $s $requestedRows $nativeTagNames
-     $newRows=New-Object 'Collections.Generic.List[PLCCode.Weinview.TagRow]';$updated=@()
+     $newRows=New-Object 'Collections.Generic.List[PLC Engineering Suite.Weinview.TagRow]';$updated=@()
      $replaceMerged=@($tagBefore.tags|Where-Object {$nativeTagNames -ccontains $_.name}).Count -gt 0
      if($replaceMerged){
       $stage='update_merged_native_tags';$importProof=Import-WeinviewTags $s $expectedTags ($prefix+'.request.csv') -ReplaceMergedTable
@@ -1443,12 +1443,12 @@ try {
      if($newRows.Count){$stage='append_new_native_tags';$importProof=Import-WeinviewTags $s $newRows.ToArray() ($prefix+'.request.csv')}
      }
      $stage='verify_full_native_tags';$tagAfter=Export-WeinviewTags $s ($prefix+'.after.csv')
-     [PLCCode.Weinview.TagCsvCodec]::AssertSame($expectedTags,[PLCCode.Weinview.TagRow[]]$tagAfter.tags)
+     [PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame($expectedTags,[PLC Engineering Suite.Weinview.TagRow[]]$tagAfter.tags)
      Close-WeinviewTagLibrary $s;$stage='save_native_tags';$saved=SaveEditedProject $s $output $before 1500
      $stage='close_saved_tag_project';CloseSession $s $output $saved $false
      $stage='reopen_saved_tag_project';$s=StartOwned $exe $output;SetEditSession $s $output $exe;$s.tag_prefix=$prefix+'.reopen'
      $null=Open-WeinviewTagLibrary $s;$stage='read_persisted_full_tags';$tagReopened=Export-WeinviewTags $s ($prefix+'.reopened.csv')
-     [PLCCode.Weinview.TagCsvCodec]::AssertSame($expectedTags,[PLCCode.Weinview.TagRow[]]$tagReopened.tags)
+     [PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame($expectedTags,[PLC Engineering Suite.Weinview.TagRow[]]$tagReopened.tags)
      if($tagAfter.tags_sha256 -cne $tagReopened.tags_sha256){Fail 'Persisted native tag CSV byte SHA differs.'}
      Close-WeinviewTagLibrary $s;$stage='close_readonly_persisted_tags';CloseSession $s $output $saved $true
      if((Hash $projectInput) -ne $before -or (Hash $output) -ne $saved){Fail 'Tag upsert source/output final invariant failed.'}
@@ -1768,7 +1768,7 @@ try {
        if((CanonicalObjectHash $expectedPersisted) -cne $actual.object_sha256){Fail 'Saved/reopened native target fields differ beyond automatic Option List mode height.'}
       }
      if($a.object_id -cmatch '^TD_[0-9]+$' -and (!$applied.channel_y_axis_before -or !$applied.channel_y_axis_after -or !$persisted.channel_y_axis_evidence)){Fail 'Trend channel Y axis evidence missing.'}
-     if($tagUpdateRequested){[PLCCode.Weinview.TagCsvCodec]::AssertSame([PLCCode.Weinview.TagRow[]]$tagEvidence.tags,[PLCCode.Weinview.TagRow[]]$tagReopened.tags);if($tagEvidence.tags_sha256 -cne $tagReopened.tags_sha256){Fail 'Native Tag library changed during reference update.'}}
+     if($tagUpdateRequested){[PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame([PLC Engineering Suite.Weinview.TagRow[]]$tagEvidence.tags,[PLC Engineering Suite.Weinview.TagRow[]]$tagReopened.tags);if($tagEvidence.tags_sha256 -cne $tagReopened.tags_sha256){Fail 'Native Tag library changed during reference update.'}}
      if($securityRequested -and $persisted.security_class -cne [string]$a.security_class){Fail 'Saved/reopened object security class differs.'}
       $appearanceColor=$null
       if($colorRequested.Count){
@@ -2031,7 +2031,7 @@ try {
     Set-WeinviewScreenSession $s $output $exe ($prefix+'.reopen-identity.json')
     $stage='select_persisted_numeric_screen';$null=Select-WeinviewWindow $s $windowNumber
     $tagReopened=$null
-    if($taggedItems.Count){$stage='reverify_existing_numeric_tags';$null=Open-WeinviewTagLibrary $s;$tagReopened=Export-WeinviewTags $s ($prefix+'.numeric-tags-reopened.csv');[PLCCode.Weinview.TagCsvCodec]::AssertSame([PLCCode.Weinview.TagRow[]]$tagEvidence.tags,[PLCCode.Weinview.TagRow[]]$tagReopened.tags);if($tagEvidence.tags_sha256 -cne $tagReopened.tags_sha256){Fail 'Numeric source tag CSV changed after save/reopen.'};Close-WeinviewTagLibrary $s;$s.tag_evidence=$tagReopened;$null=Select-WeinviewWindow $s $windowNumber}
+    if($taggedItems.Count){$stage='reverify_existing_numeric_tags';$null=Open-WeinviewTagLibrary $s;$tagReopened=Export-WeinviewTags $s ($prefix+'.numeric-tags-reopened.csv');[PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame([PLC Engineering Suite.Weinview.TagRow[]]$tagEvidence.tags,[PLC Engineering Suite.Weinview.TagRow[]]$tagReopened.tags);if($tagEvidence.tags_sha256 -cne $tagReopened.tags_sha256){Fail 'Numeric source tag CSV changed after save/reopen.'};Close-WeinviewTagLibrary $s;$s.tag_evidence=$tagReopened;$null=Select-WeinviewWindow $s $windowNumber}
     $deviceReadbacksReopened=@()
     $stage='persisted_numeric_addition_readback';$persisted=Read-WeinviewAdditionSnapshot $s $saved ($prefix+'.persisted') $PSScriptRoot ([string[]]@($applied.objects|ForEach-Object {$_.object_id}))
     Assert-WeinviewAdditionSnapshots $applied.after_snapshot $persisted 0
@@ -2105,7 +2105,7 @@ try {
     Set-WeinviewScreenSession $s $output $exe ($prefix+'.reopen-identity.json')
     $stage='select_persisted_bit_switch_screen';$null=Select-WeinviewWindow $s $windowNumber
     $tagReopened=$null
-    if($taggedItems.Count){$stage='read_persisted_bit_tags';$null=Open-WeinviewTagLibrary $s;$tagReopened=Export-WeinviewTags $s ($prefix+'.bit-tags-reopened.csv');[PLCCode.Weinview.TagCsvCodec]::AssertSame([PLCCode.Weinview.TagRow[]]$tagEvidence.tags,[PLCCode.Weinview.TagRow[]]$tagReopened.tags);Close-WeinviewTagLibrary $s;$s.tag_evidence=$tagReopened;$null=Select-WeinviewWindow $s $windowNumber}
+    if($taggedItems.Count){$stage='read_persisted_bit_tags';$null=Open-WeinviewTagLibrary $s;$tagReopened=Export-WeinviewTags $s ($prefix+'.bit-tags-reopened.csv');[PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame([PLC Engineering Suite.Weinview.TagRow[]]$tagEvidence.tags,[PLC Engineering Suite.Weinview.TagRow[]]$tagReopened.tags);Close-WeinviewTagLibrary $s;$s.tag_evidence=$tagReopened;$null=Select-WeinviewWindow $s $windowNumber}
     $stage='persisted_bit_switch_addition_readback';$persisted=Read-WeinviewAdditionSnapshot $s $saved ($prefix+'.persisted') $PSScriptRoot ([string[]]@($applied.objects|ForEach-Object {$_.object_id}))
     Assert-WeinviewAdditionSnapshots $applied.before_snapshot $persisted $items.Count
     Assert-WeinviewAdditionSnapshots $applied.after_snapshot $persisted 0
@@ -2155,7 +2155,7 @@ try {
      $readName=$name;$readSource=[string]$nativeMacro.code_context
      if(!$readSource -or $readSource.Contains([string][char]0) -or [Text.Encoding]::UTF8.GetByteCount($readSource) -gt 65536){Fail 'Native macro source is empty, contains NUL, or exceeds 64 KiB.'}
     }
-    $normalizedSource=[PLCCode.Weinview.NativeControls]::NormalizeLF($readSource)
+    $normalizedSource=[PLC Engineering Suite.Weinview.NativeControls]::NormalizeLF($readSource)
     $sourceAlgorithm=[Security.Cryptography.SHA256]::Create()
     try{$readSourceSha256=[BitConverter]::ToString($sourceAlgorithm.ComputeHash([Text.Encoding]::UTF8.GetBytes($normalizedSource))).Replace('-','')}finally{$sourceAlgorithm.Dispose()}
     $stage='close_readonly_macro_project';CloseSession $s $output $before $true
@@ -2198,7 +2198,7 @@ try {
     $selectedSlots=$null;$startupSlot=$null
     if($hasSelected){$selectedSlots=[int[]]@($a.selected_languages);$startupSlot=[int]$a.startup_language}
     $artifact=Under ([IO.Path]::ChangeExtension($output,$artifactExtension)) $root
-    $compileProvenance=Under ($artifact+'.plccode-compile.json') $root
+    $compileProvenance=Under ($artifact+'.plceng-compile.json') $root
     if(Test-Path -LiteralPath $compileProvenance){Fail 'Fresh adjacent compile provenance path required.'}
     $mutation='possible';[IO.File]::Copy($projectInput,$output,$false)
     if((Hash $output) -ne $before){Fail 'Compile clone hash differs from input.'}
@@ -2318,7 +2318,7 @@ try {
     if(!$validation.Valid){Fail 'Screen plan validation failed before copy.'}
     Add-Type -AssemblyName Accessibility
     Add-Type -Path @((Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'NativeScreenScene.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll','System.Drawing.dll'
-    $trust=@{Profile='weinview-cn421-tk800x480';Screen=10;ProjectSha256=$before;Objects=@(@{Kind='numeric_display';Description='PLCCode_LW100_反馈';Rectangle=@(80,80,180,60)},@{Kind='macro_button';Description='PLCCode_RunMacro_0';Rectangle=@(80,170,180,60)})}
+    $trust=@{Profile='weinview-cn421-tk800x480';Screen=10;ProjectSha256=$before;Objects=@(@{Kind='numeric_display';Description='PLC Engineering Suite_LW100_反馈';Rectangle=@(80,80,180,60)},@{Kind='macro_button';Description='PLC Engineering Suite_RunMacro_0';Rectangle=@(80,170,180,60)})}
     WritePrivateJson $trustPath $trust
     $mutation='possible';[IO.File]::Copy($projectInput,$output,$false);if((Hash $output) -ne $before){Fail 'Screen clone hash mismatch.'}
     $stage='open_owned_screen_output';$s=StartOwned $exe $output
@@ -2351,7 +2351,7 @@ try {
     Add-Type -AssemblyName Accessibility
     Add-Type -Path @((Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'CompileLogCandidate.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll','System.Drawing.dll'
     . (Join-Path $PSScriptRoot 'CompileProjectCandidate.ps1')
-    $artifact=Under ([IO.Path]::ChangeExtension($output,$artifactExtension)) $root;$compileProvenance=Under ($artifact+'.plccode-compile.json') $root
+    $artifact=Under ([IO.Path]::ChangeExtension($output,$artifactExtension)) $root;$compileProvenance=Under ($artifact+'.plceng-compile.json') $root
     if(Test-Path -LiteralPath $compileProvenance){Fail 'Fresh adjacent macro compile provenance required.'}
     $mutation='possible'; [IO.File]::Copy($projectInput,$output,$false); $stage='open_owned_output'; $s=StartOwned $exe $output $false
     $stage='macro_manager'; $manager=Manager $s; $rows=ListRows $s $manager
@@ -2390,10 +2390,10 @@ try {
      $readName=[string]$macroAfter.macro_name;$readId=[string]$macroAfter.macro_id;$readSource=[string]$macroAfter.source
      if($macroAfter.metadata_lines_sha256 -cne $preparedMacro.metadata_lines_sha256){Fail 'Native macro execution metadata differs after file import.'}
      Assert-WeinviewMacroFilesPreserved $macroBefore $macroAfter $number ($request.operation -ne 'macro_update')
-   if($readName -cne $name -or $readId.Trim() -ne [string]$number -or [PLCCode.Weinview.NativeControls]::NormalizeLF($readSource) -cne [PLCCode.Weinview.NativeControls]::NormalizeLF($source)){Fail 'Saved macro readback differs.'}
+   if($readName -cne $name -or $readId.Trim() -ne [string]$number -or [PLC Engineering Suite.Weinview.NativeControls]::NormalizeLF($readSource) -cne [PLC Engineering Suite.Weinview.NativeControls]::NormalizeLF($source)){Fail 'Saved macro readback differs.'}
    $reopenVerified=$true
    $sourceAlgorithm=[Security.Cryptography.SHA256]::Create()
-   try{$verifiedSourceSha256=[BitConverter]::ToString($sourceAlgorithm.ComputeHash([Text.Encoding]::UTF8.GetBytes([PLCCode.Weinview.NativeControls]::NormalizeLF($readSource)))).Replace('-','')}finally{$sourceAlgorithm.Dispose()}
+   try{$verifiedSourceSha256=[BitConverter]::ToString($sourceAlgorithm.ComputeHash([Text.Encoding]::UTF8.GetBytes([PLC Engineering Suite.Weinview.NativeControls]::NormalizeLF($readSource)))).Replace('-','')}finally{$sourceAlgorithm.Dispose()}
    Button $s $manager 2 '离开'; WaitFor { if(!@($s.native.EnumTopWindows()|Where-Object {$_.Hwnd -eq $manager.Hwnd}).Count){return $true} } | Out-Null
    $stage='close_readonly_reopen'; $reopenCloseStatus=CloseSession $s $output $saved $true $true; if((Hash $projectInput) -ne $before -or (Hash $output) -ne $saved){Fail 'Final project hash invariant failed.'}
    $reopenCloseWarning=if($reopenCloseStatus.normal_exit_verified){$null}else{'Verified read-only macro reopen exited with code '+$reopenCloseStatus.process_exit_code+'.'}
@@ -2480,10 +2480,10 @@ try {
    if(!$s.process.HasExited -and (Hash $projectInput) -eq $before -and (Hash $cleanupPath) -eq $cleanupHash){
     $modals=@($s.native.EnumTopWindows()|Where-Object {$_.Class -ceq '#32770' -and $_.Visible})
     if(($request.operation -ceq 'screen_copy_objects' -or ($request.operation -ceq 'project_apply' -and $batchDonorOpenPath -and $batchDonorClone -and $s.project_path -ieq $batchDonorOpenPath)) -and $modals.Count -eq 1 -and $modals[0].Pid -eq $s.process.Id -and $modals[0].Enabled -and $modals[0].Title -ceq '寻找/替换'){
-     [PLCCode.Weinview.NativeAddressReplaceControls]::Close($s.native,[long]$modals[0].Hwnd,[int]$s.process.Id);$modals=@();$cleanup.address_find_closed=$true
+     [PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($s.native,[long]$modals[0].Hwnd,[int]$s.process.Id);$modals=@();$cleanup.address_find_closed=$true
     }
     if($request.operation -ceq 'project_replace_address' -and $modals.Count -eq 1 -and $addressDialog -and $modals[0].Hwnd -eq $addressDialog.Hwnd -and $modals[0].Enabled -and !$addressReplaceTriggered){
-     [PLCCode.Weinview.NativeAddressReplaceControls]::Close($s.native,[long]$addressDialog.Hwnd,[int]$s.process.Id);$addressDialog=$null;$modals=@();$cleanup.address_find_closed=$true
+     [PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($s.native,[long]$addressDialog.Hwnd,[int]$s.process.Id);$addressDialog=$null;$modals=@();$cleanup.address_find_closed=$true
     }
     if($request.operation -ceq 'project_adopt' -and $modals.Count -eq 1 -and $modals[0].Enabled -and $modals[0].Title -ceq '窗口列表'){
      Close-WeinviewWindowList $s $modals[0];$modals=@();$cleanup.window_list_closed=$true

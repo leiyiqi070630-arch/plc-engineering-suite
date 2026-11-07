@@ -74,20 +74,20 @@ except ImportError:
     NATIVE_OPERATOR_SPECS = {}
 
 try:
-    import plccode_lad_plan_adapter as _plccode_lad_plan_adapter
+    import plceng_lad_plan_adapter as _plceng_lad_plan_adapter
     try:
         import importlib
-        _reload_plccode_lad_adapter = importlib.reload
+        _reload_plceng_lad_adapter = importlib.reload
     except Exception:
-        _reload_plccode_lad_adapter = reload
-    if "_plccode_lad_plan_adapter" in globals():
-        _reload_plccode_lad_adapter(_plccode_lad_plan_adapter)
-    adapt_plccode_lad_plan = (
-        _plccode_lad_plan_adapter.adapt_plccode_lad_plan)
-    _plccode_lad_adapter_import_error = None
+        _reload_plceng_lad_adapter = reload
+    if "_plceng_lad_plan_adapter" in globals():
+        _reload_plceng_lad_adapter(_plceng_lad_plan_adapter)
+    adapt_plceng_lad_plan = (
+        _plceng_lad_plan_adapter.adapt_plceng_lad_plan)
+    _plceng_lad_adapter_import_error = None
 except ImportError as exc:
-    adapt_plccode_lad_plan = None
-    _plccode_lad_adapter_import_error = repr(exc)
+    adapt_plceng_lad_plan = None
+    _plceng_lad_adapter_import_error = repr(exc)
 
 try:
     from source_text_guard import has_literal_linebreak_escape
@@ -156,7 +156,7 @@ except ImportError:
 # timeout.  Env overrides still win (route_cli start passes them explicitly).
 def _default_bridge_work():
     local = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
-    return os.path.join(local, "PLC Code", "codesys-bridge", "work")
+    return os.path.join(local, "PLC Engineering Suite", "codesys-bridge", "work")
 _DEFAULT_WORK = _default_bridge_work()
 REQ_DIR = os.environ.get(
     "CODESYS_BRIDGE_REQ_DIR",
@@ -4974,7 +4974,7 @@ def _online_file_root():
     if override:
         return os.path.abspath(override)
     local = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
-    return os.path.abspath(os.path.join(local, "PLC Code", "codesys-bridge",
+    return os.path.abspath(os.path.join(local, "PLC Engineering Suite", "codesys-bridge",
                                         "online-files"))
 
 
@@ -8621,7 +8621,7 @@ def _require_current_disposable_project(req, operation):
 
 # These operations can change project contents. Keep the protection at the
 # dispatch boundary as well as in vendor-specific writers: new aliases must
-# not accidentally gain a path to the real PLCCode project.
+# not accidentally gain a path to the real PLC Engineering Suite project.
 # Creation ops are exempt from the open-project requirement: they must run
 # with NO project open (their handlers enforce project_already_open), so
 # asking for an open project first would make them impossible.
@@ -35773,7 +35773,7 @@ def _roundtrip(req):
     # Defense in depth for callers that invoke the compatibility handler
     # directly (bypassing the dispatch guard).  A round-trip writes source,
     # saves the project, and reopens it; it is never valid against the real
-    # PLCCode project or an arbitrary filesystem path.
+    # PLC Engineering Suite project or an arbitrary filesystem path.
     if req.get("disposable") is not True:
         raise OperationError(
             "roundtrip.verify requires disposable=true",
@@ -35873,7 +35873,7 @@ def capability_catalog():
             "root": os.path.abspath(DISPOSABLE_ROOT),
             "projectMutationGuard": "unsafe_project_write_blocked",
             "destinationGuard": "unsafe_project_path",
-            "plcCodeMutationAllowed": False,
+            "plcEngMutationAllowed": False,
         },
         "runtimeEvidence": {
             "readOnlyAudit": "evidence/runtime-readonly-tool-audit-final-am600-20260825.json",
@@ -38570,9 +38570,9 @@ def lad_instruction_search(req):
 
 
 def lad_generate_contact_block(req):
-    """Compile one PLCCode-contract contact plan into TRUE contact LAD.
+    """Compile one PLC Engineering Suite-contract contact plan into TRUE contact LAD.
 
-    plan (PLCCode tia_lad_generate_block_xml vocabulary, contact_coil + timer
+    plan (PLC Engineering Suite tia_lad_generate_block_xml vocabulary, contact_coil + timer
     networks) -> vendor IArchivable XML -> project.import_native -> save ->
     compile gate.  One call: plan in, real contact ladder in the project.
     """
@@ -38852,7 +38852,7 @@ def lad_generate_contact_block(req):
         "claims": {"contactGraphWritten": True,
                    "compileZeroErrorsWarnings": gate_ok,
                    "precompileZeroErrors": precompile_errors == 0,
-                   "planContract": "plc-code.tia-lad.generate-block-xml.v1",
+                   "planContract": "plc-engineering-suite.tia-lad.generate-block-xml.v1",
                    "taskAssignmentVerified": bool(
                        task_assignment and
                        task_assignment.get("exactReadback")),
@@ -41839,7 +41839,7 @@ def _lad_generate_block_exception_result(req, exc, stage):
     fallback = _lad_generate_block_issue(
         _text(getattr(exc, "code", None) or
               "LAD_GENERATE_BLOCK_FAILED").upper(),
-        "$.plan", "valid PLCCode LAD plan", None, None, _text(exc),
+        "$.plan", "valid PLC Engineering Suite LAD plan", None, None, _text(exc),
         "Correct the plan or runtime condition described by this error, then retry.")
     errors = _lad_generate_block_error_list(
         _lad_generate_block_nested_errors(data), fallback)
@@ -41853,16 +41853,16 @@ def _lad_generate_block_exception_result(req, exc, stage):
 
 
 def lad_generate_block(req):
-    """Adapt one PLCCode-style plan and execute only the verified native path."""
+    """Adapt one PLC Engineering Suite-style plan and execute only the verified native path."""
     plan = req.get("plan") if isinstance(req, dict) else None
-    if adapt_plccode_lad_plan is None:
+    if adapt_plceng_lad_plan is None:
         issue = _lad_generate_block_issue(
             "LAD_PLAN_ADAPTER_UNAVAILABLE", "$.plan",
-            "loaded plccode_lad_plan_adapter",
-            _plccode_lad_adapter_import_error,
+            "loaded plceng_lad_plan_adapter",
+            _plceng_lad_adapter_import_error,
             {"block_name": "MainLad", "networks": []},
-            "the PLCCode LAD plan adapter is unavailable",
-            "Reload the resident bridge after installing plccode_lad_plan_adapter.py.")
+            "the PLC Engineering Suite LAD plan adapter is unavailable",
+            "Reload the resident bridge after installing plceng_lad_plan_adapter.py.")
         return _lad_generate_block_result(
             req, "rejected", "adapter", errors=[issue],
             error_code="lad_plan_adapter_unavailable",
@@ -41888,12 +41888,12 @@ def lad_generate_block(req):
     if isinstance(req, dict) and "plan_json" in req:
         adapter_request["plan_json"] = req.get("plan_json")
     try:
-        adapted = adapt_plccode_lad_plan(adapter_request, catalog)
+        adapted = adapt_plceng_lad_plan(adapter_request, catalog)
     except Exception as exc:
         issue = _lad_generate_block_issue(
             "LAD_PLAN_ADAPTER_INTERNAL_ERROR", "$.plan",
             "deterministic adapter result", repr(exc), plan,
-            "the PLCCode LAD plan adapter raised an internal error",
+            "the PLC Engineering Suite LAD plan adapter raised an internal error",
             "Inspect the adapter failure and retry after correcting the adapter; no write occurred.")
         return _lad_generate_block_result(
             req, "error", "adapter", errors=[issue],
@@ -41903,7 +41903,7 @@ def lad_generate_block(req):
         issue = _lad_generate_block_issue(
             "LAD_PLAN_ADAPTER_INVALID_RESULT", "$.plan",
             "adapter result object", adapted, plan,
-            "the PLCCode LAD plan adapter returned a non-object result",
+            "the PLC Engineering Suite LAD plan adapter returned a non-object result",
             "Correct the adapter contract; no native write was attempted.")
         return _lad_generate_block_result(
             req, "error", "adapter", errors=[issue],
@@ -41919,14 +41919,14 @@ def lad_generate_block(req):
         errors = _lad_generate_block_error_list(
             adapted.get("errors"),
             _lad_generate_block_issue(
-                "LAD_PLAN_REJECTED", "$.plan", "supported PLCCode LAD plan",
-                plan, None, "the PLCCode LAD plan was rejected",
+                "LAD_PLAN_REJECTED", "$.plan", "supported PLC Engineering Suite LAD plan",
+                plan, None, "the PLC Engineering Suite LAD plan was rejected",
                 "Correct every errors[].path and submit the complete plan again."))
         result = _lad_generate_block_result(
             req, "rejected", adapted.get("stage") or "validate_plan",
             data=adapted, errors=errors, warnings=adapter_warnings,
             error_code="lad_plan_validation_failed",
-            error="PLCCode LAD plan validation failed",
+            error="PLC Engineering Suite LAD plan validation failed",
             normalized_plan=normalized_plan, truth=truth,
             adapter_schema=adapter_schema)
         result["nativePathMap"] = native_path_map
@@ -42307,7 +42307,7 @@ def _lad_native_generate_instruction_batch_impl(req):
                 "message": "native LAD generation requires the exact confirmation token",
                 "remediation": "Set confirm to the exact value shown in expected.",
             }]})
-    # PLCCode-style compositional mode: one POU owns multiple networks and each
+    # PLC Engineering Suite-style compositional mode: one POU owns multiple networks and each
     # network owns multiple independent instruction boxes.  This is deliberately
     # selected by networks[] so the legacy one-POU-per-item batch stays compatible.
     if req.get("networks") is not None:
@@ -42342,7 +42342,7 @@ def _lad_native_generate_instruction_batch_impl(req):
 
     available_names = sorted(signatures.keys())
     available_example = available_names[:32]
-    # PLCCode's plan contract validates the whole request before emitting one
+    # PLC Engineering Suite's plan contract validates the whole request before emitting one
     # byte of XML.  Do the same here: a batch with one malformed signature or
     # parameter is rejected atomically, so it cannot leave a project containing
     # a mixture of valid and precompile-invalid blocks.

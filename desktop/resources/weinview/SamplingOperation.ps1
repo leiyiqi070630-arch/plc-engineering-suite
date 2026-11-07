@@ -13,7 +13,7 @@ function New-WeinviewSamplingClone([string]$SourcePath,[string]$OutputPath,[stri
 
 function Assert-WeinviewSamplingManager($Session,$Manager) {
  Assert-WeinviewPlcCandidateSession $Session
- $identity=[PLCCode.Weinview.SamplingRibbonControls]::RequireDialog($Session.native,[long]$Manager.Hwnd,'资料取样',[long]$Session.main.Hwnd)
+ $identity=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::RequireDialog($Session.native,[long]$Manager.Hwnd,'资料取样',[long]$Session.main.Hwnd)
  $controls=@($Session.native.EnumChildControls($Manager.Hwnd))
  function SamplingManagerControl([int]$Id,[string]$Class,[string]$Title){$found=@($controls|Where-Object {$_.Visible -and $_.Id -eq $Id -and $_.Class -ceq $Class -and (!$Title -or $_.Title -ceq $Title)});if($found.Count -ne 1){throw 'Exact owned Sampling manager control required.'};return $found[0]}
  $countControl=SamplingManagerControl 1289 'Static' ''
@@ -38,13 +38,13 @@ function Confirm-WeinviewSamplingCsvNotice($Session,$Manager,$Notice,[string]$Cs
  Assert-WeinviewPlcCandidateSession $Session
  if((Hash $Session.output_path) -cne $SourceSha256){throw 'Sampling export source changed before notice acknowledgement.'}
  $csv=Read-WeinviewSamplingCsv -Path $CsvPath
- $managerIdentity=[PLCCode.Weinview.SamplingRibbonControls]::RequireDialogState($Session.native,$Manager.Hwnd,'资料取样',$Session.main.Hwnd,$false)
- $noticeIdentity=[PLCCode.Weinview.SamplingRibbonControls]::RequireDialog($Session.native,$Notice.Hwnd,'EasyBuilder Pro',$Manager.Hwnd)
+ $managerIdentity=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::RequireDialogState($Session.native,$Manager.Hwnd,'资料取样',$Session.main.Hwnd,$false)
+ $noticeIdentity=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::RequireDialog($Session.native,$Notice.Hwnd,'EasyBuilder Pro',$Manager.Hwnd)
  $controls=@($Session.native.EnumChildControls($Notice.Hwnd)|Where-Object {$_.Visible})
  $body=@($controls|Where-Object {$_.Class -ceq 'Static' -and $_.Id -eq 65535})
  $buttons=@($controls|Where-Object {$_.Class -ceq 'Button'})
  if($body.Count -ne 1 -or $Session.native.GetControlText($body[0].Hwnd,4096) -cne '成功' -or $buttons.Count -ne 1 -or $buttons[0].Id -ne 2 -or $buttons[0].Title -cne '确定' -or !$buttons[0].Enabled){throw 'Exact original Sampling CSV success notice controls required; preserve unknown.'}
- $activation=[PLCCode.Weinview.SamplingRibbonControls]::ActivateSuccessNotice($Session.native,$Notice.Hwnd,$Manager.Hwnd,$Session.main.Hwnd)
+ $activation=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::ActivateSuccessNotice($Session.native,$Notice.Hwnd,$Manager.Hwnd,$Session.main.Hwnd)
  $Session.native.ClickButton($Notice.Hwnd,2,'确定')
  $null=WaitFor {if(!@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Hwnd -eq $Notice.Hwnd}).Count){return Assert-WeinviewSamplingManager $Session $Manager}} 6
  if((Hash $CsvPath) -cne $csv.sha256 -or (Hash $Session.output_path) -cne $SourceSha256){throw 'Sampling CSV/source changed during notice acknowledgement.'}
@@ -70,7 +70,7 @@ function Export-WeinviewSamplingCsv($Session,$Manager,[string]$CsvPath,[string]$
   return [pscustomobject]@{sampling_csv=$empty;csv_path=$path;sha256=$empty.sha256;byte_length=$empty.byte_length;manager_before=$managerIdentity;manager_after=$managerIdentity;empty_evidence=$managerIdentity;native_export_verified=$false;native_empty_table_verified=$true;empty_csv_derived=$true;table_origin=$origin;source_sha256=$SourceSha256;source_unchanged=$true;full_properties_verified=$false}
  }
  $native.ClickButton($Manager.Hwnd,1146,'导出...')
- $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.process.Path)
+ $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.process.Path)
  $save=WaitFor {
   $dialogs=@($native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq '#32770' -and $_.Hwnd -ne $Manager.Hwnd})
   if($dialogs.Count -gt 1){throw 'Ambiguous sampling CSV Save dialog.'}
@@ -84,16 +84,16 @@ function Export-WeinviewSamplingCsv($Session,$Manager,[string]$CsvPath,[string]$
    if($files.Count -eq 1 -and $saves.Count -eq 1 -and $formats.Count -eq 1){return $dialogs[0]}
   }
  } 6
- $saveOwner=[PLCCode.Weinview.SamplingRibbonControls]::OwnerOf($native,$save.Hwnd)
+ $saveOwner=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::OwnerOf($native,$save.Hwnd)
  # The finite actual Save owner must be the originally opened manager.
- $saveIdentity=[PLCCode.Weinview.SamplingRibbonControls]::RequireDialog($native,$save.Hwnd,'另存为',$Manager.Hwnd)
+ $saveIdentity=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::RequireDialog($native,$save.Hwnd,'另存为',$Manager.Hwnd)
  $types=@(foreach($c in @($native.EnumChildControls($save.Hwnd)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq 'ComboBox'})){if(@($property.ComboItems($c.Hwnd)|Where-Object {$_ -ceq 'CSV (*.csv)'}).Count -eq 1){$c}})
  if($types.Count -ne 1){throw 'Unique actual CSV format selector required.'}
  $property.SelectComboExact($types[0].Hwnd,'CSV (*.csv)')
  if($property.ComboSelected($types[0].Hwnd) -cne 'CSV (*.csv)'){throw 'Native CSV format selection differs.'}
  $file=$native.FindUniqueControlWithoutLabel($save.Hwnd,1001,'Edit');$native.SetControlText($file.Hwnd,$path)
  if($native.GetControlText($file.Hwnd,4096) -cne $path){throw 'Owned native sampling CSV filename differs.'}
- $saveActivation=[PLCCode.Weinview.SamplingRibbonControls]::ActivateExportSave($native,$save.Hwnd,$Manager.Hwnd,$Session.main.Hwnd,$file.Hwnd,$types[0].Hwnd,$path)
+ $saveActivation=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::ActivateExportSave($native,$save.Hwnd,$Manager.Hwnd,$Session.main.Hwnd,$file.Hwnd,$types[0].Hwnd,$path)
  $native.ClickButton($save.Hwnd,1,'保存(&S)')
  $completion=WaitFor {
   $dialogs=@($native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq '#32770' -and $_.Hwnd -ne $Manager.Hwnd})
@@ -117,7 +117,7 @@ function Export-WeinviewSamplingCsv($Session,$Manager,[string]$CsvPath,[string]$
 }
 
 function Invoke-WeinviewSamplingRead($Session,[string]$ExportPath,[string]$SourceSha256) {
- $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($Session.native)
+ $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($Session.native)
  $entry=Invoke-WeinviewSamplingRibbon $Session $semantic
  try{$export=Export-WeinviewSamplingCsv $Session $entry.manager $ExportPath $SourceSha256}catch{
   $initialError=$_
@@ -204,7 +204,7 @@ function Confirm-WeinviewSamplingReplacement($Session,$Manager,$Notice,$BeforeCs
  if((Hash $AppendEvidence.input_path) -cne $BeforeCsv.sha256 -or (Hash $AppendEvidence.output_path) -cne $AppendEvidence.output_sha256 -or !$AppendEvidence.old_bytes_preserved -or $AppendEvidence.old_prefix_sha256 -cne $BeforeCsv.sha256){throw 'Complete verified old-table candidate required before destructive native replacement.'}
  $candidate=Read-WeinviewSamplingCsv -Path $AppendEvidence.output_path
  Assert-WeinviewSamplingCsvPreserved $BeforeCsv $candidate @($AppendEvidence.appended).Count
- $activation=[PLCCode.Weinview.SamplingRibbonControls]::ActivateReplacementNotice($Session.native,$Notice.Hwnd,$Manager.Hwnd,$Session.main.Hwnd)
+ $activation=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::ActivateReplacementNotice($Session.native,$Notice.Hwnd,$Manager.Hwnd,$Session.main.Hwnd)
  $Session.native.ClickButton($Notice.Hwnd,6,'是(&Y)')
  return [pscustomobject]@{notice=$Notice;activation=$activation;body='是否要删除现有的资料取样 ?';candidate_path=$candidate.path;candidate_sha256=$candidate.sha256;original_sampling_sha256=$BeforeCsv.sha256;old_rows_preserved=$true;acknowledged_button_id=6;replacement_confirmed=$true;native_import_verified=$false}
 }
@@ -240,14 +240,14 @@ function Import-WeinviewSamplingCsv($Session,$Manager,$BeforeCsv,$AppendEvidence
    if($fileControls.Count -eq 1 -and $filterControls.Count -eq 1 -and $openControls.Count -eq 1){return $dialogs[0]}
   }
  } 6
- $fileIdentity=[PLCCode.Weinview.SamplingRibbonControls]::RequireDialog($native,$open.Hwnd,'打开',$Manager.Hwnd)
- $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.process.Path)
+ $fileIdentity=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::RequireDialog($native,$open.Hwnd,'打开',$Manager.Hwnd)
+ $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.process.Path)
  $filter=$native.FindUniqueControlWithoutLabel($open.Hwnd,1136,'ComboBox')
  $filterText=$property.ComboSelected($filter.Hwnd)
  if($filterText -cne '*.xlsx, *.xls, *.csv'){throw 'Exact original Sampling import file filter required; no owner-draw enumeration.'}
  $filename=$native.FindUniqueControlWithoutLabel($open.Hwnd,1148,'Edit');$native.SetControlText($filename.Hwnd,$candidatePath)
  if($native.GetControlText($filename.Hwnd,4096) -cne $candidatePath -or (Hash $candidatePath) -cne $AppendEvidence.output_sha256 -or (Hash $Session.output_path) -cne $SourceSha256){throw 'Native Sampling import candidate filename/source changed.'}
- $activation=[PLCCode.Weinview.SamplingRibbonControls]::ActivateImportFile($native,$open.Hwnd,$Manager.Hwnd,$Session.main.Hwnd,$candidatePath)
+ $activation=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::ActivateImportFile($native,$open.Hwnd,$Manager.Hwnd,$Session.main.Hwnd,$candidatePath)
  $native.ClickButton($open.Hwnd,1,'打开(&O)')
  $success=WaitFor {
   $dialogs=@($native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq '#32770' -and $_.Hwnd -ne $open.Hwnd -and $_.Hwnd -ne $Manager.Hwnd})
@@ -267,7 +267,7 @@ function Assert-WeinviewSamplingPersisted($Applied,$Reopened) {
 }
 
 function Invoke-WeinviewSamplingAppend($Session,[string]$BeforeExportPath,[string]$CandidatePath,[string]$AfterExportPath,[string]$SourceSha256,[string]$ExpectedSamplingSha256,$Objects,$DeviceDirectory=@(),$TagRows=@()) {
- $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($Session.native)
+ $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($Session.native)
  $entry=Invoke-WeinviewSamplingRibbon $Session $semantic
  try {
   $beforeExport=Export-WeinviewSamplingCsv $Session $entry.manager $BeforeExportPath $SourceSha256

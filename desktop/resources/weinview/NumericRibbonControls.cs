@@ -1,5 +1,5 @@
 using System;using System.IO;using System.Runtime.InteropServices;using System.Security.Cryptography;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class NumericRibbonControls {
  [StructLayout(LayoutKind.Sequential)]struct R{public int l,t,r,b;}[StructLayout(LayoutKind.Sequential)]struct P{public int x,y;}
  [DllImport("user32.dll")]static extern bool GetWindowRect(IntPtr h,out R r);[DllImport("user32.dll")]static extern bool ScreenToClient(IntPtr h,ref P p);[DllImport("user32.dll")]static extern bool IsChild(IntPtr a,IntPtr b);[DllImport("user32.dll")]static extern IntPtr GetForegroundWindow();[DllImport("user32.dll")]static extern bool PostMessageW(IntPtr h,uint m,UIntPtr w,IntPtr l);

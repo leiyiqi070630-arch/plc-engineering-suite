@@ -24,7 +24,7 @@ const jsFiles = [];
   }
 })(path.join(root, 'src'));
 
-const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plccode-check-'));
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plceng-check-'));
 let failed = 0;
 let checked = 0;
 
@@ -58,7 +58,7 @@ const renderer = fs.readFileSync(path.join(root, 'src/renderer/assets/index-CXb3
 const assertions = [
   ['main: ipcMain.handle 注册数', (main.match(/ipcMain\.handle\(/g) || []).length, 80],
   ['main: EngineBridge 类', /class EngineBridge/.test(main), true],
-  ['main: 模型网关入口', /model-main\.cjs/.test(main), true],
+  ['main: 模型网关入口', /model-gateway\.cjs/.test(main), true],
   ['preload: contextBridge', /contextBridge\.exposeInMainWorld/.test(preload), true],
   ['renderer: React 标记', /react\.transitional\.element/.test(renderer), true],
   ['main: 残留混淆调用', (main.match(/_0x[0-9a-f]{4,6}\(/g) || []).length, 0],

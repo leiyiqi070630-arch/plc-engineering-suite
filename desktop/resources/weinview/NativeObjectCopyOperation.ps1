@@ -169,29 +169,29 @@ function Invoke-WeinviewObjectCopySpatialSelection($Session,$Document,$Before,[s
  }elseif($left -lt 0 -or $top -lt 0 -or $right -ge $width -or $bottom -ge $height){throw 'Requested native subset cannot fit one selection rectangle inside the actual canvas.'}
  if($points.Count -and $points.Count -ne $TargetIds.Count){throw 'Native multiselect point plan differs from selected ID count.'}
  # Normalize the actual editor selection state before the empty-space box gesture.
- $null=[PLCCode.Weinview.NativeObjectClipboardControls]::SelectAll($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[string]$Document.document_title,[int]$Session.process.Id,[string]$Session.exe_path)
+ $null=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::SelectAll($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[string]$Document.document_title,[int]$Session.process.Id,[string]$Session.exe_path)
  $ready=WaitFor { $ids=@(Get-WeinviewObjectCopySelectedIds $Session ([int]$Document.window_number));if($ids.Count -eq @($Before.rows).Count){return $true} } 2
  if(!$ready){throw 'Original native selection state did not become ready before subset box.'}
- $null=[PLCCode.Weinview.NativeGroupTranslationControls]::Prepare($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id)
- $sceneReader=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,[long]$Session.main.Hwnd,[int]$Document.window_number,[string]$Document.window_name,$width,$height)
+ $null=[PLC Engineering Suite.Weinview.NativeGroupTranslationControls]::Prepare($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id)
+ $sceneReader=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,[long]$Session.main.Hwnd,[int]$Document.window_number,[string]$Document.window_name,$width,$height)
  $scene=$sceneReader.Capture($EvidencePrefix+'.selection.canvas.png')
  if([long]$scene.ViewHwnd -ne [long]$Document.canvas_hwnd -or [int]$scene.LogicalWidth -ne $width -or [int]$scene.LogicalHeight -ne $height -or [bool]$scene.Clipped){throw 'Captured canvas differs from exact native document for subset selection.'}
  if($interleaved){
   $ids=[string[]]@($points|ForEach-Object {[string]$_.object_id})
   $logical=[int[][]]@($points|ForEach-Object {,[int[]]@($_.logical_point)})
-  $input=[PLCCode.Weinview.NativeGroupTranslationControls]::SelectElements($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id,$scene,[int[]]$empty,$ids,$logical)
+  $input=[PLC Engineering Suite.Weinview.NativeGroupTranslationControls]::SelectElements($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id,$scene,[int[]]$empty,$ids,$logical)
   return [pscustomobject]@{selection_rectangle=$null;selection_route='native_canvas_element_multiselect';selection_points=@($points);selection_state_initialized=$true;input=$input;canvas=@{view_hwnd=$scene.ViewHwnd;logical_size=@($width,$height);image_sha256=$scene.ImageSha256}}
  }
  $box=@([int]$left,[int]$top,[int]($right-$left),[int]($bottom-$top))
- $input=[PLCCode.Weinview.NativeGroupTranslationControls]::SelectRectangle($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id,$scene,$box[0],$box[1],$box[2],$box[3])
+ $input=[PLC Engineering Suite.Weinview.NativeGroupTranslationControls]::SelectRectangle($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id,$scene,$box[0],$box[1],$box[2],$box[3])
  return [pscustomobject]@{selection_rectangle=$box;selection_route='native_canvas_spatial_rectangle';selection_state_initialized=$true;input=$input;canvas=@{view_hwnd=$scene.ViewHwnd;logical_size=@($width,$height);image_sha256=$scene.ImageSha256}}
 }
 function Invoke-WeinviewObjectCopyGroupShift($Session,$Document,$Mapped,$Inventory,[int[]]$Requested,[string]$EvidencePrefix) {
  $correction=@(([long]$Requested[0]-[long]$Inventory.translation[0]),([long]$Requested[1]-[long]$Inventory.translation[1]))
  if($correction[0] -eq 0 -and $correction[1] -eq 0){return [pscustomobject]@{performed=$false;correction=@(0,0);drag_count=0;selected_copied_ids_verified=$true}}
  $size=@(Get-WeinviewObjectCopyCanvasDimensions $Mapped.native_window_record);$width=[int]$size[0];$height=[int]$size[1]
- $null=[PLCCode.Weinview.NativeGroupTranslationControls]::Prepare($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id)
- $sceneReader=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,[long]$Session.main.Hwnd,[int]$Document.window_number,[string]$Document.window_name,$width,$height)
+ $null=[PLC Engineering Suite.Weinview.NativeGroupTranslationControls]::Prepare($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id)
+ $sceneReader=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,[long]$Session.main.Hwnd,[int]$Document.window_number,[string]$Document.window_name,$width,$height)
  $scene=$sceneReader.Capture($EvidencePrefix+'.canvas.png')
  if([long]$scene.ViewHwnd -ne [long]$Document.canvas_hwnd -or [int]$scene.LogicalWidth -ne $width -or [int]$scene.LogicalHeight -ne $height -or [bool]$scene.Clipped){throw 'Captured canvas differs from exact native document for group shift.'}
  $byId=@{};foreach($row in @($Mapped.objects)){$byId[[string]$row.object_id]=$row}
@@ -203,7 +203,7 @@ function Invoke-WeinviewObjectCopyGroupShift($Session,$Document,$Mapped,$Invento
   if($x -ge 0 -and $y -ge 0 -and $x -lt $width -and $y -lt $height -and $x+$correction[0] -ge 0 -and $y+$correction[1] -ge 0 -and $x+$correction[0] -lt $width -and $y+$correction[1] -lt $height){$anchor=[pscustomobject]@{object_id=[string]$item.object_id;logical_point=@([int]$x,[int]$y);rectangle=$rect};break}
  }
  if(!$anchor){throw 'No selected copied object has an actual canvas anchor and destination for the requested group shift.'}
- $drag=[PLCCode.Weinview.NativeGroupTranslationControls]::Drag($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id,$scene,[string]$anchor.object_id,[int]$anchor.logical_point[0],[int]$anchor.logical_point[1],[int]$correction[0],[int]$correction[1])
+ $drag=[PLC Engineering Suite.Weinview.NativeGroupTranslationControls]::Drag($Session.native,[long]$Session.main.Hwnd,[long]$Document.canvas_hwnd,[int]$Session.process.Id,$scene,[string]$anchor.object_id,[int]$anchor.logical_point[0],[int]$anchor.logical_point[1],[int]$correction[0],[int]$correction[1])
  return [pscustomobject]@{performed=$true;correction=@($correction);drag_count=1;selected_copied_ids_verified=$true;anchor=$anchor;input=$drag;canvas=@{view_hwnd=$scene.ViewHwnd;logical_size=@($width,$height);canvas_origin_client=@($scene.CanvasOriginClient);image_sha256=$scene.ImageSha256}}
 }
 function Assert-WeinviewObjectCopyInventory($Before,$After,[string[]]$SourceIds,$SourceInventory=$null) {
@@ -324,10 +324,10 @@ function Invoke-WeinviewNativeObjectMove($Session,$Contract,[string]$ProjectSha2
  $requested=[int[]]@($Contract.translation);$selection=$null;$movement=$null
  if($requested[0] -ne 0 -or $requested[1] -ne 0){
   $selection=Get-WeinviewObjectCopyCurrentSelection $Session $window ([string[]]$desired)
-  if($null -eq $selection){if($desired.Count -eq $allIds.Count){$null=[PLCCode.Weinview.NativeObjectClipboardControls]::SelectAll($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path);$selection=[pscustomobject]@{selection_route='native_select_all';selection_rectangle=$null}}else{$selection=Invoke-WeinviewObjectCopySpatialSelection $Session $document $before ([string[]]$desired) $EvidencePrefix}}
+  if($null -eq $selection){if($desired.Count -eq $allIds.Count){$null=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::SelectAll($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path);$selection=[pscustomobject]@{selection_route='native_select_all';selection_rectangle=$null}}else{$selection=Invoke-WeinviewObjectCopySpatialSelection $Session $document $before ([string[]]$desired) $EvidencePrefix}}
   Assert-WeinviewObjectCopySelectionReady $Session $window ([string[]]$desired) $selection
   if(([math]::Abs([long]$requested[0])+[math]::Abs([long]$requested[1])) -le 16){
-   $movement=[PLCCode.Weinview.NativeGroupTranslationControls]::Nudge($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[int]$Session.process.Id,[string]$Session.exe_path,[int]$requested[0],[int]$requested[1])
+   $movement=[PLC Engineering Suite.Weinview.NativeGroupTranslationControls]::Nudge($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[int]$Session.process.Id,[string]$Session.exe_path,[int]$requested[0],[int]$requested[1])
   }else{
    $mapped=Get-WeinviewObjectCopySelectedScene $Session $window
    $carrier=[pscustomobject]@{translation=@(0,0);added_objects=@($desired|ForEach-Object {@{object_id=[string]$_}})}
@@ -380,13 +380,13 @@ function Prepare-WeinviewObjectCopyDonorPayload($Session,$Contract,$Arguments,[s
     $snapshot.before_ids=@(Get-WeinviewObjectCopyMatchIds $found ([string[]]$allIds))
     if($snapshot.contract.range_enabled){$snapshot.before_references=@(Get-WeinviewObjectCopyRangeReferences $found ([string[]]$snapshot.before_ids) $snapshot)}
    }
-  }finally{if($dialog){[PLCCode.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}}
+  }finally{if($dialog){[PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}}
  }
  $results=@()
  foreach($item in $rules){
   $activeDialog=$null;$replaceTriggered=$false
   try{$results+=,(Invoke-WeinviewNativeAddressReplaceOnce $Session $item.arguments $item.contract ([ref]$activeDialog) ([ref]$replaceTriggered))}
-  finally{if($activeDialog){[PLCCode.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$activeDialog.Hwnd,[int]$Session.process.Id)}}
+  finally{if($activeDialog){[PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$activeDialog.Hwnd,[int]$Session.process.Id)}}
  }
  if($signatures.Count){
   $canvas=Select-WeinviewAddressSearchCanvas $Session $rules[0].contract
@@ -401,14 +401,14 @@ function Prepare-WeinviewObjectCopyDonorPayload($Session,$Contract,$Arguments,[s
     $snapshot.donor_source_ids=@($ids|Where-Object {$sourceSet.Contains($_)})
     if($snapshot.contract.range_enabled){$snapshot.donor_source_references=@(Get-WeinviewObjectCopyRangeReferences $found ([string[]]$ids) $snapshot|Where-Object {$sourceSet.Contains([string]$_.object_id)})}
    }
-  }finally{if($dialog){[PLCCode.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}}
+  }finally{if($dialog){[PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}}
  }
  $selection=$null
- if($desired.Count -eq $allIds.Count){$null=[PLCCode.Weinview.NativeObjectClipboardControls]::SelectAll($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path);$selection=[pscustomobject]@{selection_route='native_select_all';selection_rectangle=$null}}
+ if($desired.Count -eq $allIds.Count){$null=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::SelectAll($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path);$selection=[pscustomobject]@{selection_route='native_select_all';selection_rectangle=$null}}
  else{$selection=Invoke-WeinviewObjectCopySpatialSelection $Session $document $before ([string[]]$desired) $EvidencePrefix}
  Assert-WeinviewObjectCopySelectionReady $Session $window ([string[]]$desired) $selection
- $receipt=[PLCCode.Weinview.NativeObjectClipboardControls]::Copy($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path)
- $payload=[PLCCode.Weinview.NativeObjectClipboardControls]::CapturePayload($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path,$receipt)
+ $receipt=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::Copy($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path)
+ $payload=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::CapturePayload($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path,$receipt)
  if((Hash $Session.project_path) -ine $ProjectSha256){throw 'Donor object copy changed saved project.'}
  $donor=[pscustomobject]@{payload=$payload;source_object_ids=@($desired);before_inventory=$before;address_snapshots=@($signatures.Values);address_replacements=@($results);selection=$selection}
  if($null -ne $selection.selection_points){$donor|Add-Member -NotePropertyName selection_points -NotePropertyValue @($selection.selection_points)}
@@ -431,7 +431,7 @@ function Set-WeinviewObjectCopyTargetAddressBaseline($Session,$Contract,$Donor,$
    $snapshot.before_ids=@(Get-WeinviewObjectCopyMatchIds $found ([string[]]$allIds))
    if($snapshot.contract.range_enabled){$snapshot.before_references=@(Get-WeinviewObjectCopyRangeReferences $found ([string[]]$snapshot.before_ids) $snapshot)}
   }
- }finally{if($dialog){[PLCCode.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}}
+ }finally{if($dialog){[PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}}
 }
 function Assert-WeinviewObjectCopyAddressReferences($Session,$Applied,[string]$EvidencePrefix) {
  $null=Open-WeinviewObjectCopyWindow $Session ([int]$Applied.window_number)
@@ -463,7 +463,7 @@ function Assert-WeinviewObjectCopyAddressReferences($Session,$Applied,[string]$E
     Assert-WeinviewObjectCopyRangeReferenceMultiset @($references|Where-Object {$addedSet.Contains([string]$_.object_id)}) $expectedReferences ([string]$snapshot.key+' copied ID/address')
    }
   }
- }finally{if($dialog){[PLCCode.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}}
+ }finally{if($dialog){[PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}}
  $result=[pscustomobject]@{copied_address_references_verified=$true;copied_address_reference_scope='native Find raw-address object-ID multisets; all other properties unverified'}
  if($rangeVerified){$result|Add-Member -NotePropertyName copied_range_address_references_verified -NotePropertyValue $true}
  return $result
@@ -482,15 +482,15 @@ function Invoke-WeinviewNativeObjectCopy($Session,$Contract,[string]$ProjectSha2
  if($null -ne $Donor){
   if($Contract.external_donor){Set-WeinviewObjectCopyTargetAddressBaseline $Session $Contract $Donor $before}
   else{Assert-WeinviewNativeMultiCopyFinalInventory $Donor.before_inventory $before | Out-Null;if((@($Donor.source_object_ids) -join [char]31) -cne (@($desired) -join [char]31)){throw 'Donor source object IDs differ from reopened original.'}}
-  $receipt=[PLCCode.Weinview.NativeObjectClipboardControls]::PublishPayload($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path,$Donor.payload)
+  $receipt=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::PublishPayload($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path,$Donor.payload)
   $selection=$Donor.selection
  }else{
   $selection=Get-WeinviewObjectCopyCurrentSelection $Session $window ([string[]]$desired)
-  if($null -eq $selection){if($desired.Count -eq $allIds.Count){$null=[PLCCode.Weinview.NativeObjectClipboardControls]::SelectAll($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path);$selection=[pscustomobject]@{selection_route='native_select_all';selection_rectangle=$null}}else{$selection=Invoke-WeinviewObjectCopySpatialSelection $Session $document $before ([string[]]$desired) $EvidencePrefix}}
+  if($null -eq $selection){if($desired.Count -eq $allIds.Count){$null=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::SelectAll($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path);$selection=[pscustomobject]@{selection_route='native_select_all';selection_rectangle=$null}}else{$selection=Invoke-WeinviewObjectCopySpatialSelection $Session $document $before ([string[]]$desired) $EvidencePrefix}}
   Assert-WeinviewObjectCopySelectionReady $Session $window ([string[]]$desired) $selection
-  $receipt=[PLCCode.Weinview.NativeObjectClipboardControls]::Copy($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path)
+  $receipt=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::Copy($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path)
  }
- $null=[PLCCode.Weinview.NativeObjectClipboardControls]::Paste($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path,$receipt)
+ $null=[PLC Engineering Suite.Weinview.NativeObjectClipboardControls]::Paste($Session.native,[long]$Session.main.Hwnd,[long]$document.canvas_hwnd,[string]$document.document_title,[int]$Session.process.Id,[string]$Session.exe_path,$receipt)
  $after=WaitFor { $probe=Get-WeinviewWindowObjectInventory $Session;if(@($probe.rows).Count -ge (@($before.rows).Count+$desired.Count)){return $probe} } 8
  $sourceInventory=if($null -ne $Donor -and $Contract.external_donor){$Donor.before_inventory}else{$null}
  $inventory=Assert-WeinviewObjectCopyInventory $before $after ([string[]]$desired) $sourceInventory

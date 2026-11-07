@@ -4,7 +4,7 @@ function Get-WeinviewNativeDeviceDirectory($Session,$System) {
  $qs=@($n.EnumChildControls($System.Hwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})
  if($qs.Count -ne 1){throw 'Unique current system device Qt page required'}
  $page=$qs[0].Hwnd
- $nodes=@([PLCCode.Weinview.ServerDeviceDirectoryControls]::Inspect($n,$System.Hwnd,$page,'系统参数设置 '));$path='client/index:0/index:0/index:0/index:2/index:0/index:0';$branch=@($nodes|Where-Object path -CEQ $path)
+ $nodes=@([PLC Engineering Suite.Weinview.ServerDeviceDirectoryControls]::Inspect($n,$System.Hwnd,$page,'系统参数设置 '));$path='client/index:0/index:0/index:0/index:2/index:0/index:0';$branch=@($nodes|Where-Object path -CEQ $path)
  if($branch.Count -ne 1 -or $branch[0].role -ne 35 -or $branch[0].count -lt 14 -or ($branch[0].count-7)%7 -ne 0){throw 'Exact seven-column complete native device table required'}
  $headers=@('','名称','位置','设备类型','界面','通讯协议','站号');for($i=0;$i -lt 7;$i++){$cell=@($nodes|Where-Object path -CEQ ($path+'/index:'+$i));if($cell.Count -ne 1 -or $cell[0].role -ne 25 -or [string]$cell[0].name -cne $headers[$i]){throw 'Native device headers changed'}}
  $rows=@();$names=@{};$utf8=New-Object Text.UTF8Encoding($false,$true);for($index=7;$index -lt $branch[0].count;$index+=7){$row=[ordered]@{};$keys=@('category','name','location','device_type','interface','protocol','station');for($i=0;$i -lt 7;$i++){$cell=@($nodes|Where-Object path -CEQ ($path+'/index:'+($index+$i)));if($cell.Count -ne 1 -or $cell[0].role -ne 36 -or $cell[0].count -ne 0){throw 'Incomplete native device row'};$row[$keys[$i]]=[string]$cell[0].name};if([string]::IsNullOrWhiteSpace($row.name) -or $row.name.Length -gt 64 -or $row.name -match '[\x00-\x1f\x7f]' -or $names.ContainsKey($row.name)){throw 'Native device names invalid or ambiguous'};$null=$utf8.GetBytes($row.name);$names[$row.name]=$true;$rows+=[pscustomobject]$row}
@@ -26,8 +26,8 @@ function Read-WeinviewProjectDeviceDirectory($Session,[bool]$UseNativeHost=$true
   Assert-WeinviewPlcCandidateSession $Session
   return @{device_directory=$rows;native_directory_verified=$true;ribbon_evidence=@{read_route='native_host';native_host_method='getAllData';metadata_scope='sys_params.devices';input_performed=$false}}
  }
- $n=$Session.native;$property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
- $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($n);$dialog=$null
+ $n=$Session.native;$property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($n);$dialog=$null
  try {
   $entry=Open-WeinviewSystemParametersRibbon $Session $semantic
   $dialog=WaitFor {$all=@($n.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'});if(@($all|Where-Object {$_.Title -cne '系统参数设置 '}).Count){throw 'Unknown device-directory modal; preserve'};if($all.Count -eq 1 -and $all[0].Enabled){return $all[0]}} 8
@@ -48,7 +48,7 @@ function Invoke-WeinviewServerConfiguration($Session,[ValidateSet('Read','Config
  $ErrorActionPreference='Stop';Assert-WeinviewPlcCandidateSession $Session
  . (Join-Path $PSScriptRoot 'ModelCatalog.ps1')
  if(!$DeviceName -or $DeviceName.Length -gt 64 -or $DeviceName -match '[\x00-\x1f]'){throw 'Bounded exact server device name required'}
- $n=$Session.native;$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$sem=[PLCCode.Weinview.NativeSemanticControls]::new($n)
+ $n=$Session.native;$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path);$sem=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($n)
  function AwaitServer([scriptblock]$test){$end=[DateTime]::UtcNow.AddSeconds(8);do{$value=& $test;if($value){return $value};Start-Sleep -Milliseconds 50}while([DateTime]::UtcNow -lt $end);throw 'Server modal/control transition timed out'}
  function Modal([string]$title,[int[]]$ids){return AwaitServer {$ds=@($n.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'});if(@($ds|Where-Object {$_.Title -cnotin @('系统参数设置 ','设备属性')}).Count){throw 'Unknown owned server modal; preserve'};$enabled=@($ds|Where-Object Enabled);if($enabled.Count -ne 1 -or $enabled[0].Title -cne $title){return};$cs=@($n.EnumChildControls($enabled[0].Hwnd));foreach($id in $ids){if(@($cs|Where-Object {$_.Id -eq $id -and $_.Visible -and $_.Enabled}).Count -ne 1){return}};return $enabled[0]}}
  function C([long]$h,[int]$id,[string]$class){return $n.FindUniqueControlWithoutLabel($h,$id,$class)}

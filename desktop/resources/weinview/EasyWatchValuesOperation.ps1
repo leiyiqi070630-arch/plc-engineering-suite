@@ -78,7 +78,7 @@ function Get-WeinviewValuesSession([string]$Root,[string]$Id,$RegisteredWatch=$n
  if($session.schema -ne 1 -or $session.kind -cne 'weinview-owned-offline-simulation' -or $session.session_id -cne $Id -or $session.workspace_root -ine $Root -or $session.runtime_path -ine $runtime -or $session.session_record -ine $receipt -or $session.state -cne 'running' -or $session.exob_sha256 -notmatch '^[0-9a-fA-F]{64}$'){throw 'Current public running owned simulation required; private receipts rejected.'}
  $source=Get-WeinviewSimulationPath ([string]$session.source_exob_path)
  $runtimeExob=Get-WeinviewSimulationPath ([string]$session.runtime_exob_path)
- if(!$source.StartsWith($Root+'\',[StringComparison]::OrdinalIgnoreCase) -or $source.StartsWith($registry+'\',[StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetExtension($source) -ine '.exob' -or $runtimeExob -ine (Join-Path $runtime 'PLCCode-owned.exob') -or (Get-WeinviewSimulationHash $source) -ine $session.exob_sha256 -or !(Test-Path -LiteralPath $runtimeExob -PathType Leaf)){throw 'Current source EXOB SHA and owned runtime EXOB path required.'}
+ if(!$source.StartsWith($Root+'\',[StringComparison]::OrdinalIgnoreCase) -or $source.StartsWith($registry+'\',[StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetExtension($source) -ine '.exob' -or $runtimeExob -ine (Join-Path $runtime 'PLC Engineering Suite-owned.exob') -or (Get-WeinviewSimulationHash $source) -ine $session.exob_sha256 -or !(Test-Path -LiteralPath $runtimeExob -PathType Leaf)){throw 'Current source EXOB SHA and owned runtime EXOB path required.'}
  $processSession=Get-WeinviewValuesProcessSession $session $folder $RegisteredWatch
  $live=@(Get-WeinviewSimulationProcesses $processSession $runtime)
  $gui=@($session.processes|Where-Object {[IO.Path]::GetFileName($_.exe_path) -ieq 'gui_e30.exe'})
@@ -126,12 +126,12 @@ function New-WeinviewLocalWatchFile([string]$Path,[object[]]$Requests,[int]$Port
  if([IO.Path]::GetExtension($path) -cne '.ewt' -or (Test-Path -LiteralPath $path)){throw 'Fresh private local EWT configuration required.'}
  [int[]]$addresses=@($Requests|ForEach-Object {[int]$_.address})
  [string[]]$formats=@($Requests|ForEach-Object {[string]$_.format})
- [byte[]]$bytes=if($Writable){[PLCCode.Weinview.EasyWatchValuesControls]::WritableConfiguration($Port,$addresses,$formats)}else{[PLCCode.Weinview.EasyWatchValuesControls]::ReadonlyConfiguration($Port,$addresses,$formats)}
+ [byte[]]$bytes=if($Writable){[PLC Engineering Suite.Weinview.EasyWatchValuesControls]::WritableConfiguration($Port,$addresses,$formats)}else{[PLC Engineering Suite.Weinview.EasyWatchValuesControls]::ReadonlyConfiguration($Port,$addresses,$formats)}
  $stream=[IO.File]::Open($path,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
  try{$stream.Write($bytes,0,$bytes.Length)}finally{$stream.Dispose()}
  $settings=@(foreach($request in $Requests){
   $type=if($request.format -ceq 'bool'){'LB'}else{'LW'}
-  @{address=[int]$request.address;format=[string]$request.format;name=($(if($Writable){'PLCCode_Writable_'}else{'PLCCode_Readonly_'})+$type+$request.address);read_only=(!$Writable);local_hmi=$true;hmi_port=$Port;device='HMI';type=$type;numeric_format=(Get-WeinviewNumericFormatLabel $request.format);poll='500 ms'}
+  @{address=[int]$request.address;format=[string]$request.format;name=($(if($Writable){'PLC Engineering Suite_Writable_'}else{'PLC Engineering Suite_Readonly_'})+$type+$request.address);read_only=(!$Writable);local_hmi=$true;hmi_port=$Port;device='HMI';type=$type;numeric_format=(Get-WeinviewNumericFormatLabel $request.format);poll='500 ms'}
  })
  return @{kind=$(if($Writable){'weinview-local-writable-ewt-v1'}else{'weinview-local-readonly-ewt-v1'});path=$path;sha256=(Get-WeinviewSimulationHash $path);bytes=$bytes.Length;route='original-cli-ewt-document';port=$Port;settings=$settings;configuration_created_before_launch=$true;per_monitor_dialogs=0}
 }
@@ -157,7 +157,7 @@ function Get-WeinviewWatchItems($Sample,[object[]]$Requests,[int]$Port,[bool]$Wr
   if($request.format -cnotin @('int16','bool','uint16','float32','int32','uint32') -or ($request.format -ceq 'bool' -and ($request.address -lt 0 -or ($request.address -gt 8999 -and ($Writable -or $request.address -ne 9043))))){throw 'Unreviewed monitor format/address/mode.'}
   $addressType=if($request.format -ceq 'bool'){'LB'}else{'LW'}
   $numericFormat=Get-WeinviewNumericFormatLabel $request.format
-  $name=if($Writable){'PLCCode_Writable_'+$addressType+$request.address}else{'PLCCode_Readonly_'+$addressType+$request.address}
+  $name=if($Writable){'PLC Engineering Suite_Writable_'+$addressType+$request.address}else{'PLC Engineering Suite_Readonly_'+$addressType+$request.address}
   $row=@($Sample.rows|Where-Object {$_.cells[0] -ceq $name})
   if($row.Count -ne 1){throw 'Exact requested monitor absent or ambiguous.'}
   $cells=@($row[0].cells)
@@ -198,7 +198,7 @@ function Stop-WeinviewOwnedWatchMonitors($Watch,$Main,[object[]]$Settings,$Evide
   if($setting.format -cnotin @('int16','bool','uint16','float32','int32','uint32') -or ($setting.format -ceq 'bool' -and ($setting.address -lt 0 -or ($setting.address -gt 8999 -and ($setting.read_only -ne $true -or $setting.address -ne 9043))))){throw 'Complete exact supported monitor format/address/mode required before Stop.'}
   $addressType=if($setting.format -ceq 'bool'){'LB'}else{'LW'}
   $numericFormat=Get-WeinviewNumericFormatLabel $setting.format
-  $exactMode=(($setting.read_only -eq $true -and $setting.name -ceq ('PLCCode_Readonly_'+$addressType+$setting.address)) -or ($setting.read_only -eq $false -and $setting.name -ceq ('PLCCode_Writable_'+$addressType+$setting.address)))
+  $exactMode=(($setting.read_only -eq $true -and $setting.name -ceq ('PLC Engineering Suite_Readonly_'+$addressType+$setting.address)) -or ($setting.read_only -eq $false -and $setting.name -ceq ('PLC Engineering Suite_Writable_'+$addressType+$setting.address)))
   $rows=@($before.rows|Where-Object {$_.cells[0] -ceq $setting.name})
   if($rows.Count -ne 1 -or @($rows[0].cells).Count -ne 7 -or $rows[0].cells[2] -cne ('Local Host ( '+$setting.hmi_port+' )  : HMI') -or $rows[0].cells[3] -cne ($addressType+' : '+$setting.address) -or $rows[0].cells[4] -cne $numericFormat -or $rows[0].cells[5] -cne '500 ms' -or !$exactMode -or !$setting.local_hmi){throw 'Actual exact created local monitor/mode required before Stop.'}
   $grid=Get-WeinviewWatchGrid $Watch $Main
@@ -227,7 +227,7 @@ function Close-WeinviewOwnedWatch($Watch,[object[]]$Settings) {
  $closeMessage='是否保存对 无标题 的更改?'
  if($Watch.configuration){
   Assert-WeinviewLocalWatchFile $Watch.configuration
-  $stem=if($Watch.configuration.kind -ceq 'weinview-local-writable-ewt-v1'){'PLCCodeWritable'}elseif($Watch.configuration.kind -ceq 'weinview-local-readonly-ewt-v1'){'PLCCodeReadonly'}else{throw 'Bound private local EWT required before normal close.'}
+  $stem=if($Watch.configuration.kind -ceq 'weinview-local-writable-ewt-v1'){'PLC Engineering SuiteWritable'}elseif($Watch.configuration.kind -ceq 'weinview-local-readonly-ewt-v1'){'PLC Engineering SuiteReadonly'}else{throw 'Bound private local EWT required before normal close.'}
   if($Watch.configuration.path -ine (Join-Path ([IO.Path]::GetDirectoryName($Watch.exe)) ($stem+'.ewt'))){throw 'Private file-loaded Watch document path differs.'}
   $closeMessage='是否保存对 '+$stem+' 的更改?'
  }
@@ -273,7 +273,7 @@ function Invoke-WeinviewSimulationValues($Arguments,$Installation,[bool]$Write=$
  $watch=$null;$journal=$null;$folder=$null;$record=$null;$locked=$false
  $script:weinviewValuesFailureCleanup=$null
  $script:weinviewValueWriteFailure=$null
- $mutex=New-Object Threading.Mutex($false,'Local\PLCCode.Weinview.OfflineSimulation.421')
+ $mutex=New-Object Threading.Mutex($false,'Local\PLC Engineering Suite.Weinview.OfflineSimulation.421')
  try{
   try{$locked=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{$locked=$true}
   if(!$locked){throw 'weinview_simulation_busy: Another lifecycle/value operation is active.'}
@@ -310,7 +310,7 @@ function Invoke-WeinviewSimulationValues($Arguments,$Installation,[bool]$Write=$
   $record=[ordered]@{kind=if($Write){'weinview-owned-writable-easywatch'}else{'weinview-owned-readonly-easywatch'};schema=1;session_id=$Arguments.session_id;workspace_root=$root;session_record=$context.receipt;session_record_sha256=$context.receipt_sha256;state='preparing';created_utc=[DateTime]::UtcNow.ToString('o');updated_utc=[DateTime]::UtcNow.ToString('o');runtime_path=$runtime;dependencies=$copies;hmi_endpoint=$endpoint;processes=@();monitor_settings=@();samples=@();last_error=$null;no_forced_termination=$true}
   if($Write){$record.expected_value=$expectedValue;$record.requested_value=$requestedValue;$record.native_write_evidence=$writeEvidence;$record.write_attempted=$false;$record.write_performed=$false;$record.atomic_compare_exchange=$false}
   Write-WeinviewSimulationJson $journal $record
-  $configuration=New-WeinviewLocalWatchFile (Join-Path $runtime $(if($Write){'PLCCodeWritable.ewt'}else{'PLCCodeReadonly.ewt'})) $requests ([int]$endpoint.port) $Write
+  $configuration=New-WeinviewLocalWatchFile (Join-Path $runtime $(if($Write){'PLC Engineering SuiteWritable.ewt'}else{'PLC Engineering SuiteReadonly.ewt'})) $requests ([int]$endpoint.port) $Write
    $settings=@($configuration.settings);$record.monitor_settings=$settings
    $record.configuration=$configuration;Write-WeinviewSimulationJson $journal $record
   if(@(Get-Process -Name EasyWatch -ErrorAction SilentlyContinue).Count){throw 'weinview_values_busy: EasyWatch appeared before launch; preserve.'}
@@ -322,8 +322,8 @@ function Invoke-WeinviewSimulationValues($Arguments,$Installation,[bool]$Write=$
   $record.processes=@($identity);$script:own+=@($identity);Write-WeinviewSimulationJson $journal $record
   $null=$process.Handle;$ticks=$process.StartTime.ToUniversalTime().Ticks;$identity.creation_utc_ticks=$ticks
   if($process.Path -ine $exe){throw 'New Watch process path mismatch.'}
-  $watch=@{process=$process;ticks=$ticks;exe=$exe;configuration=$configuration;native=(New-Object PLCCode.Weinview.NativeControls($process.Id,$ticks,$exe,1000));controls=(New-Object PLCCode.Weinview.EasyWatchValuesControls($process.Id,$ticks,$exe))}
-  if($Write -and $Arguments.format -cin @('bool','uint16','float32','int32','uint32')){$watch.bool_controls=New-Object PLCCode.Weinview.EasyWatchValueCellProbe($process.Id,$ticks,$exe)}
+  $watch=@{process=$process;ticks=$ticks;exe=$exe;configuration=$configuration;native=(New-Object PLC Engineering Suite.Weinview.NativeControls($process.Id,$ticks,$exe,1000));controls=(New-Object PLC Engineering Suite.Weinview.EasyWatchValuesControls($process.Id,$ticks,$exe))}
+  if($Write -and $Arguments.format -cin @('bool','uint16','float32','int32','uint32')){$watch.bool_controls=New-Object PLC Engineering Suite.Weinview.EasyWatchValueCellProbe($process.Id,$ticks,$exe)}
   $script:weinviewValuesWatch=$watch
    $nativeProcess=Get-CimInstance Win32_Process -Filter ('ProcessId='+$process.Id) -ErrorAction Stop
    $expectedCommand=('"'+$exe+'" "'+$configuration.path+'"')
@@ -448,7 +448,7 @@ function Invoke-WeinviewSimulationValueWrite($Arguments,$Installation) {
 
 function Get-WeinviewCmtValuesContext([string]$Root,[string]$Id,$Installation,[switch]$InitializeDiagnoser) {
  $registry=Get-WeinviewSimulationPath (Join-Path $Root '.weinview-simulations');$folder=Get-WeinviewSimulationPath (Join-Path $registry $Id);$receipt=Get-WeinviewSimulationPath (Join-Path $folder 'session.json');$session=Read-WeinviewSimulationJson $receipt
- if(!(($session.schema -eq 1 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-offline-v1') -or ($session.schema -eq 2 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-owned-offline-v2')) -or $session.kind -cne 'weinview-owned-cmt-offline-simulation' -or $session.session_id -cne $Id -or $session.workspace_root -ine $Root -or $session.state -cne 'running' -or $session.session_record -ine $receipt -or $session.runtime_path -ine (Join-Path $folder 'runtime') -or $session.runtime_cxob_path -ine (Join-Path $session.runtime_path 'PLCCode-owned.cxob') -or $session.project_path -notin @((Join-Path $session.runtime_path 'unpacked\mt8000\project'),(Join-Path $session.runtime_path 'unpacked\project')) -or !$session.unpack_verified -or !$session.generated_xob){throw 'Current public running cMT registry session required.'}
+ if(!(($session.schema -eq 1 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-offline-v1') -or ($session.schema -eq 2 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-owned-offline-v2')) -or $session.kind -cne 'weinview-owned-cmt-offline-simulation' -or $session.session_id -cne $Id -or $session.workspace_root -ine $Root -or $session.state -cne 'running' -or $session.session_record -ine $receipt -or $session.runtime_path -ine (Join-Path $folder 'runtime') -or $session.runtime_cxob_path -ine (Join-Path $session.runtime_path 'PLC Engineering Suite-owned.cxob') -or $session.project_path -notin @((Join-Path $session.runtime_path 'unpacked\mt8000\project'),(Join-Path $session.runtime_path 'unpacked\project')) -or !$session.unpack_verified -or !$session.generated_xob){throw 'Current public running cMT registry session required.'}
  $source=Get-WeinviewSimulationPath $session.source_cxob_path
  if(!$source.StartsWith($Root+'\',[StringComparison]::OrdinalIgnoreCase) -or $source.StartsWith($registry+'\',[StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetExtension($source) -ine '.cxob'){throw 'Bound workspace source CXOB required.'}
  Assert-WeinviewCmtDependencies $session $Installation $PSScriptRoot
@@ -457,7 +457,7 @@ function Get-WeinviewCmtValuesContext([string]$Root,[string]$Id,$Installation,[s
  if($live.Count -ne 3 -or @($session.processes).Count -ne 3 -or $viewer.Count -ne 1 -or @($session.processes|Where-Object {[IO.Path]::GetFileName($_.exe_path) -ceq 'com_c30.exe'}).Count -ne 1 -or @($session.processes|Where-Object {[IO.Path]::GetFileName($_.exe_path) -ceq 'dserver.exe'}).Count -ne 1){throw 'All three original live cMT owners required.'}
  $windows=Get-WeinviewCmtWindows $session
  if($InitializeDiagnoser -and (!$windows.diagnoser -or !$windows.diagnoser.Visible -or $windows.diagnoser_owner -ne $windows.main.Hwnd)){
-  $native=[PLCCode.Weinview.NativeControls]::new([int]$viewer[0].pid,[long]$viewer[0].creation_utc_ticks,[string]$viewer[0].exe_path,1500)
+  $native=[PLC Engineering Suite.Weinview.NativeControls]::new([int]$viewer[0].pid,[long]$viewer[0].creation_utc_ticks,[string]$viewer[0].exe_path,1500)
   $result=$native.InvokeQtElement($windows.main.Hwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'),'viewer-diagnoser')|ConvertFrom-Json
   if(!$result.invoked){throw 'Original Viewer Diagnoser action was not accepted'}
   $readyUntil=[DateTime]::UtcNow.AddSeconds(5)
@@ -472,14 +472,14 @@ function Invoke-WeinviewCmtWindowSelect($Arguments,$Installation) {
  if(!$Installation.profile_421 -or $Installation.signature_status -cne 'Valid'){throw 'Signed pinned421 installation required for cMT window selection.'}
  $root=Get-WeinviewSimulationPath ([string]$Arguments.workspace_root)
  if($root.Length -le 3 -or !(Test-Path -LiteralPath $root -PathType Container)){throw 'Bound cMT workspace required.'}
- if(!('PLCCode.Weinview.CmtObjectValuesControls' -as [type])){Add-Type -AssemblyName Accessibility;Add-Type -Path @((Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'EasyWatchValuesControls.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll'}
- $mutex=New-Object Threading.Mutex($false,'Local\PLCCode.Weinview.OfflineSimulation.421');$locked=$false
+ if(!('PLC Engineering Suite.Weinview.CmtObjectValuesControls' -as [type])){Add-Type -AssemblyName Accessibility;Add-Type -Path @((Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'EasyWatchValuesControls.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ $mutex=New-Object Threading.Mutex($false,'Local\PLC Engineering Suite.Weinview.OfflineSimulation.421');$locked=$false
  try{
   try{$locked=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{$locked=$true}
   if(!$locked){throw 'weinview_simulation_busy: Lifecycle lock held.'}
   $context=Get-WeinviewCmtValuesContext $root ([string]$Arguments.session_id) $Installation -InitializeDiagnoser
-  $native=New-Object PLCCode.Weinview.NativeControls([int]$context.viewer.pid,[long]$context.viewer.creation_utc_ticks,[string]$context.viewer.exe_path,1500)
-  $selection=[PLCCode.Weinview.CmtObjectValuesControls]::SelectWindowByNumber($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd,[int]$Arguments.window_number)
+  $native=New-Object PLC Engineering Suite.Weinview.NativeControls([int]$context.viewer.pid,[long]$context.viewer.creation_utc_ticks,[string]$context.viewer.exe_path,1500)
+  $selection=[PLC Engineering Suite.Weinview.CmtObjectValuesControls]::SelectWindowByNumber($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd,[int]$Arguments.window_number)
   $after=Get-WeinviewCmtValuesContext $root ([string]$Arguments.session_id) $Installation
   if($after.receipt_sha256 -cne $context.receipt_sha256 -or $after.session.cxob_sha256 -cne $context.session.cxob_sha256 -or $after.session.project_sha256 -cne $context.session.project_sha256 -or $after.windows.main.Hwnd -ne $context.windows.main.Hwnd -or $after.windows.diagnoser.Hwnd -ne $context.windows.diagnoser.Hwnd){throw 'Original cMT session, source, project or native windows changed during selection.'}
   $result=Get-WeinviewCmtResult $after.session @($after.live) 'select_window' $true;$result.windows=$after.windows;$result.window_selection=$selection
@@ -530,17 +530,17 @@ function Get-WeinviewCmtObjectItems($Sample,[object[]]$Requests) {
 }
 function Invoke-WeinviewCmtObjectValues($Arguments,$Installation,[string]$Root) {
  foreach($request in $Arguments.addresses){if($request.format -cnotin @('bool','int16','int32','uint16','uint32','float32')){throw 'Unsupported cMT Object readonly format.'}}
- if(!('PLCCode.Weinview.CmtObjectValuesControls' -as [type])){Add-Type -AssemblyName Accessibility;Add-Type -Path @((Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'EasyWatchValuesControls.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ if(!('PLC Engineering Suite.Weinview.CmtObjectValuesControls' -as [type])){Add-Type -AssemblyName Accessibility;Add-Type -Path @((Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'EasyWatchValuesControls.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll'}
  $context=Get-WeinviewCmtValuesContext $Root ([string]$Arguments.session_id) $Installation
  $folder=Get-WeinviewSimulationPath (Join-Path $context.folder ('object-values-'+[Guid]::NewGuid().ToString('N')));[void][IO.Directory]::CreateDirectory($folder);$journal=Join-Path $folder 'operation.json'
- $native=New-Object PLCCode.Weinview.NativeControls([int]$context.viewer.pid,[long]$context.viewer.creation_utc_ticks,[string]$context.viewer.exe_path,1500)
+ $native=New-Object PLC Engineering Suite.Weinview.NativeControls([int]$context.viewer.pid,[long]$context.viewer.creation_utc_ticks,[string]$context.viewer.exe_path,1500)
  $before=Get-WeinviewCmtResult $context.session @($context.live) 'status' $true;$before.windows=$context.windows
  $record=[ordered]@{action='read';profile='weinview-cn421-cmt-object-values-v1';session_kind=$context.session.kind;session_id=$context.session.session_id;session_record=$context.receipt;session_record_sha256=$context.receipt_sha256;source_sha256=$context.session.cxob_sha256;simulation_before=$before;simulation_after=$null;samples=@();items=@();values_stable=$false;values_verified=$false;native_values_verified=$false;read_only_verified=$true;write_performed=$false;input_performed=$false;plc_communication_tested=$false;arbitrary_address_read_verified=$false;binary_precision_verified=$false;source_unchanged=$true;updated_utc=[DateTime]::UtcNow.ToString('o');evidence_path=$journal}
  try{
   Write-WeinviewSimulationJson $journal $record;$observations=@()
   for($round=0;$round -lt 2;$round++){
    if($round){Start-Sleep -Milliseconds 500}
-   $tree=[PLCCode.Weinview.CmtObjectValuesControls]::Read($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd)
+   $tree=[PLC Engineering Suite.Weinview.CmtObjectValuesControls]::Read($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd)
    $cells=@($tree.cells);$raw=ConvertTo-Json -InputObject $cells -Depth 6 -Compress;$hash=[Security.Cryptography.SHA256]::Create()
    try{$digest=[BitConverter]::ToString($hash.ComputeHash([Text.Encoding]::UTF8.GetBytes($raw))).Replace('-','')}finally{$hash.Dispose()}
    $now=[DateTime]::UtcNow;$sample=@{tree=$tree;cells=$cells;raw_json=$raw;raw_utf8_sha256=$digest;observed_utc=$now.ToString('o');observed_utc_ticks=$now.Ticks};$record.samples+=,$sample
@@ -562,7 +562,7 @@ function Invoke-WeinviewCmtObjectValues($Arguments,$Installation,[string]$Root) 
 function Invoke-WeinviewCmtObjectValueWrite($Arguments,$Installation,[string]$Root) {
  if($Arguments.format -cnotin @('bool','int16','int32','uint16','uint32','float32')){throw 'Unsupported cMT Object write format.'}
  if($Arguments.format -ceq 'bool' -and ($Arguments.expected_value -isnot [bool] -or $Arguments.value -isnot [bool])){throw 'cMT Bit Object write requires two JSON Boolean values.'}
- if(!('PLCCode.Weinview.CmtObjectValuesControls' -as [type])){Add-Type -AssemblyName Accessibility;Add-Type -Path @((Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'EasyWatchValuesControls.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ if(!('PLC Engineering Suite.Weinview.CmtObjectValuesControls' -as [type])){Add-Type -AssemblyName Accessibility;Add-Type -Path @((Join-Path $PSScriptRoot 'NativeControls.cs'),(Join-Path $PSScriptRoot 'NativePropertyCandidate.cs'),(Join-Path $PSScriptRoot 'EasyWatchValuesControls.cs')) -ReferencedAssemblies 'System.dll','Accessibility.dll'}
  $expectedValue=$Arguments.expected_value
  $requestedValue=$Arguments.value
  $expectedActual=if($Arguments.format -ceq 'bool'){[bool]$expectedValue}elseif($Arguments.format -ceq 'float32'){ConvertTo-WeinviewFloat32 $expectedValue}elseif($Arguments.format -ceq 'uint32'){[long]$expectedValue}else{[int]$expectedValue}
@@ -579,7 +579,7 @@ function Invoke-WeinviewCmtObjectValueWrite($Arguments,$Installation,[string]$Ro
   $samples=@();$observed=@()
   for($round=0;$round -lt 2;$round++){
    if($round){Start-Sleep -Milliseconds 500}
-   $snapshot=[PLCCode.Weinview.CmtObjectValuesControls]::ReadRequested($Native,[int]$Context.viewer.pid,[long]$Context.windows.main.Hwnd,[long]$Context.windows.diagnoser.Hwnd,[string[]]@($AddressText))
+   $snapshot=[PLC Engineering Suite.Weinview.CmtObjectValuesControls]::ReadRequested($Native,[int]$Context.viewer.pid,[long]$Context.windows.main.Hwnd,[long]$Context.windows.diagnoser.Hwnd,[string[]]@($AddressText))
    $rows=@($snapshot.rows)
    if($snapshot.scope -cne 'requested_local_hmi' -or $snapshot.input_performed -ne $false -or $rows.Count -lt 1){throw 'Exact read-only requested cMT Object snapshot required.'}
    $raw=[string]$rows[0].native_text
@@ -595,7 +595,7 @@ function Invoke-WeinviewCmtObjectValueWrite($Arguments,$Installation,[string]$Ro
  try{
   $context=Get-WeinviewCmtValuesContext $Root ([string]$Arguments.session_id) $Installation
   $folder=Get-WeinviewSimulationPath (Join-Path $context.folder ('object-write-'+[Guid]::NewGuid().ToString('N')));[void][IO.Directory]::CreateDirectory($folder);$journal=Join-Path $folder 'operation.json'
-  $native=New-Object PLCCode.Weinview.NativeControls([int]$context.viewer.pid,[long]$context.viewer.creation_utc_ticks,[string]$context.viewer.exe_path,1500)
+  $native=New-Object PLC Engineering Suite.Weinview.NativeControls([int]$context.viewer.pid,[long]$context.viewer.creation_utc_ticks,[string]$context.viewer.exe_path,1500)
   $simulationBefore=Get-WeinviewCmtResult $context.session @($context.live) 'status' $true;$simulationBefore.windows=$context.windows
   $record=[ordered]@{action='write';profile='weinview-cn421-cmt-object-value-write-v2';session_kind=$context.session.kind;session_id=$context.session.session_id;session_record=$context.receipt;session_record_sha256=$context.receipt_sha256;source_sha256=$context.session.cxob_sha256;address=[int]$Arguments.address;format=[string]$Arguments.format;expected_value=$expectedValue;requested_value=$requestedValue;simulation_before=$simulationBefore;simulation_after=$null;before=$null;after=$null;native_write_evidence=$writeEvidence;native_write_verified=$false;write_attempted=$false;write_performed=$false;input_performed=$false;atomic_compare_exchange=$false;plc_communication_tested=$false;source_unchanged=$true;evidence_path=$journal}
   if($selectWindow){$record.window_selection=$null}
@@ -603,7 +603,7 @@ function Invoke-WeinviewCmtObjectValueWrite($Arguments,$Installation,[string]$Ro
   if($selectWindow){
    $script:stage='cmt_object_write_select_window'
    $inputPerformed=$null;$record.input_performed=$null;Write-WeinviewSimulationJson $journal $record
-   $selection=[PLCCode.Weinview.CmtObjectValuesControls]::SelectWindow($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd,[int]$Arguments.window_number,[string]$Arguments.window_name)
+   $selection=[PLC Engineering Suite.Weinview.CmtObjectValuesControls]::SelectWindow($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd,[int]$Arguments.window_number,[string]$Arguments.window_name)
    $windowInputPerformed=[bool]$selection.input_performed;$inputPerformed=$windowInputPerformed;$record.input_performed=$inputPerformed;$record.window_selection=$selection
    $selectedWindows=Get-WeinviewCmtWindows $context.session
    if(!$selectedWindows.diagnoser -or !$selectedWindows.diagnoser.Visible -or $selectedWindows.diagnoser_owner -ne $selectedWindows.main.Hwnd -or $selectedWindows.main.Hwnd -ne $context.windows.main.Hwnd -or $selectedWindows.diagnoser.Hwnd -ne $context.windows.diagnoser.Hwnd){throw 'Original cMT main or initialized Diagnoser changed after window selection.'}
@@ -618,13 +618,13 @@ function Invoke-WeinviewCmtObjectValueWrite($Arguments,$Installation,[string]$Ro
   $expectedText=[string]$beforeItems[0].native_text
   $script:stage='cmt_object_write_begin'
   $writeAttempted=$true;$inputPerformed=if($windowInputPerformed){$true}else{$null};$record.write_attempted=$true;$record.input_performed=$inputPerformed;Write-WeinviewSimulationJson $journal $record
-  $writeEvidence.begin=[PLCCode.Weinview.CmtObjectValuesControls]::BeginValueEdit($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd,$addressText,$nativeType,$expectedText)
+  $writeEvidence.begin=[PLC Engineering Suite.Weinview.CmtObjectValuesControls]::BeginValueEdit($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd,$addressText,$nativeType,$expectedText)
   if(!$writeEvidence.begin -or !$writeEvidence.begin.input_posted){$inputPerformed=$windowInputPerformed;$record.input_performed=$inputPerformed;throw 'cMT Object editor input posting was not confirmed.'}
   $inputPerformed=$true;$record.input_performed=$true;Write-WeinviewSimulationJson $journal $record
   Start-Sleep -Milliseconds 100
   $script:stage='cmt_object_write_commit'
   $writePerformed=$null;$record.write_performed=$null;Write-WeinviewSimulationJson $journal $record
-  $writeEvidence.commit=[PLCCode.Weinview.CmtObjectValuesControls]::CommitValueEdit($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd,$addressText,$nativeType,$expectedText,$requestedText)
+  $writeEvidence.commit=[PLC Engineering Suite.Weinview.CmtObjectValuesControls]::CommitValueEdit($native,[int]$context.viewer.pid,[long]$context.windows.main.Hwnd,[long]$context.windows.diagnoser.Hwnd,$addressText,$nativeType,$expectedText,$requestedText)
   if(!$writeEvidence.commit -or !$writeEvidence.commit.commit_posted){throw 'cMT Object native editor commit was not confirmed.'}
   $writePerformed=$true;$record.write_performed=$true;Write-WeinviewSimulationJson $journal $record
   $script:stage='cmt_object_write_after_read'

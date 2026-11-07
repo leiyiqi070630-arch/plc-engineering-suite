@@ -1,5 +1,5 @@
 ﻿using System;using System.Collections.Generic;using System.Runtime.InteropServices;using System.Threading;using Accessibility;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class FunctionWindowTargetSnapshot {public long Hwnd{get;set;}public string Value{get;set;}public string[] Items{get;set;}}
  public sealed class CmtWindowNavigationSnapshot {public long Hwnd;public string Value,Description;public string[] Items;public int TriggerOnRelease;}
  public sealed class CmtAccountImportSnapshot {public long Hwnd;public string Description,Media,ImportMode;public bool DeleteAfterImport;public int TriggerOnRelease;}

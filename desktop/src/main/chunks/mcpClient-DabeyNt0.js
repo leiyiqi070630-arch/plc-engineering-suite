@@ -19774,7 +19774,7 @@ function connectionTransport(v5464) {
 async function testMcpConnection(v5469, v5470) {
   const v5471 = validateMcp(v5469);
   const v5472 = new Client({
-    name: "plccode-connection-test",
+    name: "plceng-connection-test",
     version: "1.0.0"
   });
   const v5473 = connectionTransport(v5471);

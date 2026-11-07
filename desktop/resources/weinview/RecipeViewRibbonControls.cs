@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class RecipeViewRibbonControls {
   [StructLayout(LayoutKind.Sequential)] struct Point { public int x,y; }
   [DllImport("user32.dll")] static extern uint GetDpiForWindow(IntPtr hwnd);

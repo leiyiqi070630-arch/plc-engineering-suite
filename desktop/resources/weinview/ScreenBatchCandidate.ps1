@@ -22,11 +22,11 @@ if($Mode -eq 'ValidatePlan'){
 if(-not $IdentityPath -or $DialogHwnd -le 0 -or $ObjectIndex -lt 0 -or $ObjectIndex -ge $objects.Count){throw 'Bound identity/dialog/object index required'}
 $identity=Get-Content -LiteralPath $IdentityPath -Raw | ConvertFrom-Json
 if(-not $ProjectPath -or -not $identity.Project -or [IO.Path]::GetFullPath($ProjectPath) -ine [IO.Path]::GetFullPath($identity.Project) -or -not (Test-Path -LiteralPath $ProjectPath -PathType Leaf)){throw 'Explicit owned project must match launch identity'}
-if(-not ('PLCCode.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
+if(-not ('PLC Engineering Suite.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
 Add-Type -AssemblyName Accessibility
-if(-not ('PLCCode.Weinview.Research.NativePropertyCandidate' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativePropertyCandidate.cs') -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)}
-$native=[PLCCode.Weinview.NativeControls]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,800)
-$property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe)
+if(-not ('PLC Engineering Suite.Weinview.Research.NativePropertyCandidate' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativePropertyCandidate.cs') -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)}
+$native=[PLC Engineering Suite.Weinview.NativeControls]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,800)
+$property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe)
 $main=@($native.EnumTopWindows() | Where-Object {$_.Class -ceq 'EasyBuilderPro' -and $_.Visible -and $_.Title.Contains([IO.Path]::GetFileNameWithoutExtension($ProjectPath))})
 if($main.Count -ne 1){throw 'Owned main document title mismatch'}
 $obj=$objects[$ObjectIndex];$titles=if($obj.kind -ceq 'numeric_display'){@('新增 数值','数值的属性')}else{@('新增 功能键','功能键的属性')}

@@ -1,5 +1,5 @@
 ﻿using System;using System.Runtime.InteropServices;using System.Text;using Accessibility;
-namespace PLCCode.Weinview.Research {
+namespace PLC Engineering Suite.Weinview.Research {
  public class TreeState {public string path,name,action;public int role,state,children;public int[] screen_bounds;public long hwnd;}
  public class WindowTreeControls {
  readonly int pid;readonly long ticks,main;readonly string exe;readonly bool requireForeground;
@@ -25,7 +25,7 @@ namespace PLCCode.Weinview.Research {
   GuardOwned(h);
   string bridge=Environment.GetEnvironmentVariable("PLCCODE_WEINVIEW_QT_ELEMENT_BRIDGE");
   if(String.IsNullOrEmpty(bridge))throw new Exception("Native Qt element bridge path unavailable");
-  var native=new PLCCode.Weinview.NativeControls(pid,ticks,exe,1500);
+  var native=new PLC Engineering Suite.Weinview.NativeControls(pid,ticks,exe,1500);
   native.InvokeQtElement(main,bridge,operation+":"+label);
  }
  public void OpenObject(long h,string path,string label,string objectId,string kind){OpenObjectAtObservedRow(h,path,label,objectId,kind);}

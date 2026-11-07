@@ -70,11 +70,11 @@ function Open-WeinviewAddressSearchDialog($Session,[long]$CanvasHwnd) {
  $canvas=@($Session.native.EnumChildControls($Session.main.Hwnd)|Where-Object {$_.Hwnd -eq $CanvasHwnd})
  if($canvas.Count -ne 1){throw 'Selected native document canvas changed before Find Address entry.'}
  $null=$Session.native.ActivateOwnedDocument([long]$Session.main.Hwnd,$CanvasHwnd,[string]$canvas[0].Title)
- $command=[PLCCode.Weinview.NativeRecoveryMenuControls]::PrepareFindAddressFromMainAccelerator([long]$Session.main.Hwnd,[int]$Session.process.Id,[string]$Session.process.Path)
+ $command=[PLC Engineering Suite.Weinview.NativeRecoveryMenuControls]::PrepareFindAddressFromMainAccelerator([long]$Session.main.Hwnd,[int]$Session.process.Id,[string]$Session.process.Path)
  Start-Sleep -Milliseconds 200
  $modals=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'})
  if($modals.Count -gt 1 -or $modals.Count -eq 1 -and ($modals[0].Pid -ne $Session.process.Id -or $modals[0].Title -cne '寻找/替换')){throw 'Unexpected native modal after main Find Address entry.'}
- if(!$modals.Count){$command=[PLCCode.Weinview.NativeRecoveryMenuControls]::OpenFindAddressFromAccelerator($CanvasHwnd,[int]$Session.process.Id,[string]$Session.process.Path)}
+ if(!$modals.Count){$command=[PLC Engineering Suite.Weinview.NativeRecoveryMenuControls]::OpenFindAddressFromAccelerator($CanvasHwnd,[int]$Session.process.Id,[string]$Session.process.Path)}
  $dialog=WaitFor {
   $modals=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'})
   if($modals.Count -gt 1){throw 'Multiple native modals after Find Address entry.'}
@@ -86,13 +86,13 @@ function Open-WeinviewAddressSearchDialog($Session,[long]$CanvasHwnd) {
 function Find-WeinviewNativeRawAddress($Session,$Dialog,$Arguments,$Contract,[bool]$Target) {
  if($Target){$device=[string]$Arguments.target_device_name;$area=[string]$Arguments.target_address_type;$address=[string]$Arguments.target_address;$replacementDevice=[string]$Arguments.device_name;$replacementArea=[string]$Arguments.address_type;$replacementAddress=[string]$Arguments.address}
  else{$device=[string]$Arguments.device_name;$area=[string]$Arguments.address_type;$address=[string]$Arguments.address;$replacementDevice=[string]$Arguments.target_device_name;$replacementArea=[string]$Arguments.target_address_type;$replacementAddress=[string]$Arguments.target_address}
- $candidate=[PLCCode.Weinview.Research.NativePropertyCandidate]::new([int]$Session.process.Id,[long]$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.process.Path)
+ $candidate=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new([int]$Session.process.Id,[long]$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.process.Path)
  if($Contract.range_enabled){
   $addressEnd=if($Target){[string]$Contract.target_end}else{[string]$Contract.source_end}
   $queryShift=if($Target){-[int]$Contract.shift}else{[int]$Contract.shift}
-  [PLCCode.Weinview.NativeAddressReplaceControls]::ConfigureRange($Session.native,$candidate,[long]$Dialog.Hwnd,[int]$Session.process.Id,[string]$Arguments.address_kind,$device,$area,$address,$addressEnd,$replacementDevice,$replacementArea,$replacementAddress,$queryShift,[string]$Contract.scope,[int]$Contract.window_number)
- }else{[PLCCode.Weinview.NativeAddressReplaceControls]::Configure($Session.native,$candidate,[long]$Dialog.Hwnd,[int]$Session.process.Id,[string]$Arguments.address_kind,$device,$area,$address,$replacementDevice,$replacementArea,$replacementAddress,[string]$Contract.scope,[int]$Contract.window_number)}
- $found=[PLCCode.Weinview.NativeAddressReplaceControls]::Find($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id)
+  [PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::ConfigureRange($Session.native,$candidate,[long]$Dialog.Hwnd,[int]$Session.process.Id,[string]$Arguments.address_kind,$device,$area,$address,$addressEnd,$replacementDevice,$replacementArea,$replacementAddress,$queryShift,[string]$Contract.scope,[int]$Contract.window_number)
+ }else{[PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Configure($Session.native,$candidate,[long]$Dialog.Hwnd,[int]$Session.process.Id,[string]$Arguments.address_kind,$device,$area,$address,$replacementDevice,$replacementArea,$replacementAddress,[string]$Contract.scope,[int]$Contract.window_number)}
+ $found=[PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Find($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id)
  if($null -eq $found -or $null -eq $found.match_count -or [long]$found.match_count -lt 0 -or @($found.matches).Count -ne [long]$found.match_count){throw 'Native Find Address result count or rows unavailable.'}
  return $found
 }
@@ -143,13 +143,13 @@ function Invoke-WeinviewNativeAddressReplaceOnce($Session,$Arguments,$Contract,[
   if([long]$selectedSource.match_count -ne $sourceCount){throw 'Native source search changed before Replace All.'}
   if($Contract.range_enabled){Assert-WeinviewNativeRangeMatchMultiset $selectedSource.matches $sourceBefore.matches}
   $ReplaceTriggered.Value=$true
-  [PLCCode.Weinview.NativeAddressReplaceControls]::ReplaceAll($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)
+  [PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::ReplaceAll($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)
  }
  $sourceAfter=Find-WeinviewNativeRawAddress $Session $dialog $Arguments $Contract $false
  $targetAfter=Find-WeinviewNativeRawAddress $Session $dialog $Arguments $Contract $true
  if([long]$sourceAfter.match_count -ne 0 -or [long]$targetAfter.match_count -ne ($targetCount+$sourceCount)){throw ('Native address replacement post-counts differ. source_before='+$sourceCount+'; source_after='+$sourceAfter.match_count+'; target_before='+$targetCount+'; target_after='+$targetAfter.match_count+'; actual_target='+(ConvertTo-Json -InputObject @($targetAfter.matches) -Depth 5 -Compress))}
  if($Contract.range_enabled){Assert-WeinviewNativeRangeMatchMultiset $targetAfter.matches (@($targetBefore.matches)+@($shifted))}
- [PLCCode.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)
+ [PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)
  $ActiveDialog.Value=$null;$ReplaceTriggered.Value=$false
  $result=@{address_kind=[string]$Arguments.address_kind;source=@{device_name=[string]$Arguments.device_name;address_type=[string]$Arguments.address_type;address=[string]$Arguments.address};target=@{device_name=[string]$Arguments.target_device_name;address_type=[string]$Arguments.target_address_type;address=[string]$Arguments.target_address};scope=[string]$Contract.scope;before_count=$sourceCount;target_before_count=$targetCount;after_source_count=[long]$sourceAfter.match_count;after_target_count=[long]$targetAfter.match_count;replaced_count=$sourceCount;applied_references=$sourceCount;before_matches=@($sourceBefore.matches|ForEach-Object {@{location=[string]$_.location;description=[string]$_.description}});native_scope='exact_raw_address';tag_and_range_replacement_supported=$false}
  if($Contract.range_enabled){
@@ -186,7 +186,7 @@ function Get-WeinviewNativeAddressQueryCounts($Session,[object[]]$Queries,[ref]$
    if($null -ne $MatchRows){$MatchRows.Value.Add([string]$query.key,[object[]]@($found.matches|ForEach-Object {@{location=[string]$_.location;description=[string]$_.description}}))}
   }
  }finally{
-  if($dialog){[PLCCode.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}
+  if($dialog){[PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$dialog.Hwnd,[int]$Session.process.Id)}
  }
  return ,$counts
 }

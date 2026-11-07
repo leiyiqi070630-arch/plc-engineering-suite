@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public static class NativeObjectClipboardControls {
   [DllImport("user32.dll",SetLastError=true)] static extern bool PostMessageW(IntPtr hwnd,uint message,UIntPtr wparam,IntPtr lparam);
   [DllImport("user32.dll")] static extern uint GetClipboardSequenceNumber();

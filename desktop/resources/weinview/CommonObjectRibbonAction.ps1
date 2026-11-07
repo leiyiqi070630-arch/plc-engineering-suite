@@ -26,7 +26,7 @@ function Invoke-WeinviewRectangleRibbon($Session,$Semantic){
   Start-Sleep -Milliseconds 50
  }while([DateTime]::UtcNow -lt $deadline)
  if(!$palette){throw 'Native rectangle palette did not open; no entry replay.'}
- $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
- $actual=[PLCCode.Weinview.CommonObjectRibbonControls]::InspectRectanglePalette($Session.native,$property,$Session.main.Hwnd,$palette.Hwnd)
+ $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $actual=[PLC Engineering Suite.Weinview.CommonObjectRibbonControls]::InspectRectanglePalette($Session.native,$property,$Session.main.Hwnd,$palette.Hwnd)
  return [pscustomobject]@{entry=$entry;capture=$null;palette=$palette;actual_palette=$actual;receipt_path=$null;native_entry_verified=$true;global_input=$false;layout_reset=$false}
 }

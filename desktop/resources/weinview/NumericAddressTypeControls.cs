@@ -1,5 +1,5 @@
 ﻿using System;using System.Collections.Generic;using System.Runtime.InteropServices;using System.Threading;using Accessibility;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class NumericAddressTypeSnapshot {public long Hwnd{get;set;}public string Value{get;set;}public string NativeValue{get;set;}public string[] Items{get;set;}}
  // Only the actual small Qt address-type combo. No LW/RW assumptions, coordinates,
  // keyboard fallback or whole-window accessibility traversal. External COM watchdog required.

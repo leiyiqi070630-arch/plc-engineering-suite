@@ -21,8 +21,8 @@ function Invoke-WeinviewSamplingRibbon($Session,$Semantic) {
    }
   }
  } 6
- $owner=[PLCCode.Weinview.SamplingRibbonControls]::OwnerOf($Session.native,$manager.Hwnd)
- $identity=[PLCCode.Weinview.SamplingRibbonControls]::RequireDialog($Session.native,$manager.Hwnd,'资料取样',$Session.main.Hwnd)
+ $owner=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::OwnerOf($Session.native,$manager.Hwnd)
+ $identity=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::RequireDialog($Session.native,$manager.Hwnd,'资料取样',$Session.main.Hwnd)
  return [pscustomobject]@{tab_entry=$tab;semantic_items=$rows;entry=$entry;manager=$manager;manager_identity=$identity;native_entry_verified=$true;global_input=$false;layout_reset=$false}
 }
 function Invoke-WeinviewSamplingRibbonOcr($Session,$Semantic,[ValidateSet('资料取样')][string]$Label='资料取样') {
@@ -34,7 +34,7 @@ function Invoke-WeinviewSamplingRibbonOcr($Session,$Semantic,[ValidateSet('资�
  if([DateTime]::UtcNow -ge $totalDeadline){throw 'Ribbon readiness total deadline exceeded (15 seconds).'} 
  $path=Join-Path ([IO.Path]::GetDirectoryName($Session.output_path)) ([IO.Path]::GetFileNameWithoutExtension($Session.output_path)+'.ribbon-'+[guid]::NewGuid().ToString('N')+'.png')
  $projectSha=(Get-FileHash -LiteralPath $Session.output_path -Algorithm SHA256).Hash
- $proof=[PLCCode.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$path)
+ $proof=[PLC Engineering Suite.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$path)
  if(!$proof.Accepted){throw 'Owned sampling ribbon render unavailable; no input.'}
  Add-Type -AssemblyName System.Runtime.WindowsRuntime
  [Windows.Storage.StorageFile,Windows.Storage,ContentType=WindowsRuntime]|Out-Null
@@ -64,7 +64,7 @@ function Invoke-WeinviewSamplingRibbonOcr($Session,$Semantic,[ValidateSet('资�
   }
   if([DateTime]::UtcNow -ge $totalDeadline){throw 'Ribbon readiness total deadline exceeded before click.'}
   Activate-WeinviewObjectRibbonMain $Session
-   $click=[PLCCode.Weinview.SamplingRibbonControls]::ClickSampling($Session.native,$proof,$matches[0].x,$matches[0].y)
+   $click=[PLC Engineering Suite.Weinview.SamplingRibbonControls]::ClickSampling($Session.native,$proof,$matches[0].x,$matches[0].y)
   return [pscustomobject]@{screenshot_path=$proof.Path;screenshot_sha256=$proof.Hash;ocr_label=$matches[0].label;ribbon_hwnd=$proof.Hwnd;fallback='fresh_owned_ribbon_ocr';proof=$proof;native_click=$click;foreground_verified=$true;global_input=$false;layout_reset=$false;readiness_attempts=$attempts}
  }finally{if($bitmap){$bitmap.Dispose()};$stream.Dispose()}
 }

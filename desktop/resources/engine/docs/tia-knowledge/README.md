@@ -1,6 +1,6 @@
 # TIA Portal / Openness Knowledge Base (V15–V21)
 
-Knowledge base built to make PLC Code's Siemens capability perform like a real engineer. Compiled 2026-06-13 by multiple agents from authoritative sources with independent adversarial re-verification.
+Knowledge base built to make PLC Engineering Suite's Siemens capability perform like a real engineer. Compiled 2026-06-13 by multiple agents from authoritative sources with independent adversarial re-verification.
 
 ## Curation rules (reuse and strengthen the existing evidence rules)
 
@@ -36,7 +36,7 @@ Knowledge base built to make PLC Code's Siemens capability perform like a real e
 **HMI layer (batch 4, 2026-06-13~16, first-party verified against local PublicAPI XML)**
 16. [HMI Openness (WinCC Unified authoring + Classic limitations)](16-hmi-openness.md) — Unified creation model, per-version assembly resolution, alarm/data-log property-name correction table, Classic XML-only, PlcTag binding
 
-## PLC Code engineer must-not-get-wrong checklist (high-risk points caught in re-verification)
+## PLC Engineering Suite engineer must-not-get-wrong checklist (high-risk points caught in re-verification)
 
 - **Openness public key token**: `d29ec89bac048f84` applies only to **V16–V20**; **V21 changed it to `29bfe5fdf4ba5d3b`**. An old app.config will not bind to V21 assemblies.
 - **SimaticML interface namespace** is not fixed at `.../SW/Interface/v2`; v2 is the legacy compatibility namespace from V14 SP1. V19 actually exports with **v5**, incrementing with each TIA version. (Easily confused: this is a separate version axis from the `.xsd` schema file version.)

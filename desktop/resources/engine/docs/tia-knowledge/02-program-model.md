@@ -80,7 +80,7 @@ Block interface (formal parameters): **Input / Output / InOut / Ret_Val**; actua
 | STL (statement list) | ❌ | ✅ |
 | S7-GRAPH (sequential function chart) | ❌ | ✅ |
 
-Per the 02/2025 comparison table (A5E33285102-AK), the Validity section states verbatim: "SIMATIC S7-1200 only supports LAD, FBD and SCL"; STL/GRAPH apply to S7-1500 (and S7-300/400). Directly relevant to PLC Code: **do not generate STL/GRAPH for the S7-1200 route**.
+Per the 02/2025 comparison table (A5E33285102-AK), the Validity section states verbatim: "SIMATIC S7-1200 only supports LAD, FBD and SCL"; STL/GRAPH apply to S7-1500 (and S7-300/400). Directly relevant to PLC Engineering Suite: **do not generate STL/GRAPH for the S7-1200 route**.
 
 > Note: the actual title of the 02/2025 comparison table is "S7-300, S7-1200, S7-1200 G2, S7-1500" (S7-400 removed, S7-1200 G2 added); it applies to STEP 7 V20+, S7-1200 firmware 4.6+, and S7-1500 firmware 4.0+.
 

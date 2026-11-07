@@ -1,14 +1,14 @@
 ﻿param([ValidateSet('Read','Set')][string]$Action='Read',[Parameter(Mandatory=$true)][string]$IdentityPath,[Parameter(Mandatory=$true)][long]$DialogHwnd,[int]$X,[int]$Y,[int]$Width,[int]$Height,[int]$CanvasWidth=800,[int]$CanvasHeight=480,[Parameter(Mandatory=$true)][string]$ProjectPath)
 $ErrorActionPreference='Stop'
-if(-not ('PLCCode.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
+if(-not ('PLC Engineering Suite.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
 Add-Type -AssemblyName Accessibility
-if(-not ('PLCCode.Weinview.Research.NativePropertyCandidate' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativePropertyCandidate.cs') -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)}
+if(-not ('PLC Engineering Suite.Weinview.Research.NativePropertyCandidate' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativePropertyCandidate.cs') -ReferencedAssemblies @('System.dll',[Accessibility.IAccessible].Assembly.Location)}
 $identity=Get-Content -LiteralPath $IdentityPath -Raw | ConvertFrom-Json
 if(-not $identity.Project -or [IO.Path]::GetFullPath($ProjectPath) -ine [IO.Path]::GetFullPath($identity.Project) -or -not (Test-Path -LiteralPath $ProjectPath -PathType Leaf)){throw 'Explicit project must match owned launch identity'}
-$native=[PLCCode.Weinview.NativeControls]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,800)
+$native=[PLC Engineering Suite.Weinview.NativeControls]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe,800)
 $main=@($native.EnumTopWindows() | Where-Object {$_.Class -ceq 'EasyBuilderPro' -and $_.Visible -and $_.Title.Contains([IO.Path]::GetFileNameWithoutExtension($ProjectPath))})
 if($main.Count -ne 1){throw 'Owned main project title mismatch'}
-$property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe)
+$property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new([int]$identity.Pid,[long]$identity.CreationTicks,[string]$identity.Exe)
 $dialog=@($native.EnumTopWindows() | Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Class -ceq '#32770' -and $_.Title -cin @('数值的属性','功能键的属性','位状态切换开关/位状态指示灯的属性','位状态指示灯/位状态切换开关的属性','矩形元件属性','图片的属性','项目选单的属性','趋势图的属性','报警显示的属性') -and $_.Visible -and $_.Enabled})
 if($dialog.Count -ne 1){throw 'Only exact owned Numeric/Function Key property dialog accepted'}
 $tab=$native.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')

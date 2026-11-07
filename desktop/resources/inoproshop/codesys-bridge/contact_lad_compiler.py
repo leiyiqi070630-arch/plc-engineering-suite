@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""PLCCode-contract contact LAD compiler for InoProShop native serialization.
+"""PLC Engineering Suite-contract contact LAD compiler for InoProShop native serialization.
 
-Consumes the PLCCode `tia_lad_generate_block_xml` plan vocabulary (contact_coil
+Consumes the PLC Engineering Suite `tia_lad_generate_block_xml` plan vocabulary (contact_coil
 and timer networks) and emits the vendor's own IArchivable ExportFile XML that
 `project.import_native` accepts.  Every serialization template here was
 extracted from a real InoProShop V1.10.0.3 export, not invented:
@@ -57,7 +57,7 @@ POULEVEL_GUID = "8e575c5b-1d37-49c6-941b-5c0ec7874787"
 class PlanRejected(Exception):
     """Raised when plan semantics or emitted-structure checks fail.
 
-    Carries a PLCCode-style issue list: every item has path, expected,
+    Carries a PLC Engineering Suite-style issue list: every item has path, expected,
     actual, remediation — so callers repair the plan without studying
     serialization internals.
     """
@@ -162,7 +162,7 @@ def _input_item(name, dtype, ids, contact=True, negated=False):
 
 
 def _operand_name(spec, default_type="BOOL"):
-    """Accept 'Name' shorthand or a PLCCode operand object.
+    """Accept 'Name' shorthand or a PLC Engineering Suite operand object.
 
     Tolerates the reasonable authoring variants models produce: plain string,
     {name}, {target}, {operand:{name}}, {kind:..., name/target}. One canonical
@@ -499,7 +499,7 @@ def _issue(path, expected, actual, remediation):
 
 
 def validate_plan(plan, issues):
-    """PLCCode-style plan-time semantic validation: every operand a network
+    """PLC Engineering Suite-style plan-time semantic validation: every operand a network
     references must be declared in the interface, with sane types. This is
     the layer that keeps 'undefined identifier' errors inside the generator
     instead of leaking them to the IDE precompile view."""
@@ -812,7 +812,7 @@ def validate_emitted_xml(xml, plan, issues):
 
 
 def compile_contact_block(plan):
-    """Compile one PLCCode-contract plan into ExportFile XML text.
+    """Compile one PLC Engineering Suite-contract plan into ExportFile XML text.
 
     Gates in order: plan-time semantic validation (operands declared, types
     sane) -> deterministic emission -> structural self-check. Any issue dies
@@ -1026,7 +1026,7 @@ def compile_contact_block_plcopen(plan, issues=None):
     parts = []
     parts.append('<?xml version="1.0" encoding="utf-8"?>')
     parts.append('<project xmlns="http://www.plcopen.org/xml/tc6_0200">')
-    parts.append('  <fileHeader companyName="PLC Code" productName="CODESYS line" productVersion="SP22" creationDateTime="2026-09-08T15:00:00" />')
+    parts.append('  <fileHeader companyName="PLC Engineering Suite" productName="CODESYS line" productVersion="SP22" creationDateTime="2026-09-08T15:00:00" />')
     parts.append('  <contentHeader name="%s" modificationDateTime="2026-09-08T15:00:00">' % block_name)
     parts.append('    <coordinateInfo>')
     parts.append('      <fbd><scaling x="1" y="1" /></fbd>')
@@ -1158,7 +1158,7 @@ def compile_instruction_box_plcopen(plan, issues=None):
     parts = []
     parts.append('<?xml version="1.0" encoding="utf-8"?>')
     parts.append('<project xmlns="http://www.plcopen.org/xml/tc6_0200">')
-    parts.append('  <fileHeader companyName="PLC Code" productName="CODESYS line" productVersion="SP22" creationDateTime="2026-09-08T15:00:00" />')
+    parts.append('  <fileHeader companyName="PLC Engineering Suite" productName="CODESYS line" productVersion="SP22" creationDateTime="2026-09-08T15:00:00" />')
     parts.append('  <contentHeader name="%s" modificationDateTime="2026-09-08T15:00:00">' % block_name)
     parts.append('    <coordinateInfo><fbd><scaling x="1" y="1" /></fbd><ld><scaling x="1" y="1" /></ld><sfc><scaling x="1" y="1" /></sfc></coordinateInfo>')
     parts.append('  </contentHeader>')
@@ -1955,7 +1955,7 @@ def compile_project_pou_plcopen(plan, issues=None):
     parts = []
     parts.append('<?xml version="1.0" encoding="utf-8"?>')
     parts.append('<project xmlns="http://www.plcopen.org/xml/tc6_0200">')
-    parts.append('  <fileHeader companyName="PLC Code" productName="CODESYS line" productVersion="SP22" creationDateTime="2026-09-08T15:00:00" />')
+    parts.append('  <fileHeader companyName="PLC Engineering Suite" productName="CODESYS line" productVersion="SP22" creationDateTime="2026-09-08T15:00:00" />')
     parts.append('  <contentHeader name="%s" modificationDateTime="2026-09-08T15:00:00">' % block_name)
     parts.append('    <coordinateInfo><fbd><scaling x="1" y="1" /></fbd><ld><scaling x="1" y="1" /></ld><sfc><scaling x="1" y="1" /></sfc></coordinateInfo>')
     parts.append('  </contentHeader>')

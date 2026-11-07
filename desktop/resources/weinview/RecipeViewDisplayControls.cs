@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Accessibility;
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  // Only the Recipe View field/display table: resolve rows by the vendor's item
  // names and the checkbox's MSAA Toggle action, without a model-specific ID.
  public static class RecipeViewDisplayControls {

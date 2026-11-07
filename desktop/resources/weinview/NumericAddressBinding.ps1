@@ -11,8 +11,8 @@ function Resolve-WeinviewNumericTagRow([string]$ProjectPath,[string]$TagName,$Ta
  if((Get-FileHash -LiteralPath $ProjectPath -Algorithm SHA256).Hash -ine $ExpectedProjectSha256){throw 'Current numeric project differs from tag evidence source.'}
  $csv=[string]$TagEvidence.native_csv_path;$csvHash=[string]$TagEvidence.tags_sha256
  if(!$csv -or !(Test-Path -LiteralPath $csv -PathType Leaf) -or $csvHash -notmatch '^[a-fA-F0-9]{64}$' -or (Get-FileHash -LiteralPath $csv -Algorithm SHA256).Hash -ine $csvHash){throw 'Actual native tag CSV evidence missing or changed.'}
- $rows=[PLCCode.Weinview.TagCsvCodec]::Read($csv)
- [PLCCode.Weinview.TagCsvCodec]::AssertSame([PLCCode.Weinview.TagRow[]]$TagEvidence.tags,[PLCCode.Weinview.TagRow[]]$rows)
+ $rows=[PLC Engineering Suite.Weinview.TagCsvCodec]::Read($csv)
+ [PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame([PLC Engineering Suite.Weinview.TagRow[]]$TagEvidence.tags,[PLC Engineering Suite.Weinview.TagRow[]]$rows)
  $found=@($rows|Where-Object {$_.name -ceq $TagName})
  if($found.Count -ne 1){throw 'Requested exact native tag is absent or ambiguous.'}
  $row=$found[0]
@@ -22,19 +22,19 @@ function Resolve-WeinviewNumericTagRow([string]$ProjectPath,[string]$TagName,$Ta
 function Invoke-WeinviewNumericNativeTagSelection($Session,[long]$DialogHwnd,[string]$ExpectedDescription,$TagBinding,[string]$ExpectedDialogTitle='数值的属性') {
  $ErrorActionPreference='Stop';Assert-WeinviewPlcCandidateSession $Session
  if(!$TagBinding -or !$TagBinding.native_tag_csv_verified -or $ExpectedDialogTitle -cnotin @('数值的属性','新增 数值','位状态切换开关/位状态指示灯的属性','位状态指示灯/位状态切换开关的属性','新增 位状态切换开关/位状态指示灯') -or (Get-FileHash -LiteralPath $Session.output_path -Algorithm SHA256).Hash -ine [string]$TagBinding.source_project_sha256){throw 'Fresh same-project native Tag binding required'}
- $rows=[PLCCode.Weinview.TagCsvCodec]::Read([string]$TagBinding.native_tag_csv_path)
+ $rows=[PLC Engineering Suite.Weinview.TagCsvCodec]::Read([string]$TagBinding.native_tag_csv_path)
  if((Get-FileHash -LiteralPath $TagBinding.native_tag_csv_path -Algorithm SHA256).Hash -ine [string]$TagBinding.native_tag_csv_sha256){throw 'Native Tag CSV changed before object selection'}
  $matches=@($rows|Where-Object {$_.name -ceq $TagBinding.tag_name})
  if($matches.Count -ne 1 -or $matches[0].device -cne $TagBinding.device -or $matches[0].address_type -cne $TagBinding.address_type -or $matches[0].address -cne $TagBinding.address -or $matches[0].data_type -cne $TagBinding.data_type -or [string]$matches[0].comment -cne [string]$TagBinding.comment){throw 'Native Tag row changed before object selection'}
  $expectedDisplay=if([string]::IsNullOrEmpty([string]$TagBinding.comment)){[string]$TagBinding.tag_name}else{([string]$TagBinding.tag_name)+' ('+([string]$TagBinding.comment)+')'}
  $native=$Session.native;$dialog=@($native.EnumTopWindows()|Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Class -ceq '#32770' -and $_.Title -ceq $ExpectedDialogTitle -and $_.Visible -and $_.Enabled});if($dialog.Count -ne 1){throw 'Exact owned numeric property dialog required'}
- $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $property.SelectTabExact(($native.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')).Hwnd,'一般属性')
  $descriptionControls=@($native.EnumChildControls($DialogHwnd)|Where-Object {$_.Id -eq 1174 -and $_.Class -ceq 'Edit' -and $_.Visible})
  if($descriptionControls.Count -ne 1){throw 'Numeric Tag selection requires one visible description control'}
  if($native.GetControlText($descriptionControls[0].Hwnd,1024) -cne $ExpectedDescription){throw 'Numeric description differs before Tag selection'}
- if(!('PLCCode.Weinview.NumericTagSettingsControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NumericTagSettingsControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
- $address=([PLCCode.Weinview.NumericTagSettingsControls]::new($native)).OpenAddress($DialogHwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'));$confirmed=$false
+ if(!('PLC Engineering Suite.Weinview.NumericTagSettingsControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NumericTagSettingsControls.cs') -ReferencedAssemblies 'System.dll','Accessibility.dll'}
+ $address=([PLC Engineering Suite.Weinview.NumericTagSettingsControls]::new($native)).OpenAddress($DialogHwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'));$confirmed=$false
  try{
   $user=$native.FindUniqueControl($address,1560,'Button','用户自定义标签');$state=$native.GetCheckboxState($user.Hwnd)
   if($state -notin @(0,1)){throw 'Native User-defined Tag switch state unavailable'}
@@ -51,7 +51,7 @@ function Invoke-WeinviewNumericNativeTagSelection($Session,[long]$DialogHwnd,[st
    Start-Sleep -Milliseconds 50
   }while([DateTime]::UtcNow -lt $deadline)
   if($state -ne 1 -or $addressEdits[0].Enabled){throw 'Native User-defined Tag switch did not enable and disable ordinary address editor'}
-  $selector=[PLCCode.Weinview.NumericAddressTypeControls]::new($native,'地址');$found=@()
+  $selector=[PLC Engineering Suite.Weinview.NumericAddressTypeControls]::new($native,'地址');$found=@()
   foreach($qt in @($native.EnumChildControls($address)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$item=$selector.InspectAddressTagDisplayAny($address,$qt.Hwnd);if($item){$found+=,$item}}
   if($found.Count -ne 1){throw 'Unique native Tag selector required'}
   $after=$selector.SelectVisibleMenuExact($address,$found[0].Hwnd,$found[0].Value,[string]$TagBinding.tag_name,$expectedDisplay,[long]$Session.main.Hwnd,(Join-Path $PSScriptRoot 'QtElementBridge.exe'))
@@ -82,7 +82,7 @@ function Invoke-WeinviewNumericAddressBinding($Session,[long]$DialogHwnd,[string
  if(!$ExpectedDescription -or !$DeviceName -or [string]::IsNullOrWhiteSpace($targetType) -or $targetType.Length -gt 128 -or [string]::IsNullOrWhiteSpace($Address) -or $Address.Length -gt 128 -or $Address -match '[\x00-\x1f\x7f]'){throw 'Exact native numeric device, type and address text required.'}
  if($tagged){
   if($TagBinding.native_tag_csv_verified -ne $true -or $TagBinding.device -cne $DeviceName -or [string]$TagBinding.address -cne $Address -or $TagBinding.data_type -cne '16-bit Signed' -or !$targetType -or $targetType.Length -gt 128 -or (Get-FileHash -LiteralPath $TagBinding.native_tag_csv_path -Algorithm SHA256).Hash -ine [string]$TagBinding.native_tag_csv_sha256 -or (Get-FileHash -LiteralPath $Session.output_path -Algorithm SHA256).Hash -ine [string]$TagBinding.source_project_sha256){throw 'Fresh same-project native tag evidence required.'}
-  $nativeTags=[PLCCode.Weinview.TagCsvCodec]::Read([string]$TagBinding.native_tag_csv_path)
+  $nativeTags=[PLC Engineering Suite.Weinview.TagCsvCodec]::Read([string]$TagBinding.native_tag_csv_path)
   $matchingTags=@($nativeTags|Where-Object {$_.name -ceq $TagBinding.tag_name})
   if($matchingTags.Count -ne 1 -or $matchingTags[0].device -cne $DeviceName -or $matchingTags[0].address_type -cne $targetType -or $matchingTags[0].address -cne [string]$Address -or $matchingTags[0].data_type -cne '16-bit Signed'){throw 'Native tag row differs before numeric selection.'}
  }else{
@@ -91,8 +91,8 @@ function Invoke-WeinviewNumericAddressBinding($Session,[long]$DialogHwnd,[string
   if($VerifiedDevice -and ($VerifiedDevice.device_name -cne $DeviceName -or !$VerifiedDevice.native_fields_verified)){throw 'Existing native device evidence differs.'}
  }
  if(!$Session.exe_path){throw 'Dedicated kernel-verified exe path required.'}
- $native=$Session.native;$property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
- $types=New-Object PLCCode.Weinview.NumericAddressTypeControls($native,$ExpectedDialogTitle)
+ $native=$Session.native;$property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $types=New-Object PLC Engineering Suite.Weinview.NumericAddressTypeControls($native,$ExpectedDialogTitle)
  $dialog=@($native.EnumTopWindows()|Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Class -ceq '#32770' -and $_.Title -ceq $ExpectedDialogTitle -and $_.Visible -and $_.Enabled})
  if($dialog.Count -ne 1){throw 'Exact owned existing numeric property dialog required.'}
  $tab=$native.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32');$property.SelectTabExact($tab.Hwnd,'一般属性')

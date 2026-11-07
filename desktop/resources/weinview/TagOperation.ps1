@@ -3,7 +3,7 @@ function New-WeinviewTagRequests($Arguments) {
  if([string]$Arguments.expected_tags_sha256 -notmatch '^[A-Fa-f0-9]{64}$'){throw 'Exact before tags CSV SHA required.'}
  $items=@($Arguments.tags);if($items.Count -lt 1 -or $items.Count -gt 1000){throw 'One to 1000 tag requests required.'}
  $names=New-Object 'Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
- $rows=New-Object 'Collections.Generic.List[PLCCode.Weinview.TagRow]'
+ $rows=New-Object 'Collections.Generic.List[PLC Engineering Suite.Weinview.TagRow]'
  foreach($item in $items){
   $nativeRow=@($item.PSObject.Properties.Name) -ccontains 'row_format'
   $allowed=@('name','device','address_type','address','comment','data_type')
@@ -19,7 +19,7 @@ function New-WeinviewTagRequests($Arguments) {
    if($item.address -isnot [int] -and $item.address -isnot [long]){throw 'Tag address integer required.'}
    if($item.address -lt 0 -or $item.address -gt 65535 -or $item.data_type -cne '16-bit Signed' -or ($item.device -ceq 'Local HMI' -and $item.address_type -cne 'LW') -or ($item.device -cne 'Local HMI' -and $item.address_type -cne '4x')){throw 'Only Local LW or existing PLC4x signed16 tag bindings accepted.'}
   }
-  $row=New-Object PLCCode.Weinview.TagRow
+  $row=New-Object PLC Engineering Suite.Weinview.TagRow
   foreach($key in @('name','device','address_type','comment','data_type')){$row.$key=$item.$key}
   $row.address=if($nativeRow){[string]$item.address}else{([long]$item.address).ToString([Globalization.CultureInfo]::InvariantCulture)};$rows.Add($row)
  }
@@ -40,7 +40,7 @@ function Open-WeinviewTagLibrary($Session) {
    $visible=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible}|ForEach-Object {[pscustomobject]@{class=$_.Class;title=$_.Title;hwnd=$_.Hwnd}})
    throw ('Address tag library entry did not reach its native dialog; visible_top_windows='+($visible|ConvertTo-Json -Compress -Depth 3)+'; original='+[string]$_)
   }
- $properties=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $properties=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $user=$Session.native.FindUniqueControl($library.Hwnd,1981,'Button','用户自定义标签')
  $Session.tag_original_user_mode=$properties.GetRadioState($user.Hwnd)
  if($Session.tag_original_user_mode -ne 1){$Session.native.ClickButton($library.Hwnd,1981,'用户自定义标签')}
@@ -66,11 +66,11 @@ function Export-WeinviewTags($Session,[string]$CsvPath) {
   $filter=$Session.native.FindUniqueControl($library.Hwnd,1005,'Edit',$null)
   if($Session.native.GetControlText($filter.Hwnd,4096)){throw 'Empty tag proof requires unfiltered user-defined library.'}
   $grids=@($Session.native.EnumChildControls($library.Hwnd)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class.StartsWith('BCGPGridCtrl:')})
-  if($grids.Count -ne 1 -or [PLCCode.Weinview.TagQtControls]::ReadEmptyTable($Session.native,$grids[0].Hwnd) -ne 0){throw 'Native empty tag table proof required.'}
+  if($grids.Count -ne 1 -or [PLC Engineering Suite.Weinview.TagQtControls]::ReadEmptyTable($Session.native,$grids[0].Hwnd) -ne 0){throw 'Native empty tag table proof required.'}
   # The observed native CSV is headerless. Its empty envelope is only the BOM;
   # record the disabled export and actual zero-row table rather than claim export.
   [IO.File]::WriteAllBytes($CsvPath,[byte[]]@(239,187,191))
-  $rows=[PLCCode.Weinview.TagCsvCodec]::Read($CsvPath)
+  $rows=[PLC Engineering Suite.Weinview.TagCsvCodec]::Read($CsvPath)
   return @{tags=@($rows);tags_sha256=(Hash $CsvPath);native_csv_path=$CsvPath;table_origin='native_empty_table_with_derived_envelope';empty_evidence=@{row_count=0;grid=$grids[0];export_control=$exports[0];unfiltered=$true;user_defined_mode=$true;native_export_performed=$false}}
  }
  $Session.native.ClickButton($library.Hwnd,1247,'导出为 CSV...')
@@ -82,7 +82,7 @@ function Export-WeinviewTags($Session,[string]$CsvPath) {
  $body=$Session.native.FindUniqueControl($success.Hwnd,65535,'Static','成功')
  if($Session.native.GetControlText($body.Hwnd,256) -cne '成功' -or !(Test-Path -LiteralPath $CsvPath)){throw 'Exact native export success required.'}
  $Session.native.ClickButton($success.Hwnd,2,'确定')
- $rows=[PLCCode.Weinview.TagCsvCodec]::Read($CsvPath)
+ $rows=[PLC Engineering Suite.Weinview.TagCsvCodec]::Read($CsvPath)
  return @{tags=@($rows);tags_sha256=(Hash $CsvPath);native_csv_path=$CsvPath;table_origin='native_export';empty_evidence=$null}
 }
 function Close-WeinviewTagLibrary($Session) {
@@ -98,14 +98,14 @@ function Close-WeinviewTagLibrary($Session) {
   if(!@($windows|Where-Object {$_.Visible -and $_.Class -ceq '#32770'}).Count -and @($windows|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq 'EasyBuilderPro'}).Count -eq 1){return $true}
  } 5
 }
-function Assert-WeinviewTagDeviceBindings($Session,[PLCCode.Weinview.TagRow[]]$Rows,[string[]]$NativeRowNames=@()) {
+function Assert-WeinviewTagDeviceBindings($Session,[PLC Engineering Suite.Weinview.TagRow[]]$Rows,[string[]]$NativeRowNames=@()) {
  $shortcutRows=@($Rows|Where-Object {$_.name -cnotin $NativeRowNames})
  if(!$shortcutRows.Count){
   return @{device_names=@();bindings=@($Rows|Group-Object device,address_type|ForEach-Object {@{device=$_.Group[0].device;address_type=$_.Group[0].address_type;validation_scope='original_csv_import_and_full_readback';native_device_list_verified=$false}});native_device_list_verified=$false}
  }
  $library=Get-WeinviewTagDialog $Session '地址标签库';$Session.native.ClickButton($library.Hwnd,4,'新增...')
  $dialog=Get-WeinviewTagDialog $Session '地址标签'
- $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $word=$Session.native.FindUniqueControl($dialog.Hwnd,1611,'Button','字');if($property.GetRadioState($word.Hwnd) -ne 1){$Session.native.ClickButton($dialog.Hwnd,1611,'字')}
  $device=$Session.native.FindUniqueControl($dialog.Hwnd,1646,'ComboBox',$null)
  $devices=@($property.ComboItems($device.Hwnd));$checks=@()
@@ -126,31 +126,31 @@ function Assert-WeinviewTagDeviceBindings($Session,[PLCCode.Weinview.TagRow[]]$R
  $Session.native.ClickButton($dialog.Hwnd,2,'取消')
  return @{device_names=$devices;bindings=$checks;native_device_list_verified=$true}
 }
-function Import-WeinviewTags($Session,[PLCCode.Weinview.TagRow[]]$Rows,[string]$CsvPath,[switch]$ReplaceMergedTable) {
- [PLCCode.Weinview.TagCsvCodec]::Write($CsvPath,$Rows);$inputHash=Hash $CsvPath
+function Import-WeinviewTags($Session,[PLC Engineering Suite.Weinview.TagRow[]]$Rows,[string]$CsvPath,[switch]$ReplaceMergedTable) {
+ [PLC Engineering Suite.Weinview.TagCsvCodec]::Write($CsvPath,$Rows);$inputHash=Hash $CsvPath
  $library=Get-WeinviewTagDialog $Session '地址标签库';$Session.native.ClickButton($library.Hwnd,1248,'导入自 CSV...')
  $import=Get-WeinviewTagDialog $Session '程序'
  $qt=@($Session.native.EnumChildControls($import.Hwnd)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq 'Qt5QWindowIcon'})
  if($qt.Count -ne 1){throw 'Unique native import Qt root required.'};$qtRoot=$qt[0].Hwnd
- [PLCCode.Weinview.TagQtControls]::Invoke($Session.native,$qtRoot,'浏览')
+ [PLC Engineering Suite.Weinview.TagQtControls]::Invoke($Session.native,$qtRoot,'浏览')
  $browse=Get-WeinviewTagDialog $Session 'Easy Builder Pro'
  $filename=$Session.native.FindUniqueControl($browse.Hwnd,1148,'Edit',$null);$Session.native.SetControlText($filename.Hwnd,$CsvPath)
  if($Session.native.GetControlText($filename.Hwnd,32768) -cne $CsvPath){throw 'Exact tag import file readback differs.'}
  $Session.native.ClickButton($browse.Hwnd,1,'打开(&O)')
  $null=Get-WeinviewTagDialog $Session '程序'
- $null=WaitFor {if([PLCCode.Weinview.TagQtControls]::FileValueReady($Session.native,$qtRoot,$CsvPath)){return $true}} 8
- $remove=[PLCCode.Weinview.TagQtControls]::Checkbox($Session.native,$qtRoot,'移除旧标签',[bool]$ReplaceMergedTable)
- $replace=[PLCCode.Weinview.TagQtControls]::Checkbox($Session.native,$qtRoot,'用新标签替换现有标签',$true)
+ $null=WaitFor {if([PLC Engineering Suite.Weinview.TagQtControls]::FileValueReady($Session.native,$qtRoot,$CsvPath)){return $true}} 8
+ $remove=[PLC Engineering Suite.Weinview.TagQtControls]::Checkbox($Session.native,$qtRoot,'移除旧标签',[bool]$ReplaceMergedTable)
+ $replace=[PLC Engineering Suite.Weinview.TagQtControls]::Checkbox($Session.native,$qtRoot,'用新标签替换现有标签',$true)
  if($remove -ne [bool]$ReplaceMergedTable -or !$replace -or (Hash $CsvPath) -ne $inputHash){throw 'Preserving import options/input changed.'}
- [PLCCode.Weinview.TagQtControls]::Invoke($Session.native,$qtRoot,'导入')
+ [PLC Engineering Suite.Weinview.TagQtControls]::Invoke($Session.native,$qtRoot,'导入')
  $success=Get-WeinviewTagDialog $Session 'EasyBuilder Pro'
  $body=$Session.native.FindUniqueControlWithoutLabel($success.Hwnd,65535,'Static')
  $expected='已导入: '+$Rows.Length+" 笔记录`n已忽略: 0 笔记录"
- if([PLCCode.Weinview.NativeControls]::NormalizeLF($Session.native.GetControlText($body.Hwnd,4096)) -cne $expected){throw 'Native import records/ignored count differs; no save.'}
+ if([PLC Engineering Suite.Weinview.NativeControls]::NormalizeLF($Session.native.GetControlText($body.Hwnd,4096)) -cne $expected){throw 'Native import records/ignored count differs; no save.'}
  $Session.native.ClickButton($success.Hwnd,2,'确定')
  return @{remove_existing=[bool]$ReplaceMergedTable;replace_existing=$true;native_imported_count=$Rows.Length;native_ignored_count=0;input_csv_sha256=$inputHash}
 }
-function Update-WeinviewExistingTag($Session,[PLCCode.Weinview.TagRow]$Before,[PLCCode.Weinview.TagRow]$After) {
+function Update-WeinviewExistingTag($Session,[PLC Engineering Suite.Weinview.TagRow]$Before,[PLC Engineering Suite.Weinview.TagRow]$After) {
  if($Before.name -cne $After.name){throw 'Native tag rename is not allowed.'}
  $Session.tag_property_name=$Before.name
  $library=Get-WeinviewTagDialog $Session '地址标签库'
@@ -158,11 +158,11 @@ function Update-WeinviewExistingTag($Session,[PLCCode.Weinview.TagRow]$Before,[P
  $Session.native.SetControlText($filter.Hwnd,'')
  $grids=@($Session.native.EnumChildControls($library.Hwnd)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class.StartsWith('BCGPGridCtrl:')})
  if($grids.Count -ne 1){throw 'Unique original-vendor tag grid required.'}
- $selectionState=[PLCCode.Weinview.TagQtControls]::SelectExistingTag($Session.native,$grids[0].Hwnd,$Before.name)
+ $selectionState=[PLC Engineering Suite.Weinview.TagQtControls]::SelectExistingTag($Session.native,$grids[0].Hwnd,$Before.name)
  $null=WaitFor {$button=$Session.native.FindUniqueControl($library.Hwnd,3,'Button','设置...');if($button.Enabled){return $true}} 5
  $Session.native.ClickButton($library.Hwnd,3,'设置...')
  $dialog=Get-WeinviewTagDialog $Session '地址标签'
- $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $fields=@{name=1557;comment=1174;address=1556}
  foreach($field in $fields.Keys){$control=$Session.native.FindUniqueControl($dialog.Hwnd,$fields[$field],'Edit',$null);if($Session.native.GetControlText($control.Hwnd,4096) -cne $Before.$field){throw 'Selected existing native tag does not match before snapshot; no field write.'}}
  $combos=@{device=1646;address_type=1288;data_type=2143}

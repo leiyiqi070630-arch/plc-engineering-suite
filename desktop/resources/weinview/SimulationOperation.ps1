@@ -189,7 +189,7 @@ function Invoke-WeinviewSimulation($Arguments,$Installation) {
  $root=Get-WeinviewSimulationPath ([string]$Arguments.workspace_root)
  if($root.Length -le 3 -or !(Test-Path -LiteralPath $root -PathType Container)){throw 'Existing bound simulation workspace required.'}
  $registry=Get-WeinviewSimulationPath (Join-Path $root '.weinview-simulations')
- $mutex=New-Object Threading.Mutex($false,'Local\PLCCode.Weinview.OfflineSimulation.421')
+ $mutex=New-Object Threading.Mutex($false,'Local\PLC Engineering Suite.Weinview.OfflineSimulation.421')
  $locked=$false
  try{
   try{$locked=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{$locked=$true}
@@ -209,7 +209,7 @@ function Invoke-WeinviewSimulation($Arguments,$Installation) {
    if($runtime -match '[^\x00-\x7F]'){throw 'Original simulator protocol requires an ASCII workspace path for this verified profile.'}
    [void][IO.Directory]::CreateDirectory($folder)
    $receipt=Join-Path $folder 'session.json'
-   $session=[ordered]@{schema=1;kind='weinview-owned-offline-simulation';session_id=$id;workspace_root=$root;session_record=$receipt;runtime_path=$runtime;source_exob_path=$source;runtime_exob_path=(Join-Path $runtime 'PLCCode-owned.exob');exob_sha256=$expected.ToUpperInvariant();state='preparing';created_utc=[DateTime]::UtcNow.ToString('o');updated_utc=[DateTime]::UtcNow.ToString('o');processes=@();values=$null;values_verified=$false;file_write_isolation_verified=$false;normal_close_verified=$false;normal_exit_verified=$false;owned_exit_codes=@();last_error=$null}
+   $session=[ordered]@{schema=1;kind='weinview-owned-offline-simulation';session_id=$id;workspace_root=$root;session_record=$receipt;runtime_path=$runtime;source_exob_path=$source;runtime_exob_path=(Join-Path $runtime 'PLC Engineering Suite-owned.exob');exob_sha256=$expected.ToUpperInvariant();state='preparing';created_utc=[DateTime]::UtcNow.ToString('o');updated_utc=[DateTime]::UtcNow.ToString('o');processes=@();values=$null;values_verified=$false;file_write_isolation_verified=$false;normal_close_verified=$false;normal_exit_verified=$false;owned_exit_codes=@();last_error=$null}
    Write-WeinviewSimulationJson $receipt $session
    $installed=[IO.Path]::GetDirectoryName($ide);$installedDef=Join-Path $installed 'xob_pos.def';$defBefore=if(Test-Path -LiteralPath $installedDef){Get-WeinviewSimulationHash $installedDef}else{$null}
    $static=New-WeinviewSimulationStaticRuntime $installed $runtime ([DateTime]::UtcNow.AddSeconds(150))
@@ -276,14 +276,14 @@ function Invoke-WeinviewSimulation($Arguments,$Installation) {
   if($session.schema -ne 1 -or $session.kind -cne 'weinview-owned-offline-simulation' -or $session.session_id -cne $id -or $session.workspace_root -ine $root -or $session.runtime_path -ine $runtime -or $session.session_record -ine $receipt -or $session.exob_sha256 -notmatch '^[0-9a-fA-F]{64}$'){throw 'Foreign or invalid simulation receipt.'}
   $source=Get-WeinviewSimulationPath ([string]$session.source_exob_path)
   $runtimeExob=Get-WeinviewSimulationPath ([string]$session.runtime_exob_path)
-  if(!$source.StartsWith($root+'\',[StringComparison]::OrdinalIgnoreCase) -or $source.StartsWith($registry+'\',[StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetExtension($source) -ine '.exob' -or (Get-WeinviewSimulationHash $source) -ine $session.exob_sha256 -or $runtimeExob -ine (Join-Path $runtime 'PLCCode-owned.exob')){throw 'Simulation source EXOB or owned runtime path changed; no action.'}
+  if(!$source.StartsWith($root+'\',[StringComparison]::OrdinalIgnoreCase) -or $source.StartsWith($registry+'\',[StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetExtension($source) -ine '.exob' -or (Get-WeinviewSimulationHash $source) -ine $session.exob_sha256 -or $runtimeExob -ine (Join-Path $runtime 'PLC Engineering Suite-owned.exob')){throw 'Simulation source EXOB or owned runtime path changed; no action.'}
   $live=@(Get-WeinviewSimulationProcesses $session $runtime)
   if($action -eq 'select_window'){
    if($session.state -cne 'running' -or $Arguments.window_number -lt 10 -or $Arguments.window_number -gt 4095){throw 'Running native simulation and existing base window required.'}
    $gui=@($live|Where-Object ProcessName -CEQ 'gui_e30')
    if($gui.Count -ne 1){throw 'One owned native simulator GUI required.'}
-   if(!('PLCCode.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
-   $native=[PLCCode.Weinview.NativeControls]::new($gui[0].Id,$gui[0].StartTime.ToUniversalTime().Ticks,$gui[0].Path,1500)
+   if(!('PLC Engineering Suite.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'NativeControls.cs')}
+   $native=[PLC Engineering Suite.Weinview.NativeControls]::new($gui[0].Id,$gui[0].StartTime.ToUniversalTime().Ticks,$gui[0].Path,1500)
    $mainHandle=$gui[0].MainWindowHandle.ToInt64()
    $main=@($native.EnumTopWindows()|Where-Object {$_.Hwnd -eq $mainHandle -and $_.Visible -and $_.Enabled})
    if($main.Count -ne 1){throw 'One owned native simulator canvas required.'}
@@ -420,10 +420,10 @@ function Assert-WeinviewCmtDependencies($Session,$Installation,[string]$BridgeRo
  if(($runtimeDependencies|ConvertTo-Json -Compress) -cne ($Session.runtime_dependencies|ConvertTo-Json -Compress)){throw 'Owned cMT runtime dependency receipt differs.'}
 }
 function Initialize-WeinviewCmtClose {
- if('PLCCode.Weinview.CmtLifecycleMessage' -as [type]){return}
+ if('PLC Engineering Suite.Weinview.CmtLifecycleMessage' -as [type]){return}
  Add-Type -TypeDefinition @'
 using System;using System.Diagnostics;using System.Runtime.InteropServices;using System.Text;
-namespace PLCCode.Weinview {public static class CmtLifecycleMessage {
+namespace PLC Engineering Suite.Weinview {public static class CmtLifecycleMessage {
  [DllImport("user32.dll",ExactSpelling=true)]static extern IntPtr GetWindow(IntPtr h,uint c);
  [DllImport("user32.dll",ExactSpelling=true)]static extern IntPtr GetAncestor(IntPtr h,uint c);
  [DllImport("user32.dll",ExactSpelling=true)]static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);
@@ -476,8 +476,8 @@ function Assert-WeinviewCmtFiles($Session,[bool]$AllowReleasedGenerated=$false) 
 }
 function Get-WeinviewCmtWindows($Session,[bool]$AllowSelectorPopup=$false) {
  $viewer=@($Session.processes|Where-Object {[IO.Path]::GetFileName($_.exe_path) -ceq 'cMTViewer.exe'})[0]
- if(!('PLCCode.Weinview.NativeControls' -as [type])){throw 'cMT native identity reader missing.'}
- $native=New-Object PLCCode.Weinview.NativeControls([int]$viewer.pid,[long]$viewer.creation_utc_ticks,[string]$viewer.exe_path,1000)
+ if(!('PLC Engineering Suite.Weinview.NativeControls' -as [type])){throw 'cMT native identity reader missing.'}
+ $native=New-Object PLC Engineering Suite.Weinview.NativeControls([int]$viewer.pid,[long]$viewer.creation_utc_ticks,[string]$viewer.exe_path,1000)
  $online=($Session.kind -ceq 'weinview-owned-cmt-online-simulation')
  $tops=@($native.EnumTopWindows());$main=@($tops|Where-Object {$_.Class -ceq 'Qt5QWindowOwnDCIcon' -and $_.Enabled -and ($online -or $_.Title -ceq 'cMT Viewer ( Simulation )')});$diag=@($tops|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Title -ceq 'Diagnoser' -and $_.Enabled})
  # Closing the recorded main is valid while its ordinary window selector is open.
@@ -485,9 +485,9 @@ function Get-WeinviewCmtWindows($Session,[bool]$AllowSelectorPopup=$false) {
  $knownHwnds=@(@($main)+@($diag)+@($popup)|ForEach-Object {$_.Hwnd})
  if($main.Count -ne 1 -or $diag.Count -gt 1 -or $popup.Count -gt 1 -or @($tops|Where-Object {$_.Visible -and $_.Hwnd -notin $knownHwnds}).Count){throw 'Unknown cMT main/dialog structure; no action.'}
  Initialize-WeinviewCmtClose
- if([PLCCode.Weinview.CmtLifecycleMessage]::Owner($main[0].Hwnd) -ne 0 -or ($diag.Count -and [PLCCode.Weinview.CmtLifecycleMessage]::Owner($diag[0].Hwnd) -notin @(0,$main[0].Hwnd))){throw 'cMT window owner chain changed.'}
+ if([PLC Engineering Suite.Weinview.CmtLifecycleMessage]::Owner($main[0].Hwnd) -ne 0 -or ($diag.Count -and [PLC Engineering Suite.Weinview.CmtLifecycleMessage]::Owner($diag[0].Hwnd) -notin @(0,$main[0].Hwnd))){throw 'cMT window owner chain changed.'}
  if($Session.main_hwnd -and $Session.main_hwnd -ne $main[0].Hwnd){throw 'cMT main HWND changed.'}
- return [ordered]@{main=$main[0];diagnoser=if($diag.Count){$diag[0]}else{$null};main_owner=0;diagnoser_owner=if($diag.Count){[PLCCode.Weinview.CmtLifecycleMessage]::Owner($diag[0].Hwnd)}else{$null};top_windows=$tops}
+ return [ordered]@{main=$main[0];diagnoser=if($diag.Count){$diag[0]}else{$null};main_owner=0;diagnoser_owner=if($diag.Count){[PLC Engineering Suite.Weinview.CmtLifecycleMessage]::Owner($diag[0].Hwnd)}else{$null};top_windows=$tops}
 }
 function Show-WeinviewCmtViewer($Session) {
  $live=@(Get-WeinviewCmtProcesses $Session)
@@ -496,7 +496,7 @@ function Show-WeinviewCmtViewer($Session) {
  $viewer=@($Session.processes|Where-Object {[IO.Path]::GetFileName($_.exe_path) -ceq 'cMTViewer.exe'})
  if($viewer.Count -ne 1){throw 'Unique registered cMT Viewer required.'}
  $diagnoser=if($windows.diagnoser){[long]$windows.diagnoser.Hwnd}else{[long]0}
- [PLCCode.Weinview.CmtLifecycleMessage]::Display([long]$windows.main.Hwnd,$diagnoser,[int]$viewer[0].pid,[long]$viewer[0].creation_utc_ticks,[string]$viewer[0].exe_path)
+ [PLC Engineering Suite.Weinview.CmtLifecycleMessage]::Display([long]$windows.main.Hwnd,$diagnoser,[int]$viewer[0].pid,[long]$viewer[0].creation_utc_ticks,[string]$viewer[0].exe_path)
  $deadline=[DateTime]::UtcNow.AddSeconds(5)
  do {
   $observed=Get-WeinviewCmtWindows $Session
@@ -555,14 +555,14 @@ function Complete-WeinviewCmtStartEvidence($session,[string]$BridgeRoot,[DateTim
    })
    if($generated.Count -ne 2 -or $generated[0] -ine $generated[1]){throw 'cMT children do not share exact generated GUID XOB.'}
    Initialize-WeinviewCmtClose
-   $generatedLong=Get-WeinviewSimulationPath ([PLCCode.Weinview.CmtLifecycleMessage]::LongPath($generated[0]))
-   $tempLong=Get-WeinviewSimulationPath ([PLCCode.Weinview.CmtLifecycleMessage]::LongPath([IO.Path]::GetTempPath()))
+   $generatedLong=Get-WeinviewSimulationPath ([PLC Engineering Suite.Weinview.CmtLifecycleMessage]::LongPath($generated[0]))
+   $tempLong=Get-WeinviewSimulationPath ([PLC Engineering Suite.Weinview.CmtLifecycleMessage]::LongPath([IO.Path]::GetTempPath()))
    if([IO.Path]::GetDirectoryName($generatedLong) -ine (Join-Path $tempLong 'CloudHMI')){throw 'cMT generated XOB outside actual temp CloudHMI directory.'}
    $file=Get-Item -LiteralPath $generatedLong
    $projectLastWriteTicks=(Get-Item -LiteralPath $session.project_path).LastWriteTimeUtc.Ticks
    if($file.CreationTimeUtc.Ticks -lt $viewerRecord.creation_utc_ticks-20000000 -or ($file.LastWriteTimeUtc.Ticks -lt $viewerRecord.creation_utc_ticks-20000000 -and $file.LastWriteTimeUtc.Ticks -ne $projectLastWriteTicks) -or $file.Length -le 0 -or (Get-WeinviewSimulationHash $file.FullName) -cne $session.project_sha256){throw 'cMT generated XOB time/bytes/project SHA differs.'}
    $session.generated_xob=[ordered]@{path=$file.FullName;sha256=$session.project_sha256;bytes=[long]$file.Length;creation_utc_ticks=$file.CreationTimeUtc.Ticks;last_write_utc_ticks=$file.LastWriteTimeUtc.Ticks}
-   if(!('PLCCode.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $BridgeRoot 'NativeControls.cs')}
+   if(!('PLC Engineering Suite.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $BridgeRoot 'NativeControls.cs')}
    $session.windows=Get-WeinviewCmtWindows $session;$session.main_hwnd=$session.windows.main.Hwnd
    $com=@($session.processes|Where-Object {[IO.Path]::GetFileName($_.exe_path) -ceq 'com_c30.exe'})[0]
    $online=($session.kind -ceq 'weinview-owned-cmt-online-simulation')
@@ -584,7 +584,7 @@ function Invoke-WeinviewCmtSimulation($Arguments,$Installation,[string]$BridgeRo
  $root=Get-WeinviewSimulationPath ([string]$Arguments.workspace_root)
  if($root.Length -le 3 -or !(Test-Path -LiteralPath $root -PathType Container)){throw 'Bound cMT workspace required.'}
  $registry=Get-WeinviewSimulationPath (Join-Path $root '.weinview-simulations')
- $mutex=New-Object Threading.Mutex($false,'Local\PLCCode.Weinview.OfflineSimulation.421')
+ $mutex=New-Object Threading.Mutex($false,'Local\PLC Engineering Suite.Weinview.OfflineSimulation.421')
  try{
   try{$locked=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{$locked=$true};if(!$locked){throw 'weinview_simulation_busy: Lifecycle lock held.'}
  if($action -ceq 'start'){
@@ -600,7 +600,7 @@ function Invoke-WeinviewCmtSimulation($Arguments,$Installation,[string]$BridgeRo
    $id=[Guid]::NewGuid().ToString('N');$folder=Join-Path $registry $id;$runtime=Get-WeinviewSimulationPath (Join-Path $folder 'runtime')
    if($runtime -match '[^\x00-\x7f]' -or (Test-Path -LiteralPath $folder)){throw 'Fresh ASCII cMT session path required for this product profile.'}
    [void][IO.Directory]::CreateDirectory($runtime);$receipt=Join-Path $folder 'session.json'
-   $session=[ordered]@{schema=2;kind=$(if($mode -ceq 'online'){'weinview-owned-cmt-online-simulation'}else{'weinview-owned-cmt-offline-simulation'});profile=$(if($mode -ceq 'online'){'weinview-cn421-cmt-viewer-owned-online-v1'}else{'weinview-cn421-cmt-viewer-owned-offline-v2'});session_id=$id;workspace_root=$root;session_record=$receipt;runtime_path=$runtime;source_cxob_path=$source;runtime_cxob_path=(Join-Path $runtime 'PLCCode-owned.cxob');cxob_sha256=$expected.ToUpperInvariant();project_path=$null;project_sha256=$null;unpack_request_path=(Join-Path $folder 'unpack-request.json');unpack_response_path=(Join-Path $folder 'unpack-response.json');unpack_response_sha256=$null;unpack_verified=$false;installed_runtime_path=$installed;installation_dependencies=$dependencies;runtime_dependencies=@();static_runtime=$null;generated_xob=$null;processes=@();main_hwnd=$null;windows=$null;endpoint_evidence=$null;state='preparing';created_utc=[DateTime]::UtcNow.ToString('o');updated_utc=[DateTime]::UtcNow.ToString('o');normal_close_verified=$false;normal_exit_verified=$false;owned_exit_codes=@();last_error=$null}
+   $session=[ordered]@{schema=2;kind=$(if($mode -ceq 'online'){'weinview-owned-cmt-online-simulation'}else{'weinview-owned-cmt-offline-simulation'});profile=$(if($mode -ceq 'online'){'weinview-cn421-cmt-viewer-owned-online-v1'}else{'weinview-cn421-cmt-viewer-owned-offline-v2'});session_id=$id;workspace_root=$root;session_record=$receipt;runtime_path=$runtime;source_cxob_path=$source;runtime_cxob_path=(Join-Path $runtime 'PLC Engineering Suite-owned.cxob');cxob_sha256=$expected.ToUpperInvariant();project_path=$null;project_sha256=$null;unpack_request_path=(Join-Path $folder 'unpack-request.json');unpack_response_path=(Join-Path $folder 'unpack-response.json');unpack_response_sha256=$null;unpack_verified=$false;installed_runtime_path=$installed;installation_dependencies=$dependencies;runtime_dependencies=@();static_runtime=$null;generated_xob=$null;processes=@();main_hwnd=$null;windows=$null;endpoint_evidence=$null;state='preparing';created_utc=[DateTime]::UtcNow.ToString('o');updated_utc=[DateTime]::UtcNow.ToString('o');normal_close_verified=$false;normal_exit_verified=$false;owned_exit_codes=@();last_error=$null}
    if($mode -ceq 'online'){$session.mode='online'}
    Write-WeinviewSimulationJson $receipt $session
    $session.static_runtime=New-WeinviewCmtStaticRuntime $installed $runtime $BridgeRoot ([DateTime]::UtcNow.AddSeconds(90))
@@ -671,7 +671,7 @@ function Invoke-WeinviewCmtSimulation($Arguments,$Installation,[string]$BridgeRo
   }
   $id=[string]$Arguments.session_id;if($id -cnotmatch '^[a-f0-9]{32}$'){throw 'Opaque cMT session_id required.'}
   $folder=Get-WeinviewSimulationPath (Join-Path $registry $id);$receipt=Join-Path $folder 'session.json';$session=Read-WeinviewSimulationJson $receipt
-  if(!(($session.schema -eq 1 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-offline-v1' -and $session.kind -ceq 'weinview-owned-cmt-offline-simulation') -or ($session.schema -eq 2 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-owned-offline-v2' -and $session.kind -ceq 'weinview-owned-cmt-offline-simulation') -or ($session.schema -eq 2 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-owned-online-v1' -and $session.kind -ceq 'weinview-owned-cmt-online-simulation' -and $session.mode -ceq 'online')) -or $session.session_id -cne $id -or $session.workspace_root -ine $root -or $session.runtime_path -ine (Join-Path $folder 'runtime') -or $session.session_record -ine $receipt -or $session.runtime_cxob_path -ine (Join-Path $session.runtime_path 'PLCCode-owned.cxob') -or ($session.project_path -ine (Join-Path $session.runtime_path 'unpacked\mt8000\project') -and $session.project_path -ine (Join-Path $session.runtime_path 'unpacked\project'))){throw 'Invalid cMT registry session.'}
+  if(!(($session.schema -eq 1 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-offline-v1' -and $session.kind -ceq 'weinview-owned-cmt-offline-simulation') -or ($session.schema -eq 2 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-owned-offline-v2' -and $session.kind -ceq 'weinview-owned-cmt-offline-simulation') -or ($session.schema -eq 2 -and $session.profile -ceq 'weinview-cn421-cmt-viewer-owned-online-v1' -and $session.kind -ceq 'weinview-owned-cmt-online-simulation' -and $session.mode -ceq 'online')) -or $session.session_id -cne $id -or $session.workspace_root -ine $root -or $session.runtime_path -ine (Join-Path $folder 'runtime') -or $session.session_record -ine $receipt -or $session.runtime_cxob_path -ine (Join-Path $session.runtime_path 'PLC Engineering Suite-owned.cxob') -or ($session.project_path -ine (Join-Path $session.runtime_path 'unpacked\mt8000\project') -and $session.project_path -ine (Join-Path $session.runtime_path 'unpacked\project'))){throw 'Invalid cMT registry session.'}
   Assert-WeinviewCmtDependencies $session $Installation $BridgeRoot
   $live=@(Get-WeinviewCmtProcesses $session);Assert-WeinviewCmtFiles $session (!$live.Count)
   if($action -ceq 'status' -and $session.state -ceq 'start_incomplete' -and $session.processes.Count -eq 3 -and $live.Count -eq 3){
@@ -684,11 +684,11 @@ function Invoke-WeinviewCmtSimulation($Arguments,$Installation,[string]$BridgeRo
   }
   if($action -ceq 'stop'  -and $live.Count){
    if(@(Get-Process -Name EasyWatch -ErrorAction SilentlyContinue).Count){throw 'Active Watch preserved; close it before Viewer stop.'}
-   if(!('PLCCode.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $BridgeRoot 'NativeControls.cs')}
+   if(!('PLC Engineering Suite.Weinview.NativeControls' -as [type])){Add-Type -Path (Join-Path $BridgeRoot 'NativeControls.cs')}
    $session.windows=Get-WeinviewCmtWindows $session -AllowSelectorPopup $true;$session.main_hwnd=$session.windows.main.Hwnd;$observers=@($live)
    $viewer=@($session.processes|Where-Object {[IO.Path]::GetFileName($_.exe_path) -ceq 'cMTViewer.exe'})[0]
    $session.state='stopping';$session.updated_utc=[DateTime]::UtcNow.ToString('o');Write-WeinviewSimulationJson $receipt $session
-   [PLCCode.Weinview.CmtLifecycleMessage]::Close([long]$session.main_hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,[string]$viewer.exe_path)
+   [PLC Engineering Suite.Weinview.CmtLifecycleMessage]::Close([long]$session.main_hwnd,[int]$viewer.pid,[long]$viewer.creation_utc_ticks,[string]$viewer.exe_path)
    $deadline=[DateTime]::UtcNow.AddSeconds(15)
    do{$remaining=@($observers|Where-Object {!$_.WaitForExit(0)});if(!$remaining.Count){break};Start-Sleep -Milliseconds 150}while([DateTime]::UtcNow -lt $deadline)
    $session.owned_exit_codes=@(foreach($record in @($session.processes)){

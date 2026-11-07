@@ -14,16 +14,16 @@ function Get-WeinviewLabelDialog($Session,[string]$Title,[int]$Seconds=8) {
 function Open-WeinviewLabelLibrary($Session,[string]$EvidencePrefix) {
  Assert-WeinviewPlcCandidateSession $Session
  if(@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'}).Count){throw 'Unexpected modal before Label Library'}
- $semantic=New-Object PLCCode.Weinview.NativeSemanticControls($Session.native)
+ $semantic=New-Object PLC Engineering Suite.Weinview.NativeSemanticControls($Session.native)
  $tab=Invoke-WeinviewTagRibbon $Session $semantic '工程文件' $true
  Start-Sleep -Milliseconds 250
  $ribbonPath=$EvidencePrefix+'.label-ribbon.png'
  $projectSha=(Get-FileHash -LiteralPath $Session.output_path -Algorithm SHA256).Hash
- $ribbon=[PLCCode.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$ribbonPath)
+ $ribbon=[PLC Engineering Suite.Weinview.ObjectRibbonControls]::CaptureOwnedBackgroundRibbon($Session.native,[long]$Session.main.Hwnd,$Session.output_path,$projectSha,$ribbonPath)
  if(!$ribbon.Accepted){throw 'Owned Label Library ribbon render unavailable; no input.'}
  $icon=Join-Path $PSScriptRoot 'label-tag-icon-cn421.png'
- $point=[PLCCode.Weinview.LabelRibbonControls]::FindOwnedLabelIcon($ribbon,$icon)
- [PLCCode.Weinview.LabelRibbonControls]::ClickLabel($Session.native,$ribbon,[int]$point[0],[int]$point[1])
+ $point=[PLC Engineering Suite.Weinview.LabelRibbonControls]::FindOwnedLabelIcon($ribbon,$icon)
+ [PLC Engineering Suite.Weinview.LabelRibbonControls]::ClickLabel($Session.native,$ribbon,[int]$point[0],[int]$point[1])
  $library=Get-WeinviewLabelDialog $Session '文字库'
  foreach($control in @(@(4,'新增...'),@(1246,'导入文字库文件...'),@(1248,'导入 EXCEL 文件...'),@(1,'确定'),@(2,'取消'))){
   $c=$Session.native.FindUniqueControl($library.Hwnd,[int]$control[0],'Button',[string]$control[1]);if(!$c.Visible){throw 'Native Label Library button not visible'}
@@ -52,7 +52,7 @@ function Close-WeinviewLabelLibrary($Session,[bool]$Confirm) {
 function Get-WeinviewLabelLanguageOption($Session) {
  $modal=Get-WeinviewLabelDialog $Session '语言选项'
  $combo=$Session.native.FindUniqueControlWithoutLabel($modal.Hwnd,2068,'ComboBox')
- $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $options=@($property.ComboItems($combo.Hwnd))
  $all=@($options|Where-Object {$_ -match '^所有语言 \(语言 1 ~ 语言 ([1-9][0-9]?)\)$'})
  if($all.Count -ne 1){throw 'Native all-language option absent or ambiguous'}
@@ -68,7 +68,7 @@ function Export-WeinviewLabelWorkbook($Session,[string]$OutputPath,[string]$Evid
  $language=Get-WeinviewLabelLanguageOption $Session
  $Session.native.ClickButton($language.dialog.Hwnd,1,'确定')
  $save=Get-WeinviewLabelDialog $Session '另存为'
- $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $formats=@($Session.native.EnumChildControls($save.Hwnd)|Where-Object {$_.Class -ceq 'ComboBox' -and $_.Visible -and $_.Enabled -and @($property.ComboItems($_.Hwnd)) -contains 'Excel Files (*.xls, *xlsx)'})
  if($formats.Count -ne 1){throw 'Native XLSX export filter absent or ambiguous'}
  $property.SelectComboExact($formats[0].Hwnd,'Excel Files (*.xls, *xlsx)')

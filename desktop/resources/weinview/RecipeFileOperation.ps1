@@ -1,10 +1,10 @@
 ﻿# Dot-source only; original CLI and pinned native numeric formats.
 function Get-WeinviewRecipeProfile([string]$Layout='int16') {
  switch -CaseSensitive ($Layout) {
-  'int16' {return @{layout=$Layout;name='PLCCode_Signed16';sha256='229A08B2DBC0C8EFD321B5F5614A98EEFB8D685C232F098F6EEF7A784A172520';types=@('int16');stride=1}}
-  'int32' {return @{layout=$Layout;name='PLCCode_Int32';sha256='32360636046CC8B491DE7662C561C9AB0E9BA33ECB2EE1481367EFAE301F5AE7';types=@('int32');stride=2}}
-  'float32' {return @{layout=$Layout;name='PLCCode_Float32';sha256='689EBEC79B1D606DBFB7876D51BD2FD25C5DFFDAE2BE0B4BDE69C55F41335AD1';types=@('float32');stride=2}}
-  'mixed_numeric' {return @{layout=$Layout;name='PLCCode_MixedNumeric';sha256='249B39BF9F8A7B4E3F4C57C56CE97C282C2230536FF9D1CE67AD529B2B515E02';types=@('int16','int32','float32');stride=5}}
+  'int16' {return @{layout=$Layout;name='PLC Engineering Suite_Signed16';sha256='229A08B2DBC0C8EFD321B5F5614A98EEFB8D685C232F098F6EEF7A784A172520';types=@('int16');stride=1}}
+  'int32' {return @{layout=$Layout;name='PLC Engineering Suite_Int32';sha256='32360636046CC8B491DE7662C561C9AB0E9BA33ECB2EE1481367EFAE301F5AE7';types=@('int32');stride=2}}
+  'float32' {return @{layout=$Layout;name='PLC Engineering Suite_Float32';sha256='689EBEC79B1D606DBFB7876D51BD2FD25C5DFFDAE2BE0B4BDE69C55F41335AD1';types=@('float32');stride=2}}
+  'mixed_numeric' {return @{layout=$Layout;name='PLC Engineering Suite_MixedNumeric';sha256='249B39BF9F8A7B4E3F4C57C56CE97C282C2230536FF9D1CE67AD529B2B515E02';types=@('int16','int32','float32');stride=5}}
   default {throw 'Unknown native numeric recipe format.'}
  }
 }

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace PLCCode.Weinview
+namespace PLC Engineering Suite.Weinview
 {
 public sealed class RecipeViewClipboardResult
 {

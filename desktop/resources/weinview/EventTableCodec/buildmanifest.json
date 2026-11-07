@@ -2,7 +2,7 @@
   "format": 2,
   "name": "EventTableCodec",
   "architecture": "Windows x64",
-  "packaging": "PLCCode bundled Python plus pure-Python codec sources",
+  "packaging": "PLC Engineering Suite bundled Python plus pure-Python codec sources",
   "python_version": "3.12",
   "shared_runtime": "../../engine/python/python.exe",
   "dependency_file_count": 33,

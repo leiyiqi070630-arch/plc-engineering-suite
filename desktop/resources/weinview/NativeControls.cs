@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace PLCCode.Weinview
+namespace PLC Engineering Suite.Weinview
 {
     public sealed class WindowInfo
     {

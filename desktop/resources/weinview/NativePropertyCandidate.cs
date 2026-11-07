@@ -7,7 +7,7 @@ using System.Threading;
 using System.Collections.Generic;
 using Accessibility;
 
-namespace PLCCode.Weinview.Research
+namespace PLC Engineering Suite.Weinview.Research
 {
     public sealed class TextFocusEvidence
     {
@@ -166,11 +166,11 @@ namespace PLCCode.Weinview.Research
             // An inactive application still processes WM_NEXTDLGCTL on this GUI thread.
             return state;
         }
-        private IntPtr AssertTextFocusTarget(PLCCode.Weinview.NativeControls native,long dialogHwnd,long editHwnd,long blurButtonHwnd,string exactTitle)
+        private IntPtr AssertTextFocusTarget(PLC Engineering Suite.Weinview.NativeControls native,long dialogHwnd,long editHwnd,long blurButtonHwnd,string exactTitle)
         {
             if(exactTitle!="新增 文字/批注" && exactTitle!="文字/批注的属性")throw new ArgumentException("Exact observed Text dialog title required");
             var dialog=Window(dialogHwnd,"#32770");
-            var modals=new List<PLCCode.Weinview.WindowInfo>();
+            var modals=new List<PLC Engineering Suite.Weinview.WindowInfo>();
             foreach(var w in native.EnumTopWindows())if(w.Visible && w.Class=="#32770")modals.Add(w);
             if(modals.Count!=1 || modals[0].Hwnd!=dialogHwnd || !modals[0].Enabled || modals[0].Title!=exactTitle)throw new InvalidOperationException("Unique exact owned Text modal required");
             int edits=0,buttons=0;
@@ -190,7 +190,7 @@ namespace PLCCode.Weinview.Research
         // One semantic focus transition only. Caller owns text mutation, blur, confirmation and readback.
         public TextFocusEvidence FocusTextEditor(long dialogHwnd,long editHwnd,long blurButtonHwnd,string exactTitle,bool focusEditor)
         {
-            var native=new PLCCode.Weinview.NativeControls(pid,ticks,exe,800);
+            var native=new PLC Engineering Suite.Weinview.NativeControls(pid,ticks,exe,800);
             var parent=AssertTextFocusTarget(native,dialogHwnd,editHwnd,blurButtonHwnd,exactTitle);
             var dialog=new IntPtr(dialogHwnd);var before=TextThreadState(dialog);var target=new IntPtr(focusEditor?editHwnd:blurButtonHwnd);
             string text=RichText(editHwnd);uint mask=unchecked((uint)Send(new IntPtr(editHwnd),0x043B,0,IntPtr.Zero));

@@ -21,7 +21,7 @@ pub mod mcp_stdio;
 pub mod mcp_stdio_process;
 pub mod permissions;
 pub mod plc_experience_context;
-pub mod plccode_knowledge;
+pub mod plceng_knowledge;
 pub mod prompt;
 pub mod route_metadata;
 pub mod session;

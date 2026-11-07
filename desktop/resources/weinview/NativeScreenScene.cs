@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PLCCode.Weinview.Research
+namespace PLC Engineering Suite.Weinview.Research
 {
  public sealed class CanvasNotPaintedException : InvalidOperationException
  {
@@ -40,7 +40,7 @@ namespace PLCCode.Weinview.Research
   void ValidateDrawingPanel(long hwnd){
    ValidateProcess();var h=new IntPtr(hwnd);var m=new IntPtr(main);
    if(hwnd<=0||!Own(h)||Class(h)!="#32770"||Title(h)!="属性"||!IsWindowVisible(h)||!IsWindowEnabled(h)||GetWindow(h,4)!=m||!IsWindowEnabled(m))throw new InvalidOperationException("Exact owned enabled modeless drawing palette required");
-   var n=new PLCCode.Weinview.NativeControls(pid,ticks,exe,800);var controls=n.EnumChildControls(hwnd);
+   var n=new PLC Engineering Suite.Weinview.NativeControls(pid,ticks,exe,800);var controls=n.EnumChildControls(hwnd);
    foreach(var c in controls)if(c.Visible&&(c.Class=="SysTabControl32"||(c.Class=="Button"&&(c.Id==1||c.Id==2))))throw new InvalidOperationException("Drawing palette must have no tabs/OK/Cancel");
    var fill=n.FindUniqueControl(hwnd,1217,"Button","填色");var corner=n.FindUniqueControlWithoutLabel(hwnd,2067,"ComboBox");
    var p=new NativePropertyCandidate(pid,ticks,exe);

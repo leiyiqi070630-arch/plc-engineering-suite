@@ -7,7 +7,7 @@ function Read-WeinviewRecipeViewSelection($Session,$Dialog,[string]$RecipeName) 
  $native=$Session.native;$h=[long]$Dialog.Hwnd
  $owned=@($native.EnumTopWindows()|Where-Object {$_.Hwnd -eq $h -and $_.Pid -eq $Session.process.Id -and $_.Visible -and $_.Enabled})
  if($owned.Count -ne 1 -or $Dialog.Title -cnotmatch '配方检视'){throw 'Owned original Recipe View property dialog required.'}
- $p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $tabs=@($native.EnumChildControls($h)|Where-Object {$_.Visible -and $_.Class -ceq 'SysTabControl32'})
  if($tabs.Count -ne 1){throw 'Unique native Recipe View property tab control required.'}
  $names=@($p.TabNames($tabs[0].Hwnd));if(@($names|Where-Object {$_ -ceq '一般属性'}).Count -ne 1){throw 'Native Recipe View General tab not identified.'}
@@ -16,7 +16,7 @@ function Read-WeinviewRecipeViewSelection($Session,$Dialog,[string]$RecipeName) 
  $recipeCandidates=@()
  foreach($combo in $combos){try{$items=@($p.ComboItems($combo.Hwnd));if(@($items|Where-Object {$_ -ceq $RecipeName}).Count -eq 1){$recipeCandidates+=@{hwnd=$combo.Hwnd;items=$items}}}catch{}}
  $qtSelected=$null
- try{$qtSelected=[PLCCode.Weinview.RecipeViewDisplayControls]::ReadRecipeDirectory($native,$h,[int]$Session.process.Id,$RecipeName)}catch{}
+ try{$qtSelected=[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::ReadRecipeDirectory($native,$h,[int]$Session.process.Id,$RecipeName)}catch{}
  if($null -ne $qtSelected){$recipeCombo=@{kind='qt_recipe_directory';hwnd=$null;items=@($RecipeName)};$selected=$qtSelected}
  elseif($recipeCandidates.Count -eq 1){$recipeCombo=@{kind='win32_combo';hwnd=$recipeCandidates[0].hwnd;items=$recipeCandidates[0].items};$selected=$p.ComboSelected($recipeCombo.hwnd)}
  else {
@@ -27,7 +27,7 @@ function Read-WeinviewRecipeViewSelection($Session,$Dialog,[string]$RecipeName) 
    @{id=$combo.Id;selected=$selected;items=$items;item_count=$items.Count;diagnostic=$reason}
   })
   $qtDetails=@(foreach($qt in @($native.EnumChildControls($h)|Where-Object {$_.Visible -and $_.Class -ceq 'Qt5QWindowIcon'})){
-   try {@{qt_id=$qt.Id;role46=@([PLCCode.Weinview.RecipeViewDisplayControls]::RecipeComboDiagnostics([long]$qt.Hwnd,[int]$Session.process.Id))}}
+   try {@{qt_id=$qt.Id;role46=@([PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::RecipeComboDiagnostics([long]$qt.Hwnd,[int]$Session.process.Id))}}
    catch {@{qt_id=$qt.Id;diagnostic='role46_unavailable'}}
   })
   throw ('Recipe View recipe-name selector absent or ambiguous; owned ComboBox candidates: '+(ConvertTo-Json -InputObject $details -Depth 4 -Compress)+'; owned Qt role46 candidates: '+(ConvertTo-Json -InputObject $qtDetails -Depth 5 -Compress))
@@ -41,13 +41,13 @@ function Read-WeinviewRecipeViewProperty($Session,$Dialog,[string]$RecipeName,[s
  $fieldGrids=@();$deadline=[DateTime]::UtcNow.AddSeconds(3)
  do {
   $grids=@($native.EnumChildControls($h)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq 'Qt5QWindowIcon'})
-  $fieldGrids=@($grids|Where-Object {[PLCCode.Weinview.RecipeViewDisplayControls]::CanResolve([long]$_.Hwnd,[int]$Session.process.Id,$null)})
+  $fieldGrids=@($grids|Where-Object {[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::CanResolve([long]$_.Hwnd,[int]$Session.process.Id,$null)})
   if($fieldGrids.Count -ne 0){break}
   Start-Sleep -Milliseconds 50
  }while([DateTime]::UtcNow -lt $deadline)
  if($fieldGrids.Count -ne 1){
   $details=@(foreach($control in @($native.EnumChildControls($h)|Where-Object {$_.Visible -and $_.Class -ceq 'Qt5QWindowIcon'})){
-   try {@{id=$control.Id;enabled=[bool]$control.Enabled;tables=@([PLCCode.Weinview.RecipeViewDisplayControls]::FieldTableDiagnostics([long]$control.Hwnd,[int]$Session.process.Id))}}
+   try {@{id=$control.Id;enabled=[bool]$control.Enabled;tables=@([PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::FieldTableDiagnostics([long]$control.Hwnd,[int]$Session.process.Id))}}
    catch {@{id=$control.Id;enabled=[bool]$control.Enabled;diagnostic=$_.Exception.Message}}
   })
   throw ('Unique original Recipe View Display table required; owned Qt table diagnostics: '+(ConvertTo-Json -InputObject $details -Depth 7 -Compress))
@@ -55,26 +55,26 @@ function Read-WeinviewRecipeViewProperty($Session,$Dialog,[string]$RecipeName,[s
  $displayRows=$null;$displaySource='owned_original_dialog_render';$clipboardError=$null
  if($ReadCommittedObject){
   try {
-   $payload=[PLCCode.Weinview.RecipeViewClipboard]::Capture([long]$Session.main.Hwnd,[int]$Session.process.Id)
-   $committed=[PLCCode.Weinview.RecipeViewClipboard]::DecodeSingle($payload)
-   $displayRows=@([PLCCode.Weinview.RecipeViewDisplayControls]::ReadDisplayedFromIndices([long]$fieldGrids[0].Hwnd,[int]$Session.process.Id,[uint32[]]$committed.Indices))
+   $payload=[PLC Engineering Suite.Weinview.RecipeViewClipboard]::Capture([long]$Session.main.Hwnd,[int]$Session.process.Id)
+   $committed=[PLC Engineering Suite.Weinview.RecipeViewClipboard]::DecodeSingle($payload)
+   $displayRows=@([PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::ReadDisplayedFromIndices([long]$fieldGrids[0].Hwnd,[int]$Session.process.Id,[uint32[]]$committed.Indices))
    $displaySource='original_committed_recipe_clipboard'
   }catch{$clipboardError=$_.Exception.Message}
  }
  if($null -eq $displayRows){
   $ambiguityEvidence=([string]$Session.project_path)+'.rv-display-'+[Guid]::NewGuid().ToString('N')+'.png'
-  try{$displayRows=@([PLCCode.Weinview.RecipeViewDisplayControls]::ReadDisplayedWithEvidence([long]$fieldGrids[0].Hwnd,[int]$Session.process.Id,$ambiguityEvidence))}
+  try{$displayRows=@([PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::ReadDisplayedWithEvidence([long]$fieldGrids[0].Hwnd,[int]$Session.process.Id,$ambiguityEvidence))}
   catch{if($clipboardError){throw ('Recipe Display unavailable; native object: '+$clipboardError+'; dialog: '+$_.Exception.Message)};throw}
  }
- $sort=[PLCCode.Weinview.RecipeViewDisplayControls]::ReadSort($native,$h,[int]$Session.process.Id)
+ $sort=[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::ReadSort($native,$h,[int]$Session.process.Id)
  return [pscustomobject]@{property=$selection.property;tabs=$selection.tabs;recipe_combo=$selection.recipe_combo;recipe_selected=$selection.recipe_selected;field_grid=if($fieldGrids.Count -eq 1){$fieldGrids[0]}else{$null};field_grid_count=$fieldGrids.Count;field_names=@($displayRows|ForEach-Object {$_.name});displayed_fields=@($displayRows|Where-Object {$_.displayed}|ForEach-Object {$_.name});display_evidence=$displayRows;display_source=$displaySource;combos=$selection.combos;sort=$sort}
 }
 
 function Select-WeinviewRecipeViewSelection($Session,$Dialog,$Read,[string]$RecipeName) {
  $p=$Read.property
  if($Read.recipe_combo.kind -ceq 'qt_recipe_directory'){
-  if($Read.recipe_selected -cne $RecipeName){$null=[PLCCode.Weinview.RecipeViewDisplayControls]::SelectRecipeDirectory($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id,$RecipeName)}
-  if([PLCCode.Weinview.RecipeViewDisplayControls]::ReadRecipeDirectory($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id,$RecipeName) -cne $RecipeName){throw 'Native Recipe directory selection differs.'}
+  if($Read.recipe_selected -cne $RecipeName){$null=[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::SelectRecipeDirectory($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id,$RecipeName)}
+  if([PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::ReadRecipeDirectory($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id,$RecipeName) -cne $RecipeName){throw 'Native Recipe directory selection differs.'}
  }else{
   if($Read.recipe_selected -cne $RecipeName){$p.SelectComboExact($Read.recipe_combo.hwnd,$RecipeName)}
   if($p.ComboSelected($Read.recipe_combo.hwnd) -cne $RecipeName){throw 'Recipe View recipe selection readback differs.'}
@@ -89,14 +89,14 @@ function Set-WeinviewRecipeViewProperty($Session,$Dialog,[string]$RecipeName,[st
  # complete current definition, never by an inferred private control ID.
  $deadline=[DateTime]::UtcNow.AddSeconds(3);$grid=$null
  do {
-  $candidates=@($Session.native.EnumChildControls($Dialog.Hwnd)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq 'Qt5QWindowIcon' -and [PLCCode.Weinview.RecipeViewDisplayControls]::CanResolve([long]$_.Hwnd,[int]$Session.process.Id,$FieldNames)})
+  $candidates=@($Session.native.EnumChildControls($Dialog.Hwnd)|Where-Object {$_.Visible -and $_.Enabled -and $_.Class -ceq 'Qt5QWindowIcon' -and [PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::CanResolve([long]$_.Hwnd,[int]$Session.process.Id,$FieldNames)})
   if($candidates.Count -gt 1){throw 'Recipe View display table ambiguous by native field names.'}
   if($candidates.Count -eq 1){$grid=$candidates[0];break}
   Start-Sleep -Milliseconds 100
  }while([DateTime]::UtcNow -lt $deadline)
  if(!$grid){
   $details=@(foreach($control in @($Session.native.EnumChildControls($Dialog.Hwnd)|Where-Object {$_.Visible -and ($_.Class -like 'BCGPGridCtrl:*' -or $_.Class -ceq 'Qt5QWindowIcon')})){
-   try {@{id=$control.Id;class=$control.Class;enabled=[bool]$control.Enabled;tables=@([PLCCode.Weinview.RecipeViewDisplayControls]::FieldTableDiagnostics([long]$control.Hwnd,[int]$Session.process.Id))}}
+   try {@{id=$control.Id;class=$control.Class;enabled=[bool]$control.Enabled;tables=@([PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::FieldTableDiagnostics([long]$control.Hwnd,[int]$Session.process.Id))}}
    catch {@{id=$control.Id;class=$control.Class;enabled=[bool]$control.Enabled;diagnostic='native_table_unavailable'}}
   })
   throw ('Recipe View displayed-field table did not expose the current definition; owned field table candidates: '+(ConvertTo-Json -InputObject $details -Depth 7 -Compress))
@@ -104,17 +104,17 @@ function Set-WeinviewRecipeViewProperty($Session,$Dialog,[string]$RecipeName,[st
  # A copied object contains committed values. Pending property edits are read
  # again from the object only after the caller confirms this dialog.
  $display=if($CommittedObject -and $read.recipe_selected -ceq $RecipeName){
-  [PLCCode.Weinview.RecipeViewDisplayControls]::QueueDisplayed([long]$grid.Hwnd,[int]$Session.process.Id,$FieldNames,[string[]]@($read.displayed_fields),$DisplayFields)
- }else{[PLCCode.Weinview.RecipeViewDisplayControls]::SetDisplayed([long]$grid.Hwnd,[int]$Session.process.Id,$FieldNames,$DisplayFields)}
+  [PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::QueueDisplayed([long]$grid.Hwnd,[int]$Session.process.Id,$FieldNames,[string[]]@($read.displayed_fields),$DisplayFields)
+ }else{[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::SetDisplayed([long]$grid.Hwnd,[int]$Session.process.Id,$FieldNames,$DisplayFields)}
   # Recipe selection can replace the vendor's available sort fields and default.
   # Read its live state after selecting the requested recipe, not from the prior recipe.
-  $sortBefore=[PLCCode.Weinview.RecipeViewDisplayControls]::ReadSort($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id)
+  $sortBefore=[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::ReadSort($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id)
  $effectiveEnabled=if($null -ne $SortEnabled){[bool]$SortEnabled}else{[bool]$sortBefore.enabled}
  $effectiveField=if($SortBy){$SortBy}else{[string]$sortBefore.field}
  $effectiveDirection=if($SortDirection){$SortDirection}else{[string]$sortBefore.direction}
  if($effectiveField -cnotin $FieldNames){throw 'Recipe View sort field absent from current definition.'}
  if($SortDirection -and $SortDirection -cnotin @('ascending','descending')){throw 'Recipe View sort direction must be ascending or descending.'}
- $sortAfter=if($null -ne $SortEnabled -or $SortBy -or $SortDirection){[PLCCode.Weinview.RecipeViewDisplayControls]::SetSort($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id,$effectiveEnabled,$effectiveField,$effectiveDirection,[string[]]$FieldNames)}else{[PLCCode.Weinview.RecipeViewDisplayControls]::ReadSort($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id)}
+ $sortAfter=if($null -ne $SortEnabled -or $SortBy -or $SortDirection){[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::SetSort($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id,$effectiveEnabled,$effectiveField,$effectiveDirection,[string[]]$FieldNames)}else{[PLC Engineering Suite.Weinview.RecipeViewDisplayControls]::ReadSort($Session.native,[long]$Dialog.Hwnd,[int]$Session.process.Id)}
  if([bool]$sortAfter.enabled -ne $effectiveEnabled -or [string]$sortAfter.field -cne $effectiveField -or [string]$sortAfter.direction -cne $effectiveDirection){throw 'Recipe View native sort immediate readback differs.'}
  return [pscustomobject]@{recipe_name=$RecipeName;recipe_selected=$true;displayed_fields=@($DisplayFields);display_evidence=$display;sort_before=$sortBefore;sort_after=$sortAfter;sort_enabled_verified=$true;native_property_written=$true}
 }
@@ -124,14 +124,14 @@ function Invoke-WeinviewRecipeViewAddition($Session,[string]$RecipeName,[string[
  if(!$RecipeName -or @($FieldNames).Count -lt 1 -or @($DisplayFields).Count -lt 1 -or @($DisplayFields|Where-Object {$_ -cnotin $FieldNames}).Count){throw 'Current recipe name, definition field names and visible fields required.'}
  $before=Get-WeinviewWindowDirectory -Session $Session
  $labels=@($before.rows|ForEach-Object {$_.raw_label})
- $semantic=[PLCCode.Weinview.NativeSemanticControls]::new($Session.native)
+ $semantic=[PLC Engineering Suite.Weinview.NativeSemanticControls]::new($Session.native)
  $entry=Invoke-WeinviewRecipeViewRibbon $Session $semantic
  $dialog=$entry.dialog;$closed=$false
  try{$selection=Read-WeinviewRecipeViewSelection $Session $dialog $RecipeName;Select-WeinviewRecipeViewSelection $Session $dialog $selection $RecipeName;Close-WeinviewScreenDialog $Session $dialog $true;$closed=$true}
  finally{if(!$closed -and @($Session.native.EnumTopWindows()|Where-Object {$_.Hwnd -eq $dialog.Hwnd -and $_.Enabled}).Count){Close-WeinviewScreenDialog $Session $dialog $false}}
  $null=$Session.native.ActivateOwnedMain($Session.main.Hwnd)
- $canvas=[PLCCode.Weinview.AlarmDisplayDialogControls]::new($Session.native,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)
- $scene=[PLCCode.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
+ $canvas=[PLC Engineering Suite.Weinview.AlarmDisplayDialogControls]::new($Session.native,$Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd)
+ $scene=[PLC Engineering Suite.Weinview.Research.NativeScreenScene]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path,$Session.main.Hwnd,[int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height)
  $paint=$canvas.CaptureCanvas([int]$Session.window_number,[string]$Session.window_name,[int]$Session.window_width,[int]$Session.window_height,($Session.output_path+'.recipe-view-placement-'+[guid]::NewGuid().ToString('N')+'.png'))
  $scene.PlaceNewObject($paint.frame,$X,$Y);$scene.EndPlacement()
  $after=Get-WeinviewWindowDirectory -Session $Session

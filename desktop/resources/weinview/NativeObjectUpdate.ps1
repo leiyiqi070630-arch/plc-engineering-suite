@@ -51,8 +51,8 @@ try{
   $expected=CanonicalObject $ObjectId $wanted;$expectedHash=CanonicalObjectHash $expected
   if($expectedHash -ceq $beforeHash -and !$colorNames.Count){throw 'At least one substantive Rectangle change required.'}
   $identity=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json
-  $native=[PLCCode.Weinview.NativeControls]::new($identity.Pid,$identity.CreationTicks,$identity.Exe,800)
-  $property=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($identity.Pid,$identity.CreationTicks,$identity.Exe)
+  $native=[PLC Engineering Suite.Weinview.NativeControls]::new($identity.Pid,$identity.CreationTicks,$identity.Exe,800)
+  $property=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($identity.Pid,$identity.CreationTicks,$identity.Exe)
   $dialog=@($native.EnumTopWindows()|Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Class -ceq '#32770' -and $_.Title -ceq '矩形元件属性' -and $_.Visible -and $_.Enabled})
   if($dialog.Count -ne 1){throw 'Exact owned Rectangle property dialog required.'}
   $colorBefore=$null
@@ -117,7 +117,7 @@ try{
   $optionCount=@($wanted.options).Count
   $expected=CanonicalObject $ObjectId ([pscustomobject]@{kind='option_list';rectangle=@($wanted.rectangle);device=$wanted.data.device;address_type=$wanted.data.address_type;address=[int]$wanted.data.address;data_type=$wanted.data.data_type;mode=$wanted.mode;options=$wanted.options;error_row=[pscustomobject]@{index=$optionCount;item=([string]$optionCount+' (error)')}})
   $expectedHash=CanonicalObjectHash $expected;if($expectedHash -ceq $beforeHash){throw 'At least one substantive Option List change required.'}
-  $i=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json;$n=[PLCCode.Weinview.NativeControls]::new($i.Pid,$i.CreationTicks,$i.Exe,800);$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($i.Pid,$i.CreationTicks,$i.Exe)
+  $i=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json;$n=[PLC Engineering Suite.Weinview.NativeControls]::new($i.Pid,$i.CreationTicks,$i.Exe,800);$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($i.Pid,$i.CreationTicks,$i.Exe)
   $dialog=@($n.EnumTopWindows()|Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Class -ceq '#32770' -and $_.Visible -and $_.Enabled});if($dialog.Count -ne 1){throw 'Exact owned existing Option List dialog required.'}
   $r.stage='apply-option-list';$r.mutation_state='possible'
   if(@($names|Where-Object {$_ -cin @('address','mode','options')}).Count){
@@ -158,11 +158,11 @@ try{
   $expected=CanonicalObject $ObjectId $wanted;$expectedHash=CanonicalObjectHash $expected
   if($expectedHash -ceq $beforeHash){throw 'At least one substantive Trend property change required'}
   $identity=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json
-  $n=[PLCCode.Weinview.NativeControls]::new($identity.Pid,$identity.CreationTicks,$identity.Exe,800)
-  $p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($identity.Pid,$identity.CreationTicks,$identity.Exe)
+  $n=[PLC Engineering Suite.Weinview.NativeControls]::new($identity.Pid,$identity.CreationTicks,$identity.Exe,800)
+  $p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($identity.Pid,$identity.CreationTicks,$identity.Exe)
   $main=@($n.EnumTopWindows()|Where-Object {$_.Class -ceq 'EasyBuilderPro' -and $_.Visible -and $_.Title.Contains([IO.Path]::GetFileNameWithoutExtension($ProjectPath))})
   if($main.Count -ne 1){throw 'Unique owned Trend main required'}
-  $null=[PLCCode.Weinview.TrendRibbonControls]::RequireDialog($n,$DialogHwnd,$main[0].Hwnd,'趋势图的属性')
+  $null=[PLC Engineering Suite.Weinview.TrendRibbonControls]::RequireDialog($n,$DialogHwnd,$main[0].Hwnd,'趋势图的属性')
   $tab=$n.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')
   $r.stage='apply-trend-general';$r.mutation_state='possible'
   if($names -ccontains 'description' -or $names -ccontains 'pixel_spacing'){
@@ -213,14 +213,14 @@ try{
   if([bool]$current.hide_when_channel_invisible -ne [bool]$desired.hide_when_channel_invisible -or [string]$current.value_alignment -cne [string]$desired.value_alignment){$changed=$true}
   if(!$changed){throw 'At least one substantive Trend Y axis change required'}
   $wanted.minimum=[double]$rows[0].minimum;$wanted.maximum=[double]$rows[0].maximum;$expected=CanonicalObject $ObjectId $wanted;$expectedHash=CanonicalObjectHash $expected
-  $i=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json;$n=[PLCCode.Weinview.NativeControls]::new($i.Pid,$i.CreationTicks,$i.Exe,800);$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($i.Pid,$i.CreationTicks,$i.Exe)
+  $i=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json;$n=[PLC Engineering Suite.Weinview.NativeControls]::new($i.Pid,$i.CreationTicks,$i.Exe,800);$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($i.Pid,$i.CreationTicks,$i.Exe)
   $main=@($n.EnumTopWindows()|Where-Object {$_.Class -ceq 'EasyBuilderPro' -and $_.Visible -and $_.Title.Contains([IO.Path]::GetFileNameWithoutExtension($ProjectPath))});if($main.Count -ne 1){throw 'Unique owned Trend main required'}
   $tab=$n.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32');$labels=[string[]]@($rows|ForEach-Object {$_.label});$types=[string[]]@($beforeRead.channel_y_axis_evidence.channel_types)
-  if($types.Count -ne $rows.Count -or @($types|Where-Object {[string]::IsNullOrWhiteSpace($_)}).Count){$p.SelectTabExact($tab.Hwnd,'通道');$observed=@([PLCCode.Weinview.TrendRibbonControls]::ReadObservedChannels($n,$DialogHwnd,$main[0].Hwnd,'趋势图的属性'));$types=[string[]]@($observed|ForEach-Object {$_.data_type});if((@($observed|ForEach-Object {$_.label}) -join '|') -cne ($labels -join '|')){throw 'Existing Trend channel labels changed before update'}}
+  if($types.Count -ne $rows.Count -or @($types|Where-Object {[string]::IsNullOrWhiteSpace($_)}).Count){$p.SelectTabExact($tab.Hwnd,'通道');$observed=@([PLC Engineering Suite.Weinview.TrendRibbonControls]::ReadObservedChannels($n,$DialogHwnd,$main[0].Hwnd,'趋势图的属性'));$types=[string[]]@($observed|ForEach-Object {$_.data_type});if((@($observed|ForEach-Object {$_.label}) -join '|') -cne ($labels -join '|')){throw 'Existing Trend channel labels changed before update'}}
   $r.stage='apply-trend-y-axis';$r.mutation_state='possible';$r.channel_y_axis_before=$current
   if(@($rows|Where-Object {$_.axis -cne 'none'}).Count){$p.SelectTabExact($tab.Hwnd,'趋势图');$grid=$n.FindUniqueControl($DialogHwnd,1076,'Button','显示');if($n.GetCheckboxState($grid.Hwnd) -eq 0){$n.ClickButton($DialogHwnd,1076,'显示')};if($n.GetCheckboxState($grid.Hwnd) -ne 1){throw 'Trend Y axis Grid display prerequisite not enabled'}}
-  if(@($rows|Where-Object {$_.minimum -ne $current.channels[$_.row-1].minimum -or $_.maximum -ne $current.channels[$_.row-1].maximum}).Count){$p.SelectTabExact($tab.Hwnd,'通道');$null=[PLCCode.Weinview.TrendRibbonControls]::SetChannelRangesPerRow($n,$DialogHwnd,$main[0].Hwnd,'趋势图的属性',$labels,$types,[double[]]@($rows|ForEach-Object {$_.minimum}),[double[]]@($rows|ForEach-Object {$_.maximum}))}
-  $p.SelectTabExact($tab.Hwnd,'Y 轴');$null=[PLCCode.Weinview.TrendRibbonControls]::SetChannelAxes($n,$DialogHwnd,$main[0].Hwnd,'趋势图的属性',$labels,$types,[string[]]@($rows|ForEach-Object {$_.native_axis}))
+  if(@($rows|Where-Object {$_.minimum -ne $current.channels[$_.row-1].minimum -or $_.maximum -ne $current.channels[$_.row-1].maximum}).Count){$p.SelectTabExact($tab.Hwnd,'通道');$null=[PLC Engineering Suite.Weinview.TrendRibbonControls]::SetChannelRangesPerRow($n,$DialogHwnd,$main[0].Hwnd,'趋势图的属性',$labels,$types,[double[]]@($rows|ForEach-Object {$_.minimum}),[double[]]@($rows|ForEach-Object {$_.maximum}))}
+  $p.SelectTabExact($tab.Hwnd,'Y 轴');$null=[PLC Engineering Suite.Weinview.TrendRibbonControls]::SetChannelAxes($n,$DialogHwnd,$main[0].Hwnd,'趋势图的属性',$labels,$types,[string[]]@($rows|ForEach-Object {$_.native_axis}))
   $hide=$n.FindUniqueControl($DialogHwnd,1332,'Button','通道数据不显示时隐藏通道 Y 刻度');$wantedHide=if($desired.hide_when_channel_invisible){1}else{0};if($n.GetCheckboxState($hide.Hwnd) -ne $wantedHide){$n.ClickButton($DialogHwnd,1332,'通道数据不显示时隐藏通道 Y 刻度')};if($n.GetCheckboxState($hide.Hwnd) -ne $wantedHide){throw 'Trend Y axis hide preference differs'}
   $align=$n.FindUniqueControlWithoutLabel($DialogHwnd,1370,'ComboBox');$wantedAlign=if($desired.value_alignment -ceq 'full_text'){'完整显示'}else{'以刻度为中心'};if($p.ComboSelected($align.Hwnd) -cne $wantedAlign){$p.SelectComboExact($align.Hwnd,$wantedAlign)};if($p.ComboSelected($align.Hwnd) -cne $wantedAlign){throw 'Trend Y axis alignment differs'}
   $r.stage='read-after';$afterRead=ReadActual 'after';$after=CanonicalObject $ObjectId $afterRead.actual;$afterHash=CanonicalObjectHash $after;$actualAxis=$afterRead.channel_y_axis_evidence
@@ -241,7 +241,7 @@ try{
  $tagBinding=$null
  if($names -ccontains 'tag_name'){
   if(!$TagEvidence){throw 'Same-project native tag export required for Tag rebind'}
-  if(!('PLCCode.Weinview.TagCsvCodec' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'TagCsvCodec.cs') -ReferencedAssemblies 'System.dll'}
+  if(!('PLC Engineering Suite.Weinview.TagCsvCodec' -as [type])){Add-Type -Path (Join-Path $PSScriptRoot 'TagCsvCodec.cs') -ReferencedAssemblies 'System.dll'}
   . (Join-Path $PSScriptRoot 'NumericAddressBinding.ps1')
   $tagBinding=Resolve-WeinviewNumericTagRow $ProjectPath ([string]$changes.tag_name) $TagEvidence $ExpectedSha256
   if($before.kind -ceq 'numeric_display'){
@@ -347,8 +347,8 @@ try{
  }
  if($names -ccontains 'target_window'){
   if($before.kind -cne 'window_button' -or $before.window.action -cne '切换基本窗口' -or $changes.target_window -isnot [int] -and $changes.target_window -isnot [long] -or $changes.target_window -lt 10 -or $changes.target_window -gt 1999){throw 'Existing basic-window button and integer target10..1999 required'}
-  $identity=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json;$tn=[PLCCode.Weinview.NativeControls]::new($identity.Pid,$identity.CreationTicks,$identity.Exe,800);$tp=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($identity.Pid,$identity.CreationTicks,$identity.Exe)
-  $tp.SelectTabExact(($tn.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')).Hwnd,'一般属性');$targets=[PLCCode.Weinview.FunctionWindowTargetControls]::new($tn,'功能键的属性',(-not $OwnedSemanticBackground));$found=@()
+  $identity=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json;$tn=[PLC Engineering Suite.Weinview.NativeControls]::new($identity.Pid,$identity.CreationTicks,$identity.Exe,800);$tp=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($identity.Pid,$identity.CreationTicks,$identity.Exe)
+  $tp.SelectTabExact(($tn.FindUniqueControlWithoutLabel($DialogHwnd,12320,'SysTabControl32')).Hwnd,'一般属性');$targets=[PLC Engineering Suite.Weinview.FunctionWindowTargetControls]::new($tn,'功能键的属性',(-not $OwnedSemanticBackground));$found=@()
   $cmtTarget=([IO.Path]::GetExtension($ProjectPath) -ieq '.cmtp')
   foreach($qt in @($tn.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$v=if($cmtTarget){$targets.InspectCmtNavigation($DialogHwnd,$qt.Hwnd)}else{$targets.Inspect($DialogHwnd,$qt.Hwnd)};if($v){$found+=$v}}
   if($found.Count -ne 1){throw 'Unique actual target combo required'};$items=@($found[0].Items|Where-Object {$_ -cmatch ('^'+$changes.target_window+'\. .+$')});if($items.Count -ne 1){throw 'Requested target must exist uniquely in native window list'}
@@ -368,14 +368,14 @@ try{
   # Return its verified state without writing or rejecting an idempotent update.
   $r.after=$r.before;$r.expected_after_sha256=$expectedHash;$r.status='success';$r.stage='object-already-satisfied';$r.source_sha256=$ExpectedSha256;$r.native_fields_verified=$true;$r.unchanged=$true;return
  }
- $i=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json;$n=[PLCCode.Weinview.NativeControls]::new($i.Pid,$i.CreationTicks,$i.Exe,800);$p=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($i.Pid,$i.CreationTicks,$i.Exe)
+ $i=Get-Content -LiteralPath $IdentityPath -Raw -Encoding UTF8|ConvertFrom-Json;$n=[PLC Engineering Suite.Weinview.NativeControls]::new($i.Pid,$i.CreationTicks,$i.Exe,800);$p=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($i.Pid,$i.CreationTicks,$i.Exe)
  function C([int]$id,[string]$class){return $n.FindUniqueControlWithoutLabel($DialogHwnd,$id,$class)}
  function Tab([string]$name){$p.SelectTabExact((C 12320 'SysTabControl32').Hwnd,$name)}
  function BitGeneralReady {
   $controls=@($n.EnumChildControls($DialogHwnd))
   if(@($controls|Where-Object {$_.Id -eq 1646 -and $_.Class -ceq 'ComboBox' -and $_.Visible -and $_.Enabled}).Count -ne 1 -or @($controls|Where-Object {$_.Id -eq 2510 -and $_.Class -ceq 'Edit' -and $_.Visible -and $_.Enabled}).Count -ne 1){return $false}
   $dialog=@($n.EnumTopWindows()|Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Visible -and $_.Enabled});if($dialog.Count -ne 1){throw 'Exact owned bit property dialog required'}
-  $types=[PLCCode.Weinview.BitAddressTypeControls]::new($n,[string]$dialog[0].Title);$found=@()
+  $types=[PLC Engineering Suite.Weinview.BitAddressTypeControls]::new($n,[string]$dialog[0].Title);$found=@()
   foreach($qt in @($controls|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$v=$types.InspectAny($DialogHwnd,$qt.Hwnd);if($v){$found+=,$v}}
   if($found.Count -gt 1){throw 'Bit address type control ambiguous on current property page'}
   return ($found.Count -eq 1)
@@ -398,7 +398,7 @@ try{
   }
   if($wanted.x -ne $before.x -or $wanted.y -ne $before.y){Tab '轮廓';foreach($field in @(@('x',1050),@('y',1052))){if($wanted.($field[0]) -ne $before.($field[0])){$n.SetControlText((C $field[1] 'Edit').Hwnd,[string]$wanted.($field[0]))}}}
  }
- if($names -ccontains 'description' -and $wanted.description -cne $before.description){if($before.kind -cin @('bit_switch','bit_lamp')){EnsureBitGeneral}else{Tab '一般属性'};if($before.kind -ceq 'window_button' -and [IO.Path]::GetExtension($ProjectPath) -ieq '.cmtp'){$cmtDescription=[PLCCode.Weinview.FunctionWindowTargetControls]::new($n,'功能键的属性',(-not $OwnedSemanticBackground));$qt=@($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Title -ceq 'EasyBuilder Pro' -and $_.Visible -and $_.Enabled});if($qt.Count -ne 1){throw 'Unique cMT function General page required'};if($before.window.action -ceq '导入用户账户'){$null=$cmtDescription.SetCmtAccountImportDescription($DialogHwnd,$qt[0].Hwnd,$before.description,$wanted.description)}else{$null=$cmtDescription.SetCmtDescription($DialogHwnd,$qt[0].Hwnd,$before.description,$wanted.description,[long](@($n.EnumTopWindows()|Where-Object {$_.Class -ceq 'EasyBuilderPro'})[0].Hwnd),(Join-Path $PSScriptRoot 'QtElementBridge.exe'))}}else{$n.SetControlText((C 1174 'Edit').Hwnd,$wanted.description)}}
+ if($names -ccontains 'description' -and $wanted.description -cne $before.description){if($before.kind -cin @('bit_switch','bit_lamp')){EnsureBitGeneral}else{Tab '一般属性'};if($before.kind -ceq 'window_button' -and [IO.Path]::GetExtension($ProjectPath) -ieq '.cmtp'){$cmtDescription=[PLC Engineering Suite.Weinview.FunctionWindowTargetControls]::new($n,'功能键的属性',(-not $OwnedSemanticBackground));$qt=@($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Title -ceq 'EasyBuilder Pro' -and $_.Visible -and $_.Enabled});if($qt.Count -ne 1){throw 'Unique cMT function General page required'};if($before.window.action -ceq '导入用户账户'){$null=$cmtDescription.SetCmtAccountImportDescription($DialogHwnd,$qt[0].Hwnd,$before.description,$wanted.description)}else{$null=$cmtDescription.SetCmtDescription($DialogHwnd,$qt[0].Hwnd,$before.description,$wanted.description,[long](@($n.EnumTopWindows()|Where-Object {$_.Class -ceq 'EasyBuilderPro'})[0].Hwnd),(Join-Path $PSScriptRoot 'QtElementBridge.exe'))}}else{$n.SetControlText((C 1174 'Edit').Hwnd,$wanted.description)}}
  # A native Tag row is filtered by the object's numeric format. Apply an explicit
  # format change before opening the native Tag picker in this same property edit.
  if($names -ccontains 'data_type' -and $wanted.style.data_type -cne $before.style.data_type){Tab '格式';$format=C 1952 'ComboBox';if(@($p.ComboItems($format.Hwnd)|Where-Object {$_ -ceq $wanted.style.data_type}).Count -ne 1){throw 'Requested numeric format absent from original native format choices'};$p.SelectComboExact($format.Hwnd,$wanted.style.data_type);if($p.ComboSelected($format.Hwnd) -cne $wanted.style.data_type){throw 'Numeric format selection did not read back'}}
@@ -410,7 +410,7 @@ try{
   if(@($p.ComboItems($deviceCombo.Hwnd)|Where-Object {$_ -ceq $wanted.bit.device}).Count -ne 1){throw 'Requested bit device absent from actual native project choices'}
   $p.SelectComboExact($deviceCombo.Hwnd,$wanted.bit.device)
   $bitDialog=@($n.EnumTopWindows()|Where-Object {$_.Hwnd -eq $DialogHwnd -and $_.Visible -and $_.Enabled});if($bitDialog.Count -ne 1){throw 'Exact owned bit property dialog required'}
-  $types=[PLCCode.Weinview.BitAddressTypeControls]::new($n,[string]$bitDialog[0].Title);$choices=@()
+  $types=[PLC Engineering Suite.Weinview.BitAddressTypeControls]::new($n,[string]$bitDialog[0].Title);$choices=@()
   foreach($qt in @($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$choice=$types.InspectAny($DialogHwnd,$qt.Hwnd);if($choice -and @($choice.Items|Where-Object {$_ -ceq $wanted.bit.address_type}).Count -eq 1){$choices+=,$choice}}
   if($choices.Count -ne 1){throw 'Unique requested native bit address type unavailable'}
   if($choices[0].Value -cne $wanted.bit.address_type){$null=$types.SelectExact($DialogHwnd,$choices[0].Hwnd,$choices[0].Value,$wanted.bit.address_type)}
@@ -427,7 +427,7 @@ try{
   Tab '一般属性';$device=C 1646 'ComboBox'
   if(@($p.ComboItems($device.Hwnd)|Where-Object {$_ -ceq $wanted.data.device}).Count -ne 1){throw 'Requested numeric device absent from current project'}
   $p.SelectComboExact($device.Hwnd,$wanted.data.device)
-  $types=[PLCCode.Weinview.NumericAddressTypeControls]::new($n,'数值的属性');$choices=@()
+  $types=[PLC Engineering Suite.Weinview.NumericAddressTypeControls]::new($n,'数值的属性');$choices=@()
   foreach($qt in @($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Visible -and $_.Enabled})){$v=$types.Inspect($DialogHwnd,$qt.Hwnd,$wanted.data.address_type);if($v){$choices+=,$v}}
   if($choices.Count -ne 1){throw 'Requested numeric address type absent or ambiguous in original device'}
   if($choices[0].Value -cne $wanted.data.address_type){$null=$types.SelectExact($DialogHwnd,$choices[0].Hwnd,$choices[0].Value,$wanted.data.address_type,(Join-Path $PSScriptRoot 'QtElementBridge.exe'))}
@@ -478,11 +478,11 @@ try{
  if($names -ccontains 'target_window' -and $wanted.window.target_window.number -ne $before.window.target_window.number){Tab '一般属性';if($cmtTarget){$null=$targets.SelectCmtNavigation($DialogHwnd,$targetSnapshot.Hwnd,$targetSnapshot.Value,$targetText)}else{$null=$targets.SelectExact($DialogHwnd,$targetSnapshot.Hwnd,$targetSnapshot.Value,$targetText)}}
  if($importFields.Count -and ($wanted.window.media -cne $before.window.media -or $wanted.window.import_mode -cne $before.window.import_mode -or [bool]$wanted.window.delete_after_import -ne [bool]$before.window.delete_after_import)){
   Tab '一般属性';$qt=@($n.EnumChildControls($DialogHwnd)|Where-Object {$_.Class -ceq 'Qt5QWindowIcon' -and $_.Title -ceq 'EasyBuilder Pro' -and $_.Visible -and $_.Enabled});if($qt.Count -ne 1){throw 'Unique cMT Function Key General page required'}
-  $importControls=[PLCCode.Weinview.FunctionWindowTargetControls]::new($n,'功能键的属性',(-not $OwnedSemanticBackground));$null=$importControls.SetCmtAccountImport($DialogHwnd,$qt[0].Hwnd,[string]$wanted.window.media,[string]$wanted.window.import_mode,[bool]$wanted.window.delete_after_import)
+  $importControls=[PLC Engineering Suite.Weinview.FunctionWindowTargetControls]::new($n,'功能键的属性',(-not $OwnedSemanticBackground));$null=$importControls.SetCmtAccountImport($DialogHwnd,$qt[0].Hwnd,[string]$wanted.window.media,[string]$wanted.window.import_mode,[bool]$wanted.window.delete_after_import)
  }
  if($securityRequested){
-  if(!('PLCCode.Weinview.ObjectSecurityClassControls' -as [type])){throw 'Joint native/security class dependencies required'}
-  Tab '安全';$securityControl=[PLCCode.Weinview.ObjectSecurityClassControls]::new($n);$securityBefore=$securityControl.ReadClass($DialogHwnd)
+  if(!('PLC Engineering Suite.Weinview.ObjectSecurityClassControls' -as [type])){throw 'Joint native/security class dependencies required'}
+  Tab '安全';$securityControl=[PLC Engineering Suite.Weinview.ObjectSecurityClassControls]::new($n);$securityBefore=$securityControl.ReadClass($DialogHwnd)
    if($expectedHash -ceq $beforeHash -and $securityBefore -ceq $changes.security_class -and !$shapeNames.Count){throw 'At least one substantive object change required'}
   $r.security_class_before=$securityBefore;$r.security_class_requested=[string]$changes.security_class
   $r.security_class_edit=$securityControl.SetClass($DialogHwnd,$securityBefore,[string]$changes.security_class)

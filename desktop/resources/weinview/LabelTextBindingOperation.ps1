@@ -26,7 +26,7 @@ function Read-WeinviewTextLabelBinding($Session,[long]$DialogHwnd) {
 function Read-WeinviewOrderedLabelNamesFromOpenLibrary($Session,[string]$EvidencePrefix) {
  $null=Get-WeinviewLabelDialog $Session '文字库'
  $projectDirectory=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($Session.output_path))
- $sample=Join-Path $projectDirectory ('.plccode-label-names-'+[guid]::NewGuid().ToString('N')+'.xlsx')
+ $sample=Join-Path $projectDirectory ('.plceng-label-names-'+[guid]::NewGuid().ToString('N')+'.xlsx')
  try{
   $export=Export-WeinviewLabelWorkbook $Session $sample $EvidencePrefix
   $book=Read-WeinviewLabelWorkbook $export.workbook_path
@@ -43,7 +43,7 @@ function Set-WeinviewTextLabelBinding($Session,[long]$DialogHwnd,[string]$LabelN
  $c=Get-WeinviewTextLabelControls $Session $DialogHwnd
  if($Session.native.GetCheckboxState($c.use.Hwnd) -ne 1 -or !$c.selector.Visible){throw 'Native Text library selector did not become enabled'}
  $current=if($before.use_library_checked){$before}else{Read-WeinviewTextLabelBinding $Session $DialogHwnd}
- $property=New-Object PLCCode.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
+ $property=New-Object PLC Engineering Suite.Weinview.Research.NativePropertyCandidate($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,$Session.exe_path)
  $items=@($property.ComboItems($c.selector.Hwnd))
  $match=@($items|Where-Object {$_.StartsWith($LabelName+' : ',[StringComparison]::Ordinal)})
  if($match.Count -gt 1){throw 'Requested native Text label ambiguous in current selector'}
@@ -59,7 +59,7 @@ function Set-WeinviewTextLabelBinding($Session,[long]$DialogHwnd,[string]$LabelN
   if($currentIndices.Count -ne 1){throw 'Current native Text label absent from complete Label Library export'}
   $grid=@($Session.native.EnumChildControls($library.Hwnd)|Where-Object {$_.Id -eq 1696 -and $_.Class -ceq 'MFCGridCtrl' -and $_.Visible -and $_.Enabled})
   if($grid.Count -ne 1){throw 'Unique native Label Library grid required'}
-  [PLCCode.Weinview.LabelGridControls]::SelectRow([long]$library.Hwnd,[long]$grid[0].Hwnd,[int]$indices[0],[int]$currentIndices[0],$names.Count)|Out-Null
+  [PLC Engineering Suite.Weinview.LabelGridControls]::SelectRow([long]$library.Hwnd,[long]$grid[0].Hwnd,[int]$indices[0],[int]$currentIndices[0],$names.Count)|Out-Null
   Start-Sleep -Milliseconds 150
   $Session.native.ClickButton($library.Hwnd,1,'确定')
  }

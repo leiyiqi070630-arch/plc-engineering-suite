@@ -341,7 +341,7 @@
 .engine-support-notice__spinner { animation: engine-support-spin 1s linear infinite; }
 @keyframes engine-support-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .engine-support-notice__spinner { animation: none; } }
-/* Design tokens ported from desktop/PlcCode/Theme/Palette.xaml, per the
+/* Design tokens ported from desktop/PlcEngineeringSuite/Theme/Palette.xaml, per the
    migration table in docs/electron-rewrite/02-architecture.md section 5.
    Color-prefixed and Brush-prefixed names collapse into one CSS
    custom-property tier (no Color/Brush split needed on the web, per that

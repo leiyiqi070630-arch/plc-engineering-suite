@@ -447,7 +447,7 @@ function Get-Children {
     # Some providers report IsOffscreen=false even for minimized windows.
     # Do not traverse them (or our click-through frame) during desktop searches.
     $name = Invoke-Safe { $child.Current.Name } ""
-    if ($name -eq "PLCCode Computer Use Indicator") { continue }
+    if ($name -eq "PLC Engineering Suite Computer Use Indicator") { continue }
     if (-not $IncludeOffscreen) {
       $hwnd = Invoke-Safe { [IntPtr]([int64]$child.Current.NativeWindowHandle) } ([IntPtr]::Zero)
       if ($hwnd -ne [IntPtr]::Zero -and [WindowsComputerUseNative]::IsIconic($hwnd)) { continue }

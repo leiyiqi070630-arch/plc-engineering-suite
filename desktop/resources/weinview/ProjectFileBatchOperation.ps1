@@ -442,7 +442,7 @@ function Initialize-WeinviewBatchSnapshots($Session,$Plan,[string]$Prefix,[strin
     # bit/word group must retain every tag imported by the preceding groups.
     $priorTags=@($Plan|Where-Object {$_.kind -ceq 'tags_upsert' -and $_.index -lt $state.index})
     $tagBase=if($priorTags.Count){$priorTags[-1].expected}else{$state.before.tags}
-    $state.expected=[PLCCode.Weinview.TagCsvCodec]::Merge([PLCCode.Weinview.TagRow[]]$tagBase,[PLCCode.Weinview.TagRow[]]$state.rows)
+    $state.expected=[PLC Engineering Suite.Weinview.TagCsvCodec]::Merge([PLC Engineering Suite.Weinview.TagRow[]]$tagBase,[PLC Engineering Suite.Weinview.TagRow[]]$state.rows)
     foreach($row in $state.rows){$old=@($state.before.tags|Where-Object {$_.name -ieq $row.name});if($old.Count -and $old[0].name -cne $row.name){throw 'Case-changing tag rename is forbidden; no batch imports.'}}
     $nativeTagNames=@($step.tags|Where-Object {$_.row_format -ceq 'native_csv'}|ForEach-Object {[string]$_.name})
     $state.devices=Assert-WeinviewTagDeviceBindings $Session $state.rows $nativeTagNames
@@ -720,7 +720,7 @@ function Invoke-WeinviewProjectBatchAddressStep($Session,$State,[string]$SourceS
   if($activeDialog){
    $modals=@($Session.native.EnumTopWindows()|Where-Object {$_.Visible -and $_.Class -ceq '#32770'})
    if($modals.Count -eq 1 -and $modals[0].Hwnd -eq $activeDialog.Hwnd -and $modals[0].Enabled -and $modals[0].Title -ceq '寻找/替换'){
-    [PLCCode.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$activeDialog.Hwnd,[int]$Session.process.Id)
+    [PLC Engineering Suite.Weinview.NativeAddressReplaceControls]::Close($Session.native,[long]$activeDialog.Hwnd,[int]$Session.process.Id)
    }
   }
   throw
@@ -919,21 +919,21 @@ function Invoke-WeinviewBatchImports($Session,$Plan,$MacroBefore,[string]$Prefix
    }
    'tags_upsert' {
     $Session.tag_prefix=$p+'.apply';$null=Open-WeinviewTagLibrary $Session
-    $newRows=[Collections.Generic.List[PLCCode.Weinview.TagRow]]::new();$state.updated=@()
+    $newRows=[Collections.Generic.List[PLC Engineering Suite.Weinview.TagRow]]::new();$state.updated=@()
     $nativeTagNames=@($step.tags|Where-Object {$_.row_format -ceq 'native_csv'}|ForEach-Object {[string]$_.name})
     $replaceMerged=@($state.before.tags|Where-Object {$nativeTagNames -ccontains $_.name}).Count -gt 0
     if($replaceMerged){
      # EBPro's CSV replacement matches addresses, not tag names; changed
      # addresses otherwise create suffixed duplicates. Re-import the merged
      # complete table and verify every retained row before saving.
-     $state.import=Import-WeinviewTags $Session ([PLCCode.Weinview.TagRow[]]$state.expected) ($p+'.request.csv') -ReplaceMergedTable
+     $state.import=Import-WeinviewTags $Session ([PLC Engineering Suite.Weinview.TagRow[]]$state.expected) ($p+'.request.csv') -ReplaceMergedTable
     }else{
     foreach($row in $state.rows){$matches=@($state.before.tags|Where-Object {$_.name -ceq $row.name});if($nativeTagNames -ccontains $row.name){$newRows.Add($row)}elseif($matches.Count -eq 1){$state.updated+=Update-WeinviewExistingTag $Session $matches[0] $row}else{$newRows.Add($row)}}
     $state.import=@{native_imported_count=0;native_ignored_count=0;remove_existing=$false;replace_existing=$true}
     if($newRows.Count){$state.import=Import-WeinviewTags $Session $newRows.ToArray() ($p+'.request.csv')}
     }
     $state.after=Export-WeinviewTags $Session ($p+'.after.csv')
-    [PLCCode.Weinview.TagCsvCodec]::AssertSame([PLCCode.Weinview.TagRow[]]$state.expected,[PLCCode.Weinview.TagRow[]]$state.after.tags)
+    [PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame([PLC Engineering Suite.Weinview.TagRow[]]$state.expected,[PLC Engineering Suite.Weinview.TagRow[]]$state.after.tags)
     Close-WeinviewTagLibrary $Session
     $Session.tag_evidence=$state.after
     if($addressEvidence){
@@ -1368,7 +1368,7 @@ function Test-WeinviewBatchPersistence($Session,$Plan,$MacroBefore,[string]$Pref
    }
    'tags_upsert' {
     $Session.tag_prefix=$p+'.reopen';$null=Open-WeinviewTagLibrary $Session;$current=Export-WeinviewTags $Session ($p+'.reopened.csv')
-    [PLCCode.Weinview.TagCsvCodec]::AssertSame([PLCCode.Weinview.TagRow[]]$state.expected,[PLCCode.Weinview.TagRow[]]$current.tags)
+    [PLC Engineering Suite.Weinview.TagCsvCodec]::AssertSame([PLC Engineering Suite.Weinview.TagRow[]]$state.expected,[PLC Engineering Suite.Weinview.TagRow[]]$current.tags)
     if($current.tags_sha256 -cne $state.after.tags_sha256){throw 'Saved tags CSV differs.'};Close-WeinviewTagLibrary $Session
     $proof.before_table_origin=$state.before.table_origin;$proof.before_empty_evidence=$state.before.empty_evidence;$proof.tags_before=@($state.before.tags);$proof.tags_after=@($state.after.tags);$proof.tags_reopened=@($current.tags)
     $proof.before_tags_sha256=$state.before.tags_sha256;$proof.after_tags_sha256=$state.after.tags_sha256;$proof.reopened_tags_sha256=$current.tags_sha256;$proof.untouched_tags_verified=$true

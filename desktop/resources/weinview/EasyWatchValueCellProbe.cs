@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Accessibility;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class EasyWatchValueCellProbe {
   readonly int pid; readonly long ticks; readonly string exe;
   [DllImport("oleacc.dll")] static extern int AccessibleObjectFromWindow(IntPtr h,uint obj,ref Guid iid,out IAccessible a);
@@ -110,7 +110,7 @@ namespace PLCCode.Weinview {
   void AssertWriterForeground(WritableTarget target,bool activateOnce) {
    var main=GetAncestor(target.Grid,2);if(main==IntPtr.Zero)throw new InvalidOperationException("Actual writable grid main ancestor absent.");AssertWriterWindow(main.ToInt64());
    string title=new NativeControls(pid,ticks,exe,1000).GetControlText(main.ToInt64(),128);
-   if(!WriterClass(main).StartsWith("Afx:",StringComparison.Ordinal) || title!="PLCCodeWritable - EasyWatch")throw new InvalidOperationException("Actual private file-loaded writable EasyWatch main required.");
+   if(!WriterClass(main).StartsWith("Afx:",StringComparison.Ordinal) || title!="PLC Engineering SuiteWritable - EasyWatch")throw new InvalidOperationException("Actual private file-loaded writable EasyWatch main required.");
    bool requested=false;
    if(GetForegroundWindow()!=main && activateOnce){requested=true;if(!SetForegroundWindow(main))throw new InvalidOperationException("Owned fresh EasyWatch foreground activation denied; no input.");new NativeControls(pid,ticks,exe,1000).GetControlText(main.ToInt64(),128);}
    if(GetForegroundWindow()!=main)throw new InvalidOperationException("Owned fresh EasyWatch main must be foreground.");
@@ -128,7 +128,7 @@ namespace PLCCode.Weinview {
   WritableTarget ReadWritableTarget(long gridHwnd,string name,int address,int port,bool expected,string numericFormat=null,string expectedText=null,double expectedNumber=0) {
    if(numericFormat!=null && numericFormat!="uint16" && numericFormat!="float32" && numericFormat!="int32" && numericFormat!="uint32")throw new ArgumentException("Finite numeric format required.");
    if(numericFormat!=null)AssertNumericText(numericFormat,expectedText,expectedNumber);
-   if(address<0 || address>((numericFormat=="float32" || numericFormat=="int32" || numericFormat=="uint32")?8998:8999) || name!=(numericFormat==null?"PLCCode_Writable_LB":"PLCCode_Writable_LW")+address.ToString(CultureInfo.InvariantCulture))throw new ArgumentException("Exact writable LB0..8999 monitor name/address required.");
+   if(address<0 || address>((numericFormat=="float32" || numericFormat=="int32" || numericFormat=="uint32")?8998:8999) || name!=(numericFormat==null?"PLC Engineering Suite_Writable_LB":"PLC Engineering Suite_Writable_LW")+address.ToString(CultureInfo.InvariantCulture))throw new ArgumentException("Exact writable LB0..8999 monitor name/address required.");
    if(port<1 || port>65535)throw new ArgumentOutOfRangeException("port");
    SetProcessDPIAware();AssertWriterWindow(gridHwnd);var h=Owned(gridHwnd);var row=Rows(gridHwnd,1)[0];
    if(row.get_accName(0)!="Row 1")throw new InvalidOperationException("Actual writable monitor must be the single Row 1.");

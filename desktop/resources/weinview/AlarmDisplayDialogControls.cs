@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Accessibility;
 
-namespace PLCCode.Weinview {
+namespace PLC Engineering Suite.Weinview {
  public sealed class AlarmDisplayDialogControls {
   readonly NativeControls native; readonly int pid; readonly long ticks,main; readonly string exe;
   [DllImport("oleacc.dll")] static extern int AccessibleObjectFromWindow(IntPtr h,uint id,ref Guid iid,out IAccessible a);

@@ -85,8 +85,8 @@ function Invoke-WeinviewWholeCompileCandidate {
  $script:compileIntentEvidence.font_control_presence=$fontControlPresence
  $languageProperty=$null
  if($projectExtension -ieq '.cmtp' -or $Action -ceq 'inspect' -or $null -ne $SelectedLanguages){
-  if(!('PLCCode.Weinview.Research.NativePropertyCandidate' -as [type])){throw 'Owned native property controls required for compiler language readback.'}
-  $languageProperty=[PLCCode.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.process.Path)
+  if(!('PLC Engineering Suite.Weinview.Research.NativePropertyCandidate' -as [type])){throw 'Owned native property controls required for compiler language readback.'}
+  $languageProperty=[PLC Engineering Suite.Weinview.Research.NativePropertyCandidate]::new($Session.process.Id,$Session.process.StartTime.ToUniversalTime().Ticks,[string]$Session.process.Path)
  }
  function ReadCompileLanguageSlot([string]$text){$match=[regex]::Match($text,'^(?:语言|Language)\s*([1-9]|1[0-9]|2[0-4])$');if(!$match.Success){throw ('Original compile language label unsupported: '+$text)};return [int]$match.Groups[1].Value}
  function ReadCompileLanguagePage {
@@ -145,7 +145,7 @@ function Invoke-WeinviewWholeCompileCandidate {
   if(($got -join ',') -cne ($want -join ',') -or [int]$after.startup_language -ne [int]$StartupLanguage){throw 'Original compile language selection readback differs from request.'}
   return $after
  }
- $reader=New-Object PLCCode.Weinview.CompileLogCandidate($Session.native)
+ $reader=New-Object PLC Engineering Suite.Weinview.CompileLogCandidate($Session.native)
  $sequenceObserved=$false; $script:compileIntentEvidence.native_start_mode='F5_automatic'
  $deadline=[DateTime]::UtcNow.AddSeconds(90);$log='';$complete=$false;$errorCount=$null;$warningCount=$null
  do {
@@ -189,7 +189,7 @@ function Invoke-WeinviewWholeCompileCandidate {
      $rulesBytes=[IO.File]::ReadAllBytes($fontRulesPath);$rulesText=[IO.File]::ReadAllText($fontRulesPath)
      $rulesXml=[xml]$rulesText;$beforeRules=@($rulesXml.FontRules.Rule|ForEach-Object {$_.data})
      if($rulesBytes.Length -ne 1996 -or $rulesBytes[0] -ne 255 -or $rulesBytes[1] -ne 254 -or $rulesXml.FontRules.Version.data -cne '1.4' -or $beforeRules.Count -ne 16 -or $rulesText.Contains('Bahnschrift') -or [regex]::Matches($rulesText,'</FontRules>').Count -ne 1){throw 'Known original native font-rule contract required.'}
-     $rulesBackup=$fontRulesPath+'.plccode-before-bahnschrift-'+[Guid]::NewGuid().ToString('N')+'.xml'
+     $rulesBackup=$fontRulesPath+'.plceng-before-bahnschrift-'+[Guid]::NewGuid().ToString('N')+'.xml'
      [IO.File]::Copy($fontRulesPath,$rulesBackup,$false)
      if((LocalHash $rulesBackup) -cne $rulesBeforeHash -or (LocalHash $fontRulesPath) -cne $rulesBeforeHash){throw 'Native font-rule backup differs before change.'}
      $rulesAfterText=$rulesText.Replace('</FontRules>',('    <Rule data="complete_font = ^Bahnschrift$"/>'+"`r`n"+'</FontRules>'))
