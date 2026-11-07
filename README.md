@@ -159,9 +159,8 @@ echo '{"command":"capabilities"}' | plccode-engine bridge
 | `desktop/docs/05-数据与存储格式.md` | 会话 jsonl、工作区、画布、设置 |
 | `engine/docs/01-引擎设计与版本.md` | 引擎定位、CLI 能力、crate 结构、技术栈 |
 | `engine/docs/02-模块划分.md` | 工具四层结构、各目录职责、如何新增工具 |
-| `engine/docs/03-工具目录.md` | 286 个工具、32 份完整契约、权限模型 |
+| `engine/docs/03-工具目录.md` | 32 个工具、契约格式、权限模型、新增工具流程 |
 | `engine/docs/04-bridge协议与CLI.md` | JSON-Lines 协议、命令集、提示词结构、内置 agent |
-| `engine/docs/05-知识与语料库.md` | 内嵌知识库结构、工程产物样例 |
 
 ---
 

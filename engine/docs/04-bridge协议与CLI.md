@@ -33,7 +33,7 @@ plccode export [PATH] [--session SESSION] [--output PATH]
 ```
 
 `plccode system-prompt` 是本次工程梳理最重要的一条命令：**不需要凭据、不做网络请求，直接把内置提示词打印出来**。
-本工程 `spec/capabilities/system-prompt.txt` 即其输出（20,514 字节）。
+内置提示词可用 `plccode-engine system-prompt` 导出。
 
 ## 2. bridge 模式（桌面端协议）
 
