@@ -11926,7 +11926,7 @@ function mainWindow() {
   const v2680 = resolveWindowState(runtimeHome(), electron.screen.getAllDisplays(), electron.screen.getPrimaryDisplay());
   const v2681 = settingsStore?.current.theme ?? "system";
   const v2682 = v2681 === "light" || v2681 === "system" && electron.nativeTheme.shouldUseDarkColors === false;
-  const v2683 = v2682 ? "#f6f7f9" : "#0f1115";
+  const v2683 = v2682 ? "#eef7f3" : "#0f1110";
   const v2684 = new electron.BrowserWindow({
     x: v2680.x,
     y: v2680.y,
@@ -11936,7 +11936,7 @@ function mainWindow() {
     titleBarStyle: "hidden",
     titleBarOverlay: {
       color: v2683,
-      symbolColor: v2682 ? "#5a6270" : "#9aa3b0",
+      symbolColor: v2682 ? "#536157" : "#8b918d",
       height: 32
     },
     webPreferences: {

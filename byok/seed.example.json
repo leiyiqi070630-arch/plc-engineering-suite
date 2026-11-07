@@ -1,0 +1,9 @@
+{
+  "name": "自备模型",
+  "baseUrl": "https://api.example.com/v1",
+  "defaultModel": "your-model-id",
+  "models": ["your-model-id"],
+  "maxTokens": 8192,
+  "apiKey": "sk-your-key",
+  "protocol": "auto"
+}

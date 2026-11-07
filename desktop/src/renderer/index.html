@@ -10,7 +10,7 @@
          会被 default-src 拦掉且控制台只给一条易被忽略的 violation 提示。script-src 与
          style-src 保持收紧。 -->
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#0f1115" />
+    <meta name="theme-color" content="#0f1110" />
     <title>PLC Code</title>
     <link rel="preload" href="./assets/NotoSerifSC-B28r8lj8.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="stylesheet" crossorigin href="./assets/index-pqC5qFDs.css" />
@@ -25,8 +25,8 @@
         place-content: center;
         justify-items: center;
         gap: 18px;
-        background: #0f1115;
-        color: #e6e9ee;
+        background: #0f1110;
+        color: #f4f5f3;
         font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
         pointer-events: none;
         animation: splash-out 420ms ease 1100ms forwards;
@@ -43,20 +43,20 @@
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background: #4c8dff;
-        box-shadow: 0 0 0 4px rgba(76, 141, 255, .16);
+        background: #8ee5a1;
+        box-shadow: 0 0 0 4px rgba(142, 229, 161, .16);
         animation: splash-pulse 1400ms ease-in-out infinite;
       }
       #splash .hint {
         font-size: 12px;
-        color: #6f7885;
+        color: #8b918d;
         letter-spacing: .3px;
       }
       #splash .bar {
         width: 148px;
         height: 2px;
         border-radius: 2px;
-        background: #262b33;
+        background: #232b26;
         overflow: hidden;
       }
       #splash .bar > i {
@@ -64,7 +64,7 @@
         width: 40%;
         height: 100%;
         border-radius: inherit;
-        background: #4c8dff;
+        background: #8ee5a1;
         animation: splash-slide 1100ms ease-in-out infinite;
       }
       @keyframes splash-pulse {
@@ -83,8 +83,8 @@
         #splash .dot, #splash .bar > i { animation: none; }
       }
       /* 首帧背景色与主题一致，避免窗口出现的瞬间闪白。 */
-      html, body { background: #0f1115; }
-      html[data-theme='light'], html[data-theme='light'] body { background: #f6f7f9; }
+      html, body { background: #0f1110; }
+      html[data-theme='light'], html[data-theme='light'] body { background: #eef7f3; }
     </style>
   </head>
   <body>

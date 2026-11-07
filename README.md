@@ -19,6 +19,8 @@
 | Inovance AutoShop（H5U） | `AutoShopTextBridge.exe` | H5U 原生工程、SDO、仿真、模块参数 |
 | Weinview EasyBuilder Pro | PowerShell + C# 反射封装 | 画面/标签/配方/告警/趋势、编译与下载 |
 | 通用 | 内置 Python 3.12 + linter | 三菱 FX2/FX3、S7-200 AWL/ST 规则校验 |
+| 工业协议（2.1.20+） | 原生协议层（`koffi` / `node-opcua`） | Beckhoff ADS、EtherNet/IP（CIP）、OPC UA 客户端与服务端 |
+| 电气仿真（2.1.20+） | 内置电气工作台 | 电气原理图绘制、PDF/PNG 导出 |
 
 **可验证性优先**：每个写操作都返回可回读的证据（`compile.verdict`、`ladderBodyVerified`、
 `readbackCounts`、`acceptanceVerdict`），编译通过从不被当作运行正确的证明。
@@ -69,17 +71,32 @@ tool_dispatch/        工具名 → 实现的路由
 
 ## 下载
 
-到 **Releases** 页下载 `PLC-Code-2.1.13-win32-x64.zip`（约 150 MB），解压后直接运行 `PLC Code.exe`，无需安装。
+到 **Releases** 页选择构建：
+
+| 构建 | 说明 |
+| --- | --- |
+| `PLC-Code-2.1.20-BYOK-win32-x64.zip` | 基于 2.1.20 的自备模型版：账号/订阅体系已摘除，配置本地模型即可用 |
+| `PLC-Code-2.1.13-win32-x64.zip` | 早期便携版（2.1.13 结构，界面为自定义主题层） |
+
+解压后直接运行 `PLC Code.exe`，无需安装。
 
 | 项 | 值 |
 | --- | --- |
 | 平台 | Windows 10/11 x64 |
-| 运行时 | Electron 43.3.0（Chromium 150，已内置） |
-| 首次启动 | 约 1–2 秒，带启动画面 |
-| 配置位置 | `<解压目录>\data\runtime\`（会话、设置、模型配置） |
-| 模型 | 首次使用需在「自备模型」页填写服务地址与密钥 |
+| 运行时 | Electron 43.3.0（已内置） |
+| 配置位置 | `<解压目录>\data\runtime\` |
+| 模型 | 2.1.20 版：放 `byok-provider.seed.json`（见 `byok/seed.example.json`）；2.1.13 版：界面内「自备模型」页 |
 
 > 未签名构建，SmartScreen 可能提示「未知发布者」，选择「更多信息 → 仍要运行」即可。
+
+## 版本线
+
+| 版本 | 结构 | 说明 |
+| --- | --- | --- |
+| 2.1.13 | NSIS 便携 / asar 130.6 MB | 早期结构，主进程单文件，含自备模型层 |
+| 2.1.20 | 安装版 / asar 224.5 MB | 新增 OIP（ADS/EtherNet-IP/OPC UA）、电气仿真、Excel 表格、会话检查点；主进程改 Vite 分包，官方版无自备模型层 |
+
+演进细节与 BYOK 接管方案：`desktop/docs/07-版本演进-2.1.20.md`、`byok/README.md`。
 
 ## 快速开始
 

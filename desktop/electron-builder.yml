@@ -43,7 +43,7 @@ portable:
 
 publish:
   provider: generic
-  url: https://plccodeing.com/updates/win/
+  url: ""   # 离线构建：不配置远端更新源
   channel: latest
 
 # 二进制组件（引擎、桥、Python 运行时）不随源码仓库分发；

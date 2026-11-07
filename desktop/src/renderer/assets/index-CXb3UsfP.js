@@ -21330,7 +21330,7 @@ function useTimelineScroll(v4456, v4457) {
     pauseFollowing: v4465
   };
 }
-const DEFAULT_ACCOUNT_SERVER = "https://plccodeing.com";
+const DEFAULT_ACCOUNT_SERVER = "";
 const LOGGED_OUT_STATE = {
   isLoggedIn: false,
   phone: "",
