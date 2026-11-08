@@ -73,10 +73,10 @@ text{font-family:"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",Arial,sans-s
 <rect x="1120" y="442" width="590" height="190" rx="16" fill="#F0ECFF" stroke="#D7CEF2"/>
 <rect x="1138" y="460" width="8" height="154" rx="4" fill="#7959C7"/>
 <text x="1165" y="483" class="cardTitle" fill="#7959C7">02 · RUST ENGINE / engine/</text>
-<text x="1165" y="516" class="body">9 个 Crates：engine / cli / runtime / tools / api</text>
-<text x="1165" y="544" class="body">commands / plugins / telemetry / win-proc-guard</text>
-<text x="1165" y="578" class="body">32 份工具契约 · 4 ReadOnly / 13 WorkspaceWrite</text>
-<text x="1165" y="606" class="body">15 DangerFullAccess · 语料资产不随公开源码树保证</text>
+<text x="1165" y="516" class="body">9 个 Crates · 327 个 Rust 源文件</text>
+<text x="1165" y="544" class="body">32 个工具契约 · 4 ReadOnly / 13 WorkspaceWrite</text>
+<text x="1165" y="578" class="body">15 DangerFullAccess · app.rs / docs 已对齐</text>
+<text x="1165" y="606" class="body">运行时语料需按发行包与本地配置核验</text>
 
 <rect x="1120" y="651" width="590" height="160" rx="16" fill="#E7F6EF" stroke="#CBE6D8"/>
 <rect x="1138" y="669" width="8" height="124" rx="4" fill="#218764"/>
@@ -89,8 +89,8 @@ text{font-family:"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",Arial,sans-s
 <rect x="1138" y="848" width="8" height="124" rx="4" fill="#C97826"/>
 <text x="1165" y="871" class="cardTitle" fill="#C97826">04 · SPECS &amp; KNOWLEDGE / engine/spec/</text>
 <text x="1165" y="904" class="body">工具契约：名称 / 参数 Schema / 权限 / Hash</text>
-<text x="1165" y="932" class="body">知识语料：生成器案例、工程经验、技能、版本指令</text>
-<text x="1165" y="960" class="small">知识库与工具契约是不同资产，不应混为一类</text>
+<text x="1165" y="932" class="body">运行时语料：生成器案例、技能与版本知识（外置）</text>
+<text x="1165" y="960" class="small">当前公开 main 未包含完整 spec/corpus 目录</text>
 
 <rect x="1120" y="1009" width="590" height="205" rx="16" fill="#F3F6F9" stroke="#D7E1E9"/>
 <text x="1145" y="1046" font-size="19" font-weight="700" fill="#18324B">构建与发行：源码 ≠ 完整安装包</text>
