@@ -20,7 +20,7 @@ PLC Engineering Suite 是一套面向工业自动化工程场景的 AI 辅助工
 
 ## 项目结构与系统架构
 
-> 以下两张图按当前 `main` 分支重新梳理，版本基线为 **2.1.20**。图示区分桌面端、Rust 引擎、本地模型网关、工程软件适配器与工业协议层；仓库结构同时标出了源码目录、工具契约、知识语料及发行包资源边界。
+> 以下两张图按当前 `main` 分支重新梳理，版本基线为 **2.1.20**。图示区分桌面端、Rust 引擎、本地模型网关、工程软件适配器与工业协议层；仓库结构同时标出了源码目录、工具契约、外置运行资源与发行包资源边界。
 
 ### 系统架构
 
@@ -243,79 +243,14 @@ data/runtime/model-provider.seed.json
 
 ---
 
-## 系统架构
 
-项目采用桌面编排、Agent 决策、工具桥接执行的分层结构。
-
-~~~text
-┌──────────────────────────────────────────────────────────────┐
-│                  Desktop Application                         │
-│                Electron 43 + React 19                        │
-│                                                              │
-│  会话管理 · 工作区 · 影子副本 · 画布 · 电气工作台 · 表格       │
-│  人工确认 · 任务恢复 · 模型配置 · 本地模型网关                 │
-└───────────────────────────┬──────────────────────────────────┘
-                            │ JSON-Lines over stdio
-┌───────────────────────────▼──────────────────────────────────┐
-│                    Rust Agent Engine                         │
-│                                                              │
-│  任务规划 · 工具契约 · 参数校验 · 工具路由 · 会话运行时        │
-│  MCP · 诊断 · 代码规则检查 · 结构化回执                       │
-└───────────────────────────┬──────────────────────────────────┘
-                            │ 子进程 / IPC / 脚本
-┌───────────────────────────▼──────────────────────────────────┐
-│                 Vendor & Runtime Adapters                    │
-│                                                              │
-│  TIA Openness · GX Works · CODESYS / InoProShop              │
-│  AutoShop · EasyBuilder Pro · Python Linter                  │
-│  Beckhoff ADS · EtherNet/IP · OPC UA                         │
-└──────────────────────────────────────────────────────────────┘
-
-Desktop ──► Local Model Gateway ──► OpenAI-compatible / Anthropic APIs
-~~~
-
-### 组件职责
-
-| 组件 | 主要职责 |
-| --- | --- |
-| Desktop | 用户交互、会话与工作区管理、权限确认、工程文件治理 |
-| Rust Agent Engine | 任务规划、工具选择、参数校验、执行编排与结果判读 |
-| Vendor Adapters | 封装厂商工程软件、文件格式及专用接口的差异 |
-| Industrial Protocol Layer | 提供设备通信入口、端点授权和运行时读写能力 |
-| Local Model Gateway | 统一模型 API、协议转换、模型能力探测与密钥保护 |
-
-桌面端负责流程编排与工程数据治理；Agent 引擎通过工具契约调用适配器；厂商差异集中在桥接与路由层，避免把各品牌的实现细节散落在模型提示词中。
-
----
-
-## 仓库结构
-
-~~~text
-plc-engineering-suite/
-├── desktop/                  Electron 桌面应用
-│   ├── src/main/             主进程、IPC、会话与工作区治理
-│   ├── src/preload/          contextBridge 与安全 API 暴露
-│   ├── src/renderer/         React 界面
-│   ├── resources/            路由配置、厂商资源与桥接脚本
-│   ├── scripts/              构建、检查与文档生成
-│   └── docs/                 桌面端架构与协议文档
-│
-├── engine/                   Rust Agent workspace
-│   ├── crates/               CLI、runtime、tools、api 等 crate
-│   ├── spec/                 工具契约与工程语料
-│   └── docs/                 引擎设计、模块与工具文档
-│
-├── model-gateway/            本地模型网关
-└── LICENSE                   MIT License
-~~~
-
-### 重要的源码与发行包区别
+## 发行包说明
 
 仓库包含桌面端和 Rust 引擎的源代码，但完整 Windows 发行包还依赖部分预构建组件，例如工具执行器、厂商桥接程序和内置 Python 运行时。这些大型二进制组件不会全部随源码仓库分发。
 
 因此，**克隆仓库不等于已经具备完整发行包的全部运行依赖**。如果需要自行构建完整 Windows 发行版，需要按构建配置准备相应的引擎、桥接和运行时文件。普通使用者建议直接下载 GitHub Releases 中的发行包。
 
----
+当前工具契约索引登记 **32 个工具**：4 个 `ReadOnly`、13 个 `WorkspaceWrite`、15 个 `DangerFullAccess`。修改工具注册、权限或契约后，可执行 `python engine/scripts/check_tool_registry.py` 检查注册表与文档是否一致。
 
 ## 开发与检查
 
@@ -354,6 +289,7 @@ npm run dev
 | [2.1.20 架构设计](desktop/docs/07-2.1.20-架构设计.md) | 工业协议、电气工作台、表格与会话恢复 |
 | [引擎 README](engine/README.md) | Rust 引擎入口、工具契约与构建 |
 | [模块划分](engine/docs/02-模块划分.md) | 工具声明、校验、执行与路由 |
+| [工具目录](engine/docs/03-工具目录.md) | 32 个注册工具的权限、参数与安全边界 |
 | [工具契约索引](engine/spec/tool_contracts/TOOLS.md) | 当前注册工具及其接口契约 |
 
 ---
