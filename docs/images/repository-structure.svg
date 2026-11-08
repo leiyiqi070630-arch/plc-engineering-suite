@@ -42,7 +42,7 @@ text{font-family:"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",Arial,sans-s
 <text x="185" y="886">├── commands/ · plugins/</text><text x="690" y="886" class="comment">Slash 命令与插件装载</text>
 <text x="185" y="920">└── telemetry/ · win-proc-guard/</text><text x="690" y="920" class="comment">事件遥测与 Windows 子进程守护</text>
 <text x="145" y="954">├── spec/tool_contracts/</text><text x="690" y="954" class="comment">32 份已注册工具契约与 JSON Schema</text>
-<text x="145" y="988">├── spec/corpus/</text><text x="690" y="988" class="comment">527 个知识 / 生成器语料文件，约 20 MB</text>
+<text x="145" y="988">├── spec/corpus/</text><text x="690" y="988" class="comment">当前公开 main 未跟踪；以发行包 / 本地资源清单核验</text>
 <text x="145" y="1022">└── docs/</text><text x="690" y="1022" class="comment">引擎设计、模块划分、工具目录与协议说明</text>
 
 <text x="105" y="1076">├── model-gateway/</text>
@@ -76,7 +76,7 @@ text{font-family:"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",Arial,sans-s
 <text x="1165" y="516" class="body">9 个 Crates：engine / cli / runtime / tools / api</text>
 <text x="1165" y="544" class="body">commands / plugins / telemetry / win-proc-guard</text>
 <text x="1165" y="578" class="body">32 份工具契约 · 4 ReadOnly / 13 WorkspaceWrite</text>
-<text x="1165" y="606" class="body">15 DangerFullAccess · 527 个语料文件 / 7 个 Agent</text>
+<text x="1165" y="606" class="body">15 DangerFullAccess · 语料资产不随公开源码树保证</text>
 
 <rect x="1120" y="651" width="590" height="160" rx="16" fill="#E7F6EF" stroke="#CBE6D8"/>
 <rect x="1138" y="669" width="8" height="124" rx="4" fill="#218764"/>
