@@ -32,7 +32,7 @@ PLC Engineering Suite 是一套面向工业自动化工程场景的 AI 辅助工
 
 ![PLC Engineering Suite 2.1.20 仓库结构图](docs/images/repository-structure.svg)
 
-仓库由 `desktop/`、`engine/`、`model-gateway/` 和项目文档组成。Rust workspace 包含 9 个 crate；工具契约与知识语料分别维护。部分执行器、厂商桥和运行时二进制需要在打包前准备，不应把源码克隆等同于完整发行环境。
+仓库由 `desktop/`、`engine/`、`model-gateway/` 和项目文档组成。Rust workspace 包含 9 个 crate；工具契约在源码树中维护，运行时语料是否提供则以发行包和本地部署清单为准。部分执行器、厂商桥和运行时二进制需要在打包前准备，不应把源码克隆等同于完整发行环境。
 
 ---
 
