@@ -1,0 +1,35 @@
+name: Engine Tool Registry
+
+on:
+  push:
+    paths:
+      - "engine/spec/tool_contracts/**"
+      - "engine/crates/plceng-engine/src/app.rs"
+      - "engine/docs/03-工具目录.md"
+      - "engine/scripts/check_tool_registry.py"
+      - ".github/workflows/engine-tool-registry.yml"
+  pull_request:
+    paths:
+      - "engine/spec/tool_contracts/**"
+      - "engine/crates/plceng-engine/src/app.rs"
+      - "engine/docs/03-工具目录.md"
+      - "engine/scripts/check_tool_registry.py"
+      - ".github/workflows/engine-tool-registry.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-tool-registry:
+    name: Verify tool contracts and permissions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check registry consistency
+        run: python engine/scripts/check_tool_registry.py
