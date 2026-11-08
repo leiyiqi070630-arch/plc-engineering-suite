@@ -58,20 +58,18 @@ tool_dispatch/        工具名 → 实现的路由
 | `WorkspaceWrite` | 只改工作区（staging） | 13 |
 | `DangerFullAccess` | 可写真实工程 / 操作 IDE（需确认） | 15 |
 
-## 5. 内嵌知识库
+## 5. 知识与语料资产
 
-`spec/corpus/`（527 个文件 / 20 MB）包含：
+工具契约位于 `spec/tool_contracts/`，包含 32 份单工具 JSON、`tools_index.json` 与权限索引。它们是当前公开源码树中可直接核对的机器可读工具接口。
 
-- `plc-generator-corpus/`：生成器用例与证据（`cases` / `evidence` / `artifacts`），
-  其中 `artifacts` 是可直接导入 TIA 的 `.s7dcl`、HMI XML、PLCopen TC6；
-- `plc-experience-corpus/`：实战页面样例；
-- `skills/`：内置技能文本；
-- `V16/` `V17/`：按版本 × CPU 家族的指令知识；
-- `agents/`：7 个内置 agent 定义。
+**语料目录状态：** 旧版说明曾将 `spec/corpus/` 描述为 527 个文件 / 20 MB，并列出生成器案例、经验页面、技能、版本知识和 agent 定义；但当前 GitHub `main` 的已跟踪文件树中未检出该目录。因此，这些历史数量不能作为当前公开源码或发行包内容的保证。若某个本地构建或发行包提供外置语料，应以实际文件清单和运行时配置为准。
+
+内置 agent 与技能的运行时清单应分别通过 `plceng-engine agents` 和 `plceng-engine skills` 查询，不要仅凭源码目录推断其已打包。
 
 ## 6. 构建
 
 ```bash
+python scripts/check_tool_registry.py  # 契约、CLI 权限表与文档一致性检查
 cargo check                     # 语法与依赖
 cargo run -p plceng-engine -- --help
 cargo build --release -p plceng-engine
@@ -87,6 +85,6 @@ cargo build --release -p plceng-engine
 | --- | --- |
 | `docs/01-引擎设计与版本.md` | 引擎定位、CLI、crate 结构、技术栈 |
 | `docs/02-模块划分.md` | 工具四层结构、目录职责、新增工具流程 |
-| `docs/03-工具目录.md` | 286 个工具、32 份契约、权限 |
+| `docs/03-工具目录.md` | 32 个已注册工具、契约权限与参数 |
 | `docs/04-bridge协议与CLI.md` | 协议、命令集、提示词结构、内置 agent |
-| `docs/05-知识与语料库.md` | 知识库结构与工程产物样例 |
+| `scripts/check_tool_registry.py` | 检查单工具契约、CLI 注册表和 Markdown 权限是否一致 |
