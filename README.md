@@ -276,6 +276,7 @@ npm run dev
 
 - npm run check 是源码完整性静态检查，不等同于端到端测试。
 - npm run build 负责组装 Electron 运行目录，不会自动构建 Rust 引擎和所有厂商桥接二进制。
+- `python engine/scripts/check_tool_registry.py` 会核对工具 JSON 契约、CLI 权限清单和工具目录文档，建议修改工具注册或权限后运行。
 - Rust 引擎可在 engine/ 目录中单独使用 Cargo 构建；完整发行包还需要准备对应的外部执行器、桥接程序和运行时依赖。
 
 建议从以下文档开始了解实现细节：
