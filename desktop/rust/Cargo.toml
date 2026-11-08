@@ -5,7 +5,7 @@
 # 打包后走 process.resourcesPath，不读这里。
 [package]
 name = "plceng-engine"
-version = "2.1.13"
+version = "2.1.20"
 edition = "2021"
 
 # 引擎本体（Rust）未包含在本仓库中，见 README「未包含的二进制组件」。
