@@ -5,7 +5,7 @@
 
 | 项 | 值 |
 | --- | --- |
-| 版本 | 2.1.13 |
+| 版本 | 2.1.20 |
 | 运行时 | Electron 43.3.0（Chromium 150） |
 | 主进程 | CommonJS，`out/main/index.js` |
 | 渲染进程 | React 19 + Vite（预构建 bundle） |
@@ -23,7 +23,7 @@
 ┌───────────────▼──────── preload ─────────────┐
 │ Channels 常量 + ipcRenderer 转发              │
 └───────────────┬──────────────────────────────┘
-                │ 116 个 IPC 通道
+                │ 116 个 IPC 通道常量（主进程注册 115 个）
 ┌───────────────▼──────── main ────────────────┐
 │ 窗口/崩溃守护 · EngineBridge × N · 会话存储    │
 │ 工作区 staging · 画布读写 · TIA 诊断           │
@@ -102,7 +102,7 @@ $env:PLC_CODE_TIA_OPENNESS_BRIDGE_EXE  = "<...>\TiaOpennessBridge.exe"
 & "<electron>\electron.exe" . --no-sandbox
 ```
 
-正常日志：
+正常日志示例（知识库文件数以实际引擎构建为准）：
 
 ```
 [main] engine resolved: path=...\plceng-engine.exe packaged=false bridgeExe=...\TiaOpennessBridge.exe
@@ -124,7 +124,7 @@ $env:PLC_CODE_TIA_OPENNESS_BRIDGE_EXE  = "<...>\TiaOpennessBridge.exe"
 密钥用 `safeStorage`（Windows DPAPI）加密后落盘，明文不进配置文件；本地代理仅监听 `127.0.0.1`，
 用每次启动随机生成的 32 字节 token 做进程内鉴权。
 
-细节：`docs/03-本地网关自备模型机制.md`。
+细节：`docs/03-模型接入机制.md`。
 
 ---
 
@@ -133,8 +133,8 @@ $env:PLC_CODE_TIA_OPENNESS_BRIDGE_EXE  = "<...>\TiaOpennessBridge.exe"
 | 文档 | 内容 |
 | --- | --- |
 | `docs/01-架构总览.md` | 进程模型、启动顺序、EngineBridge、工作区 staging、TIA 工具链、多品牌桥 |
-| `docs/02-IPC通道表.md` | 116 个通道 + 121 个 preload 方法（由源码生成） |
-| `docs/03-本地网关自备模型机制.md` | 本地代理、密钥加密、协议互转、思考档位映射 |
+| `docs/02-IPC通道表.md` | 116 个通道常量（主进程注册 115 个）+ 121 个 preload 方法（由源码生成） |
+| `docs/03-模型接入机制.md` | 本地代理、密钥加密、协议互转、思考档位映射 |
 | `docs/04-引擎与工具链协议.md` | 引擎调用契约、execute_tool、.NET 桥、MCP |
 | `docs/05-数据与存储格式.md` | 会话 jsonl、工作区、画布、设置 |
 
